@@ -1,0 +1,11 @@
+{
+	"name":"tweet-importer",
+	"version":"0.0.1",
+	"dependencies": {
+		"semver": ">=1",
+		"async": ">=0.1",
+		"mongojs": ">=0.4",
+		"ntwitter": ">=0",
+		"nconf": ">=0"
+	}
+}
