@@ -1,0 +1,17 @@
+{
+	"name":"twitter-trader",
+	"version":"0.0.1",
+	"private":"true",
+	"scripts": {
+		"start": "node app"
+	},
+	"dependencies": {
+		"semver": ">=1",
+		"async": ">=0.1",
+		"mongojs": ">=0.4",
+		"express": "3.x",
+		"nconf": "*",
+		"jade": "*",
+		"stylus": "*"
+	}
+}
