@@ -1,0 +1,16 @@
+
+
+== ENDPOINTS ==
+
+GET /classified/companies
+POST /classfied
+
+GET /verified/companies
+GET /verified/company/:id
+GET /verified/company/:id/since/:timestamp
+
+GET /unclassified/random/:count
+GET /unclassified/companies
+GET /unclassified/company/:id
+GET /unclassified/sentiment/:kind
+
