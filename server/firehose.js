@@ -19,6 +19,7 @@ twitter.stream(
 			if(i > nconf.get('capture:frequency'))
 			{
 				i = 0;
+				tweet.random = Math.random();
 				db.twits.save(tweet);
 				console.log('tweet: '+ tweet.created_at);
 			}

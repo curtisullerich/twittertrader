@@ -12,6 +12,7 @@
 		"express": "3.x",
 		"nconf": "*",
 		"jade": "*",
-		"stylus": "*"
+		"stylus": "*",
+		"mongoskin": "*"
 	}
 }
