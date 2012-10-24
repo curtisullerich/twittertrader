@@ -1,5 +1,6 @@
 
-var db = require('../store').db;
+var tweetsdb = require('../store').tweets;
+var writeJSON = require('../io').writeJSON;
 
 /*
  * GET random listing.
@@ -8,19 +9,17 @@ var db = require('../store').db;
 exports.random = function(req, res){
   res.writeHead(200, {'Content-Type': 'application/json'});
   res.write('[');
-  var tweets = db.twits.find().limit(10);
+  var tweets = tweetsdb.find({classification:{$exists:false}, random:{$gte:Math.random()}}).limit(parseInt(req.params.count));
 
-  for(; tweets.hasNext(); ) {
-    res.write(JSON.stringify(tweets.next()));
-    res.write(',');
-  }
-//{}, {}, 10, 0, function (err, tweets) {
-//    tweets.forEach(function(tweet) {
-//      res.write(JSON.stringify(tweet));
-//      res.write(',');
-//    });
+  tweets.toArray(function(err, tweetArr) {
+    var i=0;
+    for(; i<tweetArr.length-1; i++) {
+      res.write(JSON.stringify(tweetArr[i]));
+      res.write(',');
+    }
+    res.write(JSON.stringify(tweetArr[i]));
     res.end(']');
- // });
+  });
 };
 
 /*
@@ -32,11 +31,12 @@ exports.companies = function(req, res) {
 
 
 /*
- * GET company/
+ * GET company/:id/:count
  */
 exports.company = {
-  id: function(req, res) {
-    res.send("response");
+  idcount: function(req, res) {
+    var tweets = tweetsdb.find({classification:{$exists:false}, company:req.params.id}).limit(parseInt(req.params.count));
+    writeJSON(res, tweets);
   }
 }
 

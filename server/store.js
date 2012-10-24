@@ -3,13 +3,18 @@
  */
 
 var nconf = require('nconf')
-  , mongojs = require('mongojs');
+  , mongo = require('mongoskin');
 
 nconf.argv().env();
-nconf.file({ file: '../config.json' });
+nconf.file({ file: 'config.json' });
 nconf.defaults({
         'port': '9000'
 });
 
-exports.db = mongojs.connect(nconf.get('database'), [nconf.get('collection')]);
+var db = mongo.db('localhost/'+nconf.get('database'));
+var twits = db.collection(nconf.get('collection'));
+
+twits.ensureIndex( {"classification":1, "random":1});
+
+exports.tweets = twits; // db.collection(nconf.get('collection'));
 

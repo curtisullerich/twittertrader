@@ -4,7 +4,7 @@
  */
 
 var express = require('express')
-  , routes = require('./routes')
+  , pages = require('./routes/pages')
   , classified = require('./routes/classified')
   , verified = require('./routes/verified')
   , unclassified = require('./routes/unclassified')
@@ -14,7 +14,7 @@ var express = require('express')
   , mongojs = require('mongojs');
 
 nconf.argv().env();
-nconf.file({ file: '../config.json' });
+nconf.file({ file: 'config.json' });
 nconf.defaults({
 	'port': '9000'
 });
@@ -40,18 +40,20 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-app.get('/', routes.index);
+app.get('/', pages.index);
+app.get('/verify', pages.verify);
 
 app.get('/classified/companies', classified.companies);
 app.post('/classified', classified.post);
 
 app.get('/verified/companies', verified.companies);
 app.get('/verified/company/:id', verified.company.id);
-app.get('/verified/company/:id/since/:timestamp', verified.company.timestamp);
+app.get('/verified/company/:id/since/:timestamp', verified.company.id_timestamp);
+app.post('/verified', verified.post);
 
 app.get('/unclassified/random/:count', unclassified.random);
 app.get('/unclassified/companies', unclassified.companies);
-app.get('/unclassified/company/:id', unclassified.company.id);
+app.get('/unclassified/company/:id/:count', unclassified.company.idcount);
 app.get('/unclassified/sentiment/:kind', unclassified.sentiment.kind);
 
 http.createServer(app).listen(app.get('port'), function(){
