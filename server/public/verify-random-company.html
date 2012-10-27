@@ -1,0 +1,77 @@
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body>
+<script>
+
+var endpoint = "/unclassified/random/1";
+
+var companies = ["Fareway", "HyVee", "Walmart", "Micron", "Samsung", "Verizon", "Cerner", "DollarTree", "Raytheon", "Starbucks", "Xerox", "Costco", "CocaCola", "eBay", "Ford", "Boeing", "Monsanto", "Exelon", "Google", "Microsoft", "Amazon", "Garmin", "Travelzoo", "Netflix", "priceline", "ZoltekCos", "FirstSolar"];
+companies.sort();
+
+
+$(window).ready(function() {
+  $.each(companies, function(i, value) {
+    $("#companies").append($("<option>"+value+"</option>"));
+  });
+
+});
+
+var tweet = {};
+
+$.getJSON(endpoint, function(data, status) {
+  tweet = data[0];
+
+  $.each(companies, function(i, value) {
+    if(tweet.text.toLowerCase().indexOf(value.toLowerCase()) != -1)
+      $("#companies").val(value);
+
+  });
+
+  $("#text").text(data[0].text);
+  $("#name").text(data[0].user.screen_name);
+  $("#raw").text(JSON.stringify(data));
+  $("#id_str").val(data[0].id_str);
+});
+
+
+function next() {
+  $.post("/verified", {
+    id_str:tweet.id_str,
+    _id:tweet._id,
+    type: "single",
+    company:$("#companies").val()
+    }, function() { window.location.reload(true); } );
+    
+  return false;
+}
+
+</script>
+
+<p>
+Endpoint: /unclassified/random
+</p>
+
+<p>
+<div id="text"></div>
+</p>
+<p>
+By: <div id="name"></div>
+</p>
+
+<form method="post" action="/verified" onsubmit="return next();">
+
+  <select name="company" id="companies">
+    <option selected>none</option>
+  </select>
+
+  <input type="submit" />
+
+</form>
+
+
+<div id="raw"> </div>
+
+</body>
+</html>
