@@ -48,7 +48,7 @@ public class ModelTester {
 			}
 			info.add(description);
 
-			for (ClassifierTrainer trainer : trainers()) {
+			for (ClassifierTrainer<? extends Classifier> trainer : trainers()) {
 				double accuracies = 0;
 				double rankings = 0;
 				for (int i = 0; i < 10; i++) {
@@ -83,8 +83,8 @@ public class ModelTester {
 	}
 
 	// create a bunch of trainers
-	private static ArrayList<ClassifierTrainer> trainers() {
-		ArrayList<ClassifierTrainer> trainers = new ArrayList<ClassifierTrainer>();
+	private static ArrayList<ClassifierTrainer<? extends Classifier>> trainers() {
+		ArrayList<ClassifierTrainer<? extends Classifier>> trainers = new ArrayList<ClassifierTrainer<? extends Classifier>>();
 		trainers.add(new MaxEntTrainer());
 		trainers.add(new NaiveBayesTrainer());
 
