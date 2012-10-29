@@ -1,7 +1,7 @@
 #config
-.project
-.settings
-.classpath
+#.project
+#.settings
+#.classpath
 
 # Compiled source #
 ###################
@@ -11,6 +11,9 @@
 *.exe
 *.o
 *.so
+
+#tmp
+*~
 
 # Packages #
 ############
