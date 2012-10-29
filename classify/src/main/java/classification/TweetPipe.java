@@ -34,7 +34,7 @@ public class TweetPipe extends Pipe {
 		}
 	}
 	
-	private static String getTweetText(String source) {
+	private String getTweetText(String source) {
 		JsonParser parser = new JsonParser();
 		JsonObject o = (JsonObject) parser.parse(source);
 		
