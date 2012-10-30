@@ -3,6 +3,8 @@
 #.settings
 #.classpath
 
+localcorpora/ 
+
 # Compiled source #
 ###################
 *.com

@@ -2,9 +2,11 @@ package classification;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -28,6 +30,13 @@ import cc.mallet.util.Randoms;
 
 public class ModelTester {
 	public static void main(String[] args) throws IOException {
+
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(
+				new File("../companyModel.mallet")));
+		oos.writeObject(getCompanyClassifier());
+		oos.close();
+		System.exit(1);
+
 		ArrayList<SerialPipes> allPipes = new ArrayList<SerialPipes>();
 		// add all the pipe variations to the list
 		// allPipes.add(getPipe());
@@ -113,6 +122,17 @@ public class ModelTester {
 		CsvIterator reader2 = new CsvIterator(new FileReader(file2),
 				"(\\w+)\\s+(\\w+)\\s+(.*)", 3, 2, 1);
 		instances.addThruPipe(reader2);
+		MaxEntTrainer trainer = new MaxEntTrainer();
+		Classifier classifier = trainer.train(instances);
+		return classifier;
+	}
+	
+	public static Classifier getCompanyClassifier() throws FileNotFoundException {
+		InstanceList instances = new InstanceList(getPipe4());
+		File file = new File("../corpus/companyCorpus.txt");
+		CsvIterator reader = new CsvIterator(new FileReader(file),
+				"(\\w+)\\s+(\\w+)\\s+(.*)", 3, 2, 1);
+		instances.addThruPipe(reader);
 		MaxEntTrainer trainer = new MaxEntTrainer();
 		Classifier classifier = trainer.train(instances);
 		return classifier;
