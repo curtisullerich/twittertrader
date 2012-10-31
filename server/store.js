@@ -14,6 +14,7 @@ nconf.defaults({
 var db = mongo.db('localhost/'+nconf.get('database'));
 var twits = db.collection(nconf.get('collection'));
 
+twits.ensureIndex( {"classification":1, "company":1});
 twits.ensureIndex( {"classification":1, "random":1});
 twits.ensureIndex( {"id_str":1} );
 exports.tweets = twits; // db.collection(nconf.get('collection'));

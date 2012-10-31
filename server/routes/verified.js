@@ -2,6 +2,24 @@
 var tweetsdb = require('../store').tweets;
 var writeJSON = require('../io').writeJSON;
 var nconf = require('../config').nconf;
+var writeCSV = require('../io').writeCSV;
+
+
+
+exports.sentiment = {
+  kind: function(req, res) {
+  }
+};
+
+exports.sentimentcsv = function(req, res) {
+  var tweets = tweetsdb.find({classification:"verified", sentiment:{$exists:true}});
+  writeCSV(res, tweets, "sentiment");
+};
+
+exports.sentiments = function(req, res) {
+
+};
+
 
 /*
  * GET verified/company
@@ -15,7 +33,7 @@ exports.company = {
   id_timestamp: function(req, res) {
     res.send("response");
   }
-}
+};
 
 
 /*

@@ -16,7 +16,7 @@ twitter.stream(
 	{ track: nconf.get('keywords') },
 	function(stream) {
 		stream.on('data', function(tweet) {
-			if(i > nconf.get('capture:frequency'))
+			if(i > nconf.get('capture:frequency') && tweet.user.lang == 'en')
 			{
 				i = 0;
 				tweet.random = Math.random();

@@ -46,12 +46,16 @@ app.get('/verify', pages.verify);
 app.get('/classified/companies', classified.companies);
 app.post('/classified', classified.post);
 
+app.get('/verified/sentiment.csv', verified.sentimentcsv);
+app.get('/verified/sentiment', verified.sentiments);
 app.get('/verified/companies', verified.companies);
 app.get('/verified/company/:id', verified.company.id);
+app.get('/verified/sentiment/:kind', verified.sentiment.kind);
 app.get('/verified/company/:id/since/:timestamp', verified.company.id_timestamp);
 app.post('/verified', verified.post);
 
 app.get('/unclassified/random/:count', unclassified.random);
+app.get('/unclassified/random/:count/tweets.csv', unclassified.randomcsv);
 app.get('/unclassified/companies', unclassified.companies);
 app.get('/unclassified/company/:id/:count', unclassified.company.idcount);
 app.get('/unclassified/sentiment/:kind', unclassified.sentiment.kind);
