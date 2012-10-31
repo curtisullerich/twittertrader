@@ -1,0 +1,231 @@
+cc.mallet.pipe.Input2CharSequence cc.mallet.pipe.CharSequence2TokenSequence cc.mallet.pipe.TokenSequenceNGrams cc.mallet.pipe.TokenSequence2FeatureSequence cc.mallet.pipe.Target2Label cc.mallet.pipe.FeatureSequence2FeatureVector
+cc.mallet.classify.MaxEnt
+Average accuracy: 0.9766726943942133
+Average ranking: 0.03471971066907776
+---
+~~~~~~~~~
+cc.mallet.pipe.Input2CharSequence cc.mallet.pipe.CharSequence2TokenSequence cc.mallet.pipe.TokenSequenceNGrams cc.mallet.pipe.TokenSequence2FeatureSequence cc.mallet.pipe.Target2Label cc.mallet.pipe.FeatureSequence2FeatureVector 
+cc.mallet.classify.MaxEnt
+Average accuracy: 0.9741410488245931
+Average ranking: 0.035804701627486446
+---
+~~~~~~~~~
+cc.mallet.pipe.Input2CharSequence cc.mallet.pipe.CharSequence2TokenSequence cc.mallet.pipe.TokenSequence2FeatureSequence cc.mallet.pipe.Target2Label cc.mallet.pipe.FeatureSequence2FeatureVector 
+cc.mallet.classify.MaxEnt
+Average accuracy: 0.970885093167702
+Average ranking: 0.04231563015960375
+---
+~~~~~~~~~
+cc.mallet.pipe.Input2CharSequence cc.mallet.pipe.CharSequence2TokenSequence cc.mallet.pipe.TokenSequenceNGrams cc.mallet.pipe.TokenSequence2FeatureSequence cc.mallet.pipe.Target2Label cc.mallet.pipe.FeatureSequence2FeatureVector 
+cc.mallet.classify.MaxEnt
+Average accuracy: 0.9757685352622062
+Average ranking: 0.034900542495479206
+---
+~~~~~~~~~
+cc.mallet.pipe.Input2CharSequence cc.mallet.pipe.CharSequence2TokenSequence cc.mallet.pipe.TokenSequenceNGrams cc.mallet.pipe.TokenSequence2FeatureSequence cc.mallet.pipe.Target2Label cc.mallet.pipe.FeatureSequence2FeatureVector 
+cc.mallet.classify.MaxEnt
+Average accuracy: 0.9743218806509946
+Average ranking: 0.0325497287522604
+---
+~~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.7721518987341772
+Average rank: 0.3399638336347197
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9981916817359855
+Average rank: 0.0018083182640144665
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9981916817359855
+Average rank: 0.003616636528028933
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9981916817359855
+Average rank: 0.0018083182640144665
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.7486437613019892
+Average rank: 0.3453887884267631
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9963833634719711
+Average rank: 0.0054249547920434
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9981916817359855
+Average rank: 0.003616636528028933
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9981916817359855
+Average rank: 0.003616636528028933
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.7540687160940326
+Average rank: 0.3707052441229656
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9981916817359855
+Average rank: 0.0018083182640144665
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9855334538878843
+Average rank: 0.0162748643761302
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9945750452079566
+Average rank: 0.007233273056057866
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9963833634719711
+Average rank: 0.003616636528028933
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9945652173913043
+Average rank: 0.005434782608695652
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9945750452079566
+Average rank: 0.0054249547920434
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9963833634719711
+Average rank: 0.0054249547920434
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9963833634719711
+Average rank: 0.0054249547920434
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9981916817359855
+Average rank: 0.0018083182640144665
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.7667269439421338
+Average rank: 0.33634719710669075
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9963833634719711
+Average rank: 0.0054249547920434
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9981916817359855
+Average rank: 0.0018083182640144665
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9981916817359855
+Average rank: 0.0018083182640144665
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9981916817359855
+Average rank: 0.003616636528028933
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.7468354430379747
+Average rank: 0.32007233273056057
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9981916817359855
+Average rank: 0.0018083182640144665
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 0.9981916817359855
+Average rank: 0.003616636528028933
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+cc.mallet.classify.MaxEnt
+Accuracy: 1.0
+Average rank: 0.0
+~~~~~~~~
+
