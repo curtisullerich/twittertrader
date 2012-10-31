@@ -35,6 +35,11 @@ public class ModelTester {
 				new File("../companyModel.mallet")));
 		oos.writeObject(getCompanyClassifier());
 		oos.close();
+		ObjectOutputStream oos2 = new ObjectOutputStream(new FileOutputStream(
+				new File("../sentimentModel.mallet")));
+		oos2.writeObject(getCompanyClassifier());
+		oos2.close();
+
 		System.exit(1);
 
 		ArrayList<SerialPipes> allPipes = new ArrayList<SerialPipes>();
@@ -126,8 +131,9 @@ public class ModelTester {
 		Classifier classifier = trainer.train(instances);
 		return classifier;
 	}
-	
-	public static Classifier getCompanyClassifier() throws FileNotFoundException {
+
+	public static Classifier getCompanyClassifier()
+			throws FileNotFoundException {
 		InstanceList instances = new InstanceList(getPipe4());
 		File file = new File("../corpus/companyCorpus.txt");
 		CsvIterator reader = new CsvIterator(new FileReader(file),
