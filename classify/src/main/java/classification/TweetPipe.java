@@ -9,6 +9,13 @@ import com.google.gson.JsonParser;
 
 public class TweetPipe extends Pipe {
 
+
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9003870124716922925L;
+
 	public TweetPipe() {
 		super();
 	}
