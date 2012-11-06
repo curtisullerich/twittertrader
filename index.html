@@ -1,64 +1,60 @@
-<!doctype html>
-<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
-<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
-  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script type="text/javascript" src="javascripts/script.js"></script>
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Twitter Trader : Making bank from your tweets since 2012." />
 
-  <title>Twitter Trader</title>
-  <meta name="description" content="Making bank from your tweets since 2012.">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Twitter Trader</title>
+  </head>
 
-</head>
+  <body>
 
-<body>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/curtisullerich/twittertrader">View on GitHub</a>
 
-  <div class="wrapper">
-    <header>
-      <h1 class="title">Twitter Trader</h1>
-    </header>
-    <div id="container">
-      <p class="tagline">Making bank from your tweets since 2012.</p>
-      <div id="main" role="main">
-        <div class="download-bar">
-        <div class="inner">
-          <a href="https://github.com/curtisullerich/twittertrader/tarball/master" class="download-button tar"><span>Download</span></a>
-          <a href="https://github.com/curtisullerich/twittertrader/zipball/master" class="download-button zip"><span>Download</span></a>
-          <a href="https://github.com/curtisullerich/twittertrader" class="code">View Twitter Trader on GitHub</a>
-        </div>
-        <span class="blc"></span><span class="trc"></span>
-        </div>
-        <article class="markdown-body">
-          <h3>CS 472/572 Term Project, Fall 2012</h3>
+          <h1 id="project_title">Twitter Trader</h1>
+          <h2 id="project_tagline">Making bank from your tweets since 2012.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/curtisullerich/twittertrader/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/curtisullerich/twittertrader/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>CS 472/572 (Principles of Artificial Intelligence) Term Project, Fall 2012, Iowa State University</h3>
 
 <p>This page details our approach of using machine learning for sentiment analysis of Twitter to make buy-sell-hold decisions in the stock market.</p>
 
-<p>To check out the code with git.</p>
+<p>To check out the code with git:</p>
 
 <pre><code>$ git clone git@github.com:curtisullerich/twittertrader.git
 </code></pre>
 
-<p>Create a web page for your project, including a brief summary of the goals of the project, the basic approach to be followed, and anticipated results along with the relevant bibliography, and email the URL to the instructor and the TA by November 09, 2012.</p>
-
 <h3>Project Proposal</h3>
 
-<p><strong>Stock market trading using Twitter sentiment as heuristic</strong>
+<p><strong>Stock market trading using Twitter sentiment as heuristic</strong><br>
 Twitter is a popular source for data mining due to its massive scale and inclusivity of current trends. Similar studies into the correlation of overall Twitter sentiment (with respect to positivity) to the Dow Jones Industrial Average have been conducted before (Ruiz and Hristidis, 2012). We propose using real-time Twitter sentiment ratings of specific companies to determine buy-sell-hold actions of small, short-term investments. We will develop a system to collect the most recent set of tweets related to one company at any point in time and provide an aggregate binary classification of the set with a confidence rating. The classification and confidence value will provide a heuristic for potential investments. We may augment this heuristic by incorporating recent trends in stock prices and/or Twitter sentiment.</p>
 
 <h3>Students</h3>
 
-<p>Daniel Stiner, senior, Computer Engineering (<a href="https://github.com/danstiner" class="user-mention">@danstiner</a>)
-Brandon Maxwell, junior, Computer Science (<a href="https://github.com/bmaxwell921" class="user-mention">@bmaxwell921</a>)
-Curtis Ullerich, senior, Computer Engineering (<a href="https://github.com/curtisullerich" class="user-mention">@curtisullerich</a>) </p>
-
-<h3>Summary of Goals</h3>
+<ul>
+<li>Daniel Stiner, senior, Computer Engineering (<a href="https://github.com/danstiner" class="user-mention">@danstiner</a>)<br>
+</li>
+<li>Brandon Maxwell, junior, Computer Science (<a href="https://github.com/bmaxwell921" class="user-mention">@bmaxwell921</a>)<br>
+</li>
+<li>Curtis Ullerich, senior, Computer Engineering (<a href="https://github.com/curtisullerich" class="user-mention">@curtisullerich</a>)<br>
+</li>
+</ul><h3>Summary of Goals</h3>
 
 <ol>
 <li>Accurately classify the topicality of a tweet with respect to a particular company</li>
@@ -67,48 +63,36 @@ Curtis Ullerich, senior, Computer Engineering (<a href="https://github.com/curti
 <li>Make lucrative buy-sell-hold decisions using these correlations</li>
 </ol><h3>Basic Approach</h3>
 
-<p><strong>Develop classifiers for both sentiment and company-topicality</strong>
-All machine learning is done using the Mallet library developed at the University of Massachusetts. We are using an existing corpus to bootstrap our sentiment classifier. We created a very small corpus of company-topical tweets by scraping the Twitter live stream based on keywords and verifying topicality by manual analysis. We trained a Mallet classifier for each domain, specialized to accept Twitter's native JSON format for tweets for classifying new instances. We have been collecting (hundreds of thousands of) tweets in a database to use as our corpus. We developed a basic web interface to efficiently human-verify a large number of tweets classified by our bootstrapped model. As more human-verified instances are added to the corpora, the accuracy of our models improves over time. </p>
+<p><strong>Develop classifiers for both sentiment and company-topicality</strong><br>
+All machine learning is done using the Mallet library developed at the University of Massachusetts. We are using an existing corpus to bootstrap our sentiment classifier. We created a very small corpus of company-topical tweets by scraping the Twitter live stream based on keywords and verifying topicality by manual analysis. We trained a Mallet classifier for each domain, specialized to accept Twitter's native JSON format for tweets for classifying new instances. We have been collecting (hundreds of thousands of) tweets in a database to use as our corpus. We developed a basic web interface to efficiently human-verify a large number of tweets classified by our bootstrapped model. As more human-verified instances are added to the corpora, the accuracy of our models improves over time.   </p>
 
-<p><strong>Develop web interface for tracking sentiment and volume of tweets</strong>
-We plan to filter the Twitter live stream for all tweets about the following companies: </p>
-
-<blockquote>
-<p>Amazon  Boeing  Cerner  Coke  Costco  Dollar Tree  eBay  Ford  Garmin  Google  HyVee  Microsoft  Monsanto Netflix  Starbucks  TravelZoo  Verizon  Walmart  Xerox
+<p><strong>Develop web interface for tracking sentiment and volume of tweets</strong><br>
+We plan to filter the Twitter live stream for all tweets about the following companies:<br><em>Amazon  Boeing  Cerner  Coke  Costco  Dollar Tree  eBay  Ford  Garmin  Google  HyVee  Microsoft  Monsanto Netflix  Starbucks  Travel Zoo  Verizon  Walmart  Xerox</em><br>
 "About" here is as classified by our models. We will classify each tweet's sentiment and store the statistics for 6-hour intervals. We will provide an interface for viewing this sentiment data graphically over time, as compared to stock market prices and the volume of tweets about each company.</p>
-</blockquote>
 
-<p><strong>Develop decision-making system for buy-sell-hold'ing stocks</strong>
-Based on the aggregated data, we will determine the buy-sell-hold decision that maximizes the likelihood of profiting.</p>
+<p><strong>Develop decision-making system for buy-sell-hold'ing stocks</strong><br>
+Based on the aggregated data, we will determine the buy-sell-hold decision that maximizes the likelihood of profiting.  </p>
 
 <h3>Anticipated Results</h3>
 
-<p>We don't expect correlations to exist for all companies. Because of the tendency of twitter users to be tech-friendly and young, the companies about which they tweet and their attitudes toward them will be varied. Additionally, the sheer volume of tweets about massive companies like Google and Microsoft vastly overshadows the number of tweets about Garmin (for instance). We expect to find useful correlations for a particular profile of companies. The profitability of our decision process is easily verified using past data, though it will take time to accumulate enough data for this to be a solid recommendation.</p>
+<p>We don't expect correlations to exist for all companies. Because of the tendency of twitter users to be tech-friendly and young, the companies about which they tweet and their attitudes toward them will be varied. Additionally, the sheer volume of tweets about massive companies like Google and Microsoft vastly overshadows the number of tweets about Garmin (for instance). We expect to find useful correlations for a particular profile of companies. The profitability of our decision process is easily verified using past data, though it will take time to accumulate enough data for this to be a solid recommendation.  </p>
 
 <h3>Bibliography</h3>
 
-<p><a href="http://www.mendeley.com/research/genetic-based-stock-selection-model-using-investor-sentiment-indicators">http://www.mendeley.com/research/genetic-based-stock-selection-model-using-investor-sentiment-indicators</a>
+<p><a href="http://www.mendeley.com/research/genetic-based-stock-selection-model-using-investor-sentiment-indicators">http://www.mendeley.com/research/genetic-based-stock-selection-model-using-investor-sentiment-indicators</a><br>
 Ruiz and Hristidis, 2012: <a href="http://www.cs.ucr.edu/%7Evagelis/publications/wsdm2012-microblog-financial.pdf">http://www.cs.ucr.edu/~vagelis/publications/wsdm2012-microblog-financial.pdf</a></p>
-        </article>
-      </div>
+      </section>
     </div>
-    <footer>
-      <div class="owner">
-      <p><a href="https://github.com/curtisullerich" class="avatar"><img src="https://secure.gravatar.com/avatar/c2546b3764780e0c6c38cdf35b4f120a?s=30&amp;d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="48" height="48"/></a> <a href="https://github.com/curtisullerich">curtisullerich</a> maintains <a href="https://github.com/curtisullerich/twittertrader">Twitter Trader</a></p>
 
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Twitter Trader maintained by <a href="https://github.com/curtisullerich">curtisullerich</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
 
-      </div>
-      <div class="creds">
-        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="http://twitter.com/jonrohan/">Jon Rohan</a></small>
-      </div>
-    </footer>
-  </div>
-  <div class="current-section">
-    <a href="#top">Scroll to top</a>
-    <a href="https://github.com/curtisullerich/twittertrader/tarball/master" class="tar">tar</a><a href="https://github.com/curtisullerich/twittertrader/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
-    <p class="name"></p>
-  </div>
+    
 
-  
-</body>
+  </body>
 </html>
