@@ -12,7 +12,7 @@
   <script type="text/javascript" src="javascripts/script.js"></script>
 
   <title>Twitter Trader</title>
-  <meta name="description" content="Making bank from your tweets since 2012">
+  <meta name="description" content="Making bank from your tweets since 2012.">
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
@@ -25,7 +25,7 @@
       <h1 class="title">Twitter Trader</h1>
     </header>
     <div id="container">
-      <p class="tagline">Making bank from your tweets since 2012</p>
+      <p class="tagline">Making bank from your tweets since 2012.</p>
       <div id="main" role="main">
         <div class="download-bar">
         <div class="inner">
@@ -47,6 +47,11 @@
 
 <p>Create a web page for your project, including a brief summary of the goals of the project, the basic approach to be followed, and anticipated results along with the relevant bibliography, and email the URL to the instructor and the TA by November 09, 2012.</p>
 
+<h3>Project Proposal</h3>
+
+<p><strong>Stock market trading using Twitter sentiment as heuristic</strong>
+Twitter is a popular source for data mining due to its massive scale and inclusivity of current trends. Similar studies into the correlation of overall Twitter sentiment (with respect to positivity) to the Dow Jones Industrial Average have been conducted before (Ruiz and Hristidis, 2012). We propose using real-time Twitter sentiment ratings of specific companies to determine buy-sell-hold actions of small, short-term investments. We will develop a system to collect the most recent set of tweets related to one company at any point in time and provide an aggregate binary classification of the set with a confidence rating. The classification and confidence value will provide a heuristic for potential investments. We may augment this heuristic by incorporating recent trends in stock prices and/or Twitter sentiment.</p>
+
 <h3>Students</h3>
 
 <p>Daniel Stiner, senior, Computer Engineering (<a href="https://github.com/danstiner" class="user-mention">@danstiner</a>)
@@ -55,11 +60,35 @@ Curtis Ullerich, senior, Computer Engineering (<a href="https://github.com/curti
 
 <h3>Summary of Goals</h3>
 
-<h3>Basic Approach</h3>
+<ol>
+<li>Accurately classify the topicality of a tweet with respect to a particular company</li>
+<li>Accurately classify the sentiment of a tweet in the categories of positive, negative, neutral, and irrelevant</li>
+<li>Discover a correlation between sentiment of tweets about a particular company and the stock price of that company in the near future</li>
+<li>Make lucrative buy-sell-hold decisions using these correlations</li>
+</ol><h3>Basic Approach</h3>
+
+<p><strong>Develop classifiers for both sentiment and company-topicality</strong>
+All machine learning is done using the Mallet library developed at the University of Massachusetts. We are using an existing corpus to bootstrap our sentiment classifier. We created a very small corpus of company-topical tweets by scraping the Twitter live stream based on keywords and verifying topicality by manual analysis. We trained a Mallet classifier for each domain, specialized to accept Twitter's native JSON format for tweets for classifying new instances. We have been collecting (hundreds of thousands of) tweets in a database to use as our corpus. We developed a basic web interface to efficiently human-verify a large number of tweets classified by our bootstrapped model. As more human-verified instances are added to the corpora, the accuracy of our models improves over time. </p>
+
+<p><strong>Develop web interface for tracking sentiment and volume of tweets</strong>
+We plan to filter the Twitter live stream for all tweets about the following companies: </p>
+
+<blockquote>
+<p>Amazon  Boeing  Cerner  Coke  Costco  Dollar Tree  eBay  Ford  Garmin  Google  HyVee  Microsoft  Monsanto Netflix  Starbucks  TravelZoo  Verizon  Walmart  Xerox
+"About" here is as classified by our models. We will classify each tweet's sentiment and store the statistics for 6-hour intervals. We will provide an interface for viewing this sentiment data graphically over time, as compared to stock market prices and the volume of tweets about each company.</p>
+</blockquote>
+
+<p><strong>Develop decision-making system for buy-sell-hold'ing stocks</strong>
+Based on the aggregated data, we will determine the buy-sell-hold decision that maximizes the likelihood of profiting.</p>
 
 <h3>Anticipated Results</h3>
 
+<p>We don't expect correlations to exist for all companies. Because of the tendency of twitter users to be tech-friendly and young, the companies about which they tweet and their attitudes toward them will be varied. Additionally, the sheer volume of tweets about massive companies like Google and Microsoft vastly overshadows the number of tweets about Garmin (for instance). We expect to find useful correlations for a particular profile of companies. The profitability of our decision process is easily verified using past data, though it will take time to accumulate enough data for this to be a solid recommendation.</p>
+
 <h3>Bibliography</h3>
+
+<p><a href="http://www.mendeley.com/research/genetic-based-stock-selection-model-using-investor-sentiment-indicators">http://www.mendeley.com/research/genetic-based-stock-selection-model-using-investor-sentiment-indicators</a>
+Ruiz and Hristidis, 2012: <a href="http://www.cs.ucr.edu/%7Evagelis/publications/wsdm2012-microblog-financial.pdf">http://www.cs.ucr.edu/~vagelis/publications/wsdm2012-microblog-financial.pdf</a></p>
         </article>
       </div>
     </div>
