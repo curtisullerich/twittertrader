@@ -16,6 +16,5 @@ public class TweetInstance extends Instance {
 	public TweetInstance(String source) {
 		//Data, target, name, source
 		super("JSON", "", "Tweet", source);
-
 	}
 }
