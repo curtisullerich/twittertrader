@@ -44,6 +44,7 @@ app.get('/', pages.index);
 app.get('/verify', pages.verify);
 
 app.get('/classified/companies', classified.companies);
+app.get('/classified/sentiments', classified.sentiments);
 app.post('/classified', classified.post);
 
 app.get('/verified/sentiment.csv', verified.sentimentcsv);
