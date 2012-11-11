@@ -1,8 +1,10 @@
 package classification;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
 import cc.mallet.classify.Classification;
@@ -22,8 +24,19 @@ public class Classify {
 		// Classifier classifier = (Classifier) ois.readObject();
 		// ois.close();
 		Classifier companyClassifier = ModelTester.getCompanyClassifier();
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(
+				new File("../companyClassifer3.mallet")));
+		oos.writeObject(companyClassifier);
+		oos.close();
+
 		Classifier sentimentClassifier = ModelTester
 				.getBestSentimentClassifier();
+		ObjectOutputStream oos2 = new ObjectOutputStream(new FileOutputStream(
+				new File("../sentimentClassifer3.mallet")));
+		oos2.writeObject(sentimentClassifier);
+		oos2.close();
+		System.exit(0);
+
 		FileWriter out = new FileWriter(new File(
 				"../corpus/newclassifications4.txt"));
 

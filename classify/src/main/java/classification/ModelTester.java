@@ -242,6 +242,7 @@ public class ModelTester {
 		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
 		// pipeList.add(new PrintInput());
 		pipe.add(new Input2CharSequence("UTF-8"));
+		pipe.add(new TweetPipe());
 		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
 		pipe.add(new CharSequence2TokenSequence(tokenPattern));
 		int[] sizes = { 1, 2, 3, 4, 5 };
