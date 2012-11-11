@@ -22,14 +22,13 @@ $.getJSON(endpoint, function(data, status) {
   $("#name").text(tweet.user.screen_name);
   $("#raw").text(JSON.stringify(data));
   $("#id_str").val(tweet.id_str);
-  ${"#company").text(tweet.company);
+  $("#company").text(tweet.company);
   
 });
 
 
-$('#body').keyDown(function(e) {
-
-  if(e.which == 121) { // When key pressed is "y" key. 
+$('#body').keydown(function(e) {
+  if(e.which == 89) { // When key pressed is "y" key. 
     $.post("/verified", {
       'id_str':tweet.id_str,
       '_id':tweet._id,
@@ -37,7 +36,7 @@ $('#body').keyDown(function(e) {
       'company':tweet.company
       }, function() { window.location.reload(true); 
     });
-  } else if(e.which == 110) { // When key pressed is "n" key. 
+  } else if(e.which == 78) { // When key pressed is "n" key. 
     $.post("/classified/unclassify", {
       'id_str':tweet.id_str,
       '_id':tweet._id,
