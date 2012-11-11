@@ -8,10 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import cc.mallet.classify.Classification;
-import cc.mallet.classify.Classifier;
-import cc.mallet.types.Label;
-
 public class CompanyExtractor {
 	public static void main(String... args) throws IOException,
 			ClassNotFoundException {

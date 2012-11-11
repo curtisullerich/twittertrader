@@ -7,7 +7,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -31,13 +33,17 @@ import cc.mallet.util.Randoms;
 public class ModelTester {
 	public static void main(String[] args) throws IOException {
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+		Date date = new Date();
+		String stamp = sdf.format(date);
+
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(
-				new File("../companyModel.mallet")));
+				new File("../companyModel" + stamp + ".mallet")));
 		oos.writeObject(getCompanyClassifier());
 		oos.close();
 		ObjectOutputStream oos2 = new ObjectOutputStream(new FileOutputStream(
-				new File("../sentimentModel.mallet")));
-		oos2.writeObject(getCompanyClassifier());
+				new File("../sentimentModel" + stamp + ".mallet")));
+		oos2.writeObject(getBestSentimentClassifier());
 		oos2.close();
 
 		System.exit(1);
