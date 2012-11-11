@@ -1,5 +1,9 @@
 package classification;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import model.TweetInstance;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
@@ -39,6 +43,19 @@ public class TweetPipe extends Pipe {
 			return tweetI;
 		}
 	}
+	
+	@Override
+	public Iterator<Instance> newIteratorFrom(Iterator<Instance> instances) {
+		List<Instance> classifiedInstances = new ArrayList<Instance>();
+		
+		while(instances.hasNext()) {
+			Instance next = instances.next();
+			
+			classifiedInstances.add(pipe(next));
+		}
+		return classifiedInstances.iterator();
+	}
+	
 
 	private String getTweetText(String source) {
 		JsonParser parser = new JsonParser();
