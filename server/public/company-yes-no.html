@@ -5,7 +5,17 @@
 <body id='body'>
 <script>
 
-var endpoint = "/unclassified/random/1";
+var endpoint = "/classified/company/boeing/confidence/0:1/count/1";
+
+if(location.hash) {
+  endpoint = location.hash.substring(1);
+}
+location.hash = endpoint;
+
+$(window).ready(function() {
+  $("#endpoint").text(endpoint);
+});
+
 /*
 $(window).ready(function() {
   $.each(companies, function(i, value) {
@@ -49,7 +59,7 @@ $('#body').keydown(function(e) {
 </script>
 
 <p>
-  Endpoint: /unclassified/random
+  Endpoint: <span id="endpoint">/unclassified/random</span>
 </p>
 
 <p>
