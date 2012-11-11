@@ -38,7 +38,7 @@ $.getJSON(endpoint, function(data, status) {
 
 
 $('#body').keydown(function(e) {
-  if(e.which == 89) { // When key pressed is "y" key. 
+  if(e.which == 89 || e.which == 39) { // When key pressed is "y" or right arrow  
     $.post("/verified", {
       'id_str':tweet.id_str,
       '_id':tweet._id,
@@ -46,7 +46,7 @@ $('#body').keydown(function(e) {
       'company':tweet.company
       }, function() { window.location.reload(true); 
     });
-  } else if(e.which == 78) { // When key pressed is "n" key. 
+  } else if(e.which == 78 || e.which == 37) { // When key pressed is "n" or left arrow  
     $.post("/classified/unclassify", {
       'id_str':tweet.id_str,
       '_id':tweet._id,
