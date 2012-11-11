@@ -18,7 +18,7 @@ public class Classify {
 	}
 
 	public static void classify() throws IOException, ClassNotFoundException {
-		Scanner s = new Scanner(new File("../localcorpora/toclassify4.csv"));
+		Scanner s = new Scanner(new File("../localcorpora/classificationset/new0.json"));
 		// ObjectInputStream ois = new ObjectInputStream(new
 		// FileInputStream(""));
 		// Classifier classifier = (Classifier) ois.readObject();
@@ -38,7 +38,7 @@ public class Classify {
 		System.exit(0);
 
 		FileWriter out = new FileWriter(new File(
-				"../corpus/newclassifications4.txt"));
+				"../localcorpora/classificationset/classified0.txt"));
 
 		while (s.hasNextLine()) {
 			String nextline = s.nextLine();
