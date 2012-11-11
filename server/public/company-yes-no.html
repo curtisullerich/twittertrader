@@ -1,0 +1,75 @@
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body id='body'>
+<script>
+
+var endpoint = "/unclassified/random/1";
+/*
+$(window).ready(function() {
+  $.each(companies, function(i, value) {
+    $("#companies").append($("<option>"+value+"</option>"));
+  });
+});*/
+
+var tweet = {};
+
+$.getJSON(endpoint, function(data, status) {
+  tweet = data[0];
+
+  $("#text").text(tweet.text);
+  $("#name").text(tweet.user.screen_name);
+  $("#raw").text(JSON.stringify(data));
+  $("#id_str").val(tweet.id_str);
+  ${"#company").text(tweet.company);
+  
+});
+
+
+$('#body').keyDown(function(e) {
+
+  if(e.which == 121) { // When key pressed is "y" key. 
+    $.post("/verified", {
+      'id_str':tweet.id_str,
+      '_id':tweet._id,
+      'type': "single",
+      'company':tweet.company
+      }, function() { window.location.reload(true); 
+    });
+  } else if(e.which == 110) { // When key pressed is "n" key. 
+    $.post("/classified/unclassify", {
+      'id_str':tweet.id_str,
+      '_id':tweet._id,
+      'type': 'single',
+      'field':'company'
+      }, function() { window.location.reload(true); 
+    });
+  }      
+});
+</script>
+
+<p>
+  Endpoint: /unclassified/random
+</p>
+
+<p>
+  <div id="text"></div>
+</p>
+
+<p>
+  By: <div id="name"></div>
+</p>
+
+<br>
+<p>
+  <b>Classified as: <div id="company"></div></b>
+  <br>
+  Press 'y' or 'n' for yes or no.
+</p>
+
+<hr/>
+<div id="raw"> </div>
+
+</body>
+</html>
