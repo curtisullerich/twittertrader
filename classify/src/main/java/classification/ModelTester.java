@@ -1,11 +1,13 @@
 package classification;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -119,6 +121,15 @@ public class ModelTester {
 			System.out.println("Average rank: " + trial.getAverageRank());
 			System.out.println("~~~~~~~~");
 		}
+	}
+
+	public static void jsonTest() throws FileNotFoundException, IOException,
+			ClassNotFoundException {
+
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream("../companyModel20121111040918.mallet"));
+		Classifier classifier = (Classifier) ois.readObject();
+		ois.close();
+
 	}
 
 	public static Classifier getBestSentimentClassifier()
@@ -247,8 +258,8 @@ public class ModelTester {
 	private static SerialPipes getPipe4() {
 		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
 		// pipeList.add(new PrintInput());
-		pipe.add(new Input2CharSequence("UTF-8"));
 		pipe.add(new TweetPipe());
+		pipe.add(new Input2CharSequence("UTF-8"));
 		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
 		pipe.add(new CharSequence2TokenSequence(tokenPattern));
 		int[] sizes = { 1, 2, 3, 4, 5 };
