@@ -18,6 +18,11 @@ exports.writeJSON = function(res, tweets) {
 exports.writeCSV = function(res, tweets, field) {
   res.writeHead(200, {'Content-Type': 'text/csv'});
 
+  if(tweets.cursor == null) {
+    res.end();
+    return;
+  }
+
   var stream = tweets.cursor.stream();
 
   stream.on('data', function(tweet) {

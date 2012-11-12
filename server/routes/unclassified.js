@@ -3,19 +3,7 @@ var writeJSON = require('../io').writeJSON;
 var nconf = require('../config').nconf;
 var writeCSV = require('../io').writeCSV;
 
-/*
- * GET verified/company
- */
 
-exports.company = {
-  id: function(req, res) {
-    var tweets = tweetsdb.find({classification:"verified", company:req.params.id.toLowerCase()});
-    writeJSON(res, tweets);
-  },
-  id_timestamp: function(req, res) {
-    res.send("response");
-  }
-}
 
 
 /*
@@ -23,19 +11,8 @@ exports.company = {
  */
 
 exports.random = function(req, res){
-  res.writeHead(200, {'Content-Type': 'application/json'});
-  res.write('[');
-  var tweets = tweetsdb.find({classification:{$exists:false}, random:{$gte:Math.random()}}).limit(parseInt(req.params.count));
-
-  tweets.toArray(function(err, tweetArr) {
-    var i=0;
-    for(; i<tweetArr.length-1; i++) {
-      res.write(JSON.stringify(tweetArr[i]));
-      res.write(',');
-    }
-    res.write(JSON.stringify(tweetArr[i]));
-    res.end(']');
-  });
+ var tweets = tweetsdb.find({classification:{$exists:false}, random:{$gte:Math.random()}}).limit(parseInt(req.params.count));
+  writeJSON(res, tweets);
 };
 
 /*
