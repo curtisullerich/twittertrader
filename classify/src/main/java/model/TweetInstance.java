@@ -1,5 +1,7 @@
 package model;
 
+import cc.mallet.types.Alphabet;
+import cc.mallet.types.FeatureVector;
 import cc.mallet.types.Instance;
 
 public class TweetInstance extends Instance {
@@ -15,6 +17,12 @@ public class TweetInstance extends Instance {
 	 */
 	public TweetInstance(String source) {
 		//Data, target, name, source
-		super("JSON", "", "Tweet", source);
+		super(new FeatureVector(new Alphabet(), new double[] {}), "", "Tweet", source);
+	}
+	
+	@Override
+	public String toString() {
+		//Just returns the Json of this instance
+		return (String) source;
 	}
 }
