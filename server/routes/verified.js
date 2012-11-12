@@ -8,13 +8,22 @@ var writeCSV = require('../io').writeCSV;
 
 exports.sentiment = {
   kind: function(req, res) {
+  },
+  all : function(req, res) {
+    var tweets = tweetsdb.find({sentimentClassification:{$gt:1}});
+    writeJSON(res, tweets);
   }
 };
 
 exports.sentimentcsv = function(req, res) {
-  var tweets = tweetsdb.find({classification:"verified", sentiment:{$exists:true}});
+  var tweets = tweetsdb.find({sentimentClassification:{$gt:1}}).limit(1000);
   writeCSV(res, tweets, "sentiment");
 };
+
+exports.companycsv = function(req, res) {
+  var tweets = tweetsdb.find({classification:"verified", company:{$exists:true}}).limit(10000);
+  writeCSV(res, tweets, "company");
+}
 
 exports.sentiments = function(req, res) {
 
@@ -48,7 +57,7 @@ exports.companies = function(req, res) {
   var companies = nconf.get('companies');
   companies.forEach(function(company) {
     company = company.toLowerCase();
-    tweetsdb.find({company:company, classification:"verified"}).count(function(err,count) {
+    tweetsdb.find({company:company, companyConfidence:{$gte:2}}).count(function(err,count) {
       companyCounts[company] = count;
       done += 1;
 
@@ -72,11 +81,15 @@ exports.post = function(req, res){
 
     tweetsdb.findOne({'id_str' : id}, function(err, tweet) {
 
-      if(company)
+      if(company) {
         tweet.company = company.toLowerCase();
+        tweet.companyConfidence = 2;
+      }
 
-      if(sentiment)
+      if(sentiment) {
         tweet.sentiment = sentiment;
+        tweet.sentimentConfidence = 2;
+      }
 
       tweet.classification = "verified";
 

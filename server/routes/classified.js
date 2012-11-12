@@ -12,6 +12,94 @@ exports.post = function(req, res){
   res.send("respond with a resource");
 };
 
+/*
+ * POST unclassify
+ */
+
+exports.post_unclassify = function(req, res){
+
+  if(req.body.type == 'single') {
+    var id = req.body.id_str;
+    var field = req.body.field;
+
+    tweetsdb.findOne({'id_str' : id}, function(err, tweet) {
+
+      if(field == 'company') {
+        delete tweet.company;
+        delete tweet.companyConfidence;
+      }
+      else if(field == 'sentiment') {
+        delete tweet.sentiment;
+        delete tweet.sentimentConfidence;
+      }
+
+      if(!tweet['company'] && !tweet['sentiment'])
+        delete tweet.classification;
+
+      tweetsdb.save(tweet);
+
+      res.send(JSON.stringify({success:"true"}));
+
+    });
+  }
+};
+
+exports.company_random = function(req, res) {
+	var confidence = req.params.confidence;
+	var count = parseInt(req.params.count);
+
+	var lowerConf = 0.0;
+        var upperConf = 1.0;
+
+	if(confidence[0] == '<') {
+		upperConf = parseFloat(confidence);
+	} else if(confidence[0] == '>') {
+		lowerConf = parseFloat(confidence);
+	} else {
+
+		try {
+			var confSplit = confidence.split(":");
+			lowerConf = parseFloat(confSplit[0]);
+			upperConf = parseFloat(confSplit[1]);
+		} catch(e) {
+			res.end("{\"error\":\"Invalid confidence param\"");
+			return;
+	}
+
+	}
+
+	var tweets = tweetsdb.find({random:{$gte:Math.random()}, classification:"classified", companyConfidence:{$gte:lowerConf, $lte:upperConf}}).limit(count);
+	writeJSON(res, tweets);
+};
+
+
+exports.company_confidence = function(req, res) {
+	var confidence = req.params.confidence;
+	var count = parseInt(req.params.count);
+
+	var lowerConf = 0.0;
+        var upperConf = 1.0;
+
+	if(confidence[0] == '<') {
+		upperConf = parseFloat(confidence);
+	} else if(confidence[0] == '>') {
+		lowerConf = parseFloat(confidence);
+	} else {
+
+		try {
+			var confSplit = confidence.split(":");
+			lowerConf = parseFloat(confSplit[0]);
+			upperConf = parseFloat(confSplit[1]);
+		} catch(e) {
+			res.end("{\"error\":\"Invalid confidence param\"");
+			return;
+	}
+
+	}
+
+	var tweets = tweetsdb.find({company:req.params.company, classification:"classified", companyConfidence:{$gte:lowerConf, $lte:upperConf}}).limit(count);
+	writeJSON(res, tweets);
+};
 
 /*
  * GET companies listing.

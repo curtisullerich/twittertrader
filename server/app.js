@@ -45,10 +45,15 @@ app.get('/verify', pages.verify);
 
 app.get('/classified/companies', classified.companies);
 app.get('/classified/sentiments', classified.sentiments);
+app.get('/classified/company/:company/confidence/:confidence/count/:count', classified.company_confidence);
+app.get('/classified/random/company/confidence/:confidence/count/:count', classified.company_random);
 app.post('/classified', classified.post);
+app.post('/classified/unclassify', classified.post_unclassify);
 
 app.get('/verified/sentiment.csv', verified.sentimentcsv);
-app.get('/verified/sentiment', verified.sentiments);
+app.get('/verified/sentiment', verified.sentiment.all);
+app.get('/verified/sentiments', verified.sentiments);
+app.get('/verified/companies.csv', verified.companycsv);
 app.get('/verified/companies', verified.companies);
 app.get('/verified/company/:id', verified.company.id);
 app.get('/verified/sentiment/:kind', verified.sentiment.kind);
