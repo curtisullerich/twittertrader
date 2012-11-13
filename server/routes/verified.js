@@ -20,6 +20,11 @@ exports.sentimentcsv = function(req, res) {
   writeCSV(res, tweets, "sentiment");
 };
 
+exports.companyjson = function(req, res) {
+  var tweets = tweetsdb.find({companyConfidence:{$gt:1}}).limit(parseInt(req.params.count));
+  writeJSON(res, tweets);
+}
+
 exports.companycsv = function(req, res) {
   var tweets = tweetsdb.find({classification:"verified", company:{$exists:true}}).limit(10000);
   writeCSV(res, tweets, "company");
@@ -36,7 +41,7 @@ exports.sentiments = function(req, res) {
 
 exports.company = {
   id: function(req, res) {
-    var tweets = tweetsdb.find({classification:"verified", company:req.params.id.toLowerCase()});
+    var tweets = tweetsdb.find({classification:"verified", company:req.params.id.toLowerCase()}).limit(parseInt(req.params.count));
     writeJSON(res, tweets);
   },
   id_timestamp: function(req, res) {

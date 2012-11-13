@@ -6,11 +6,19 @@
 <script>
 
 var endpoint = "/classified/company/boeing/confidence/0:1/count/1";
+var company;
 
 if(location.hash) {
   endpoint = location.hash.substring(1);
+
+  if(endpoint[0] != '/')
+  {
+    var s = endpoint.indexOf('/');
+    company = endpoint.substring(0, s);
+    endpoint = endpoint.substring(s);
+  }
 }
-location.hash = endpoint;
+else location.hash = endpoint;
 
 $(window).ready(function() {
   $("#endpoint").text(endpoint);
@@ -32,8 +40,9 @@ $.getJSON(endpoint, function(data, status) {
   $("#name").text(tweet.user.screen_name);
   $("#raw").text(JSON.stringify(data));
   $("#id_str").val(tweet.id_str);
+  if(!tweet.company)
+    tweet.company = company;
   $("#company").text(tweet.company);
-  
 });
 
 

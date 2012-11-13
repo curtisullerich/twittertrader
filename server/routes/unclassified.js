@@ -15,6 +15,11 @@ exports.random = function(req, res){
   writeJSON(res, tweets);
 };
 
+exports.random_search = function(req, res) {
+  var tweets = tweetsdb.find({classification:{$exists:false}, random:{$gte:Math.random()}, text:{$regex:req.params.search}}).limit(parseInt(req.params.count));
+  writeJSON(res, tweets);
+};
+
 /*
  * GET random listing.
  */

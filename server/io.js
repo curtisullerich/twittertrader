@@ -3,6 +3,11 @@ exports.writeJSON = function(res, tweets) {
   res.writeHead(200, {'Content-Type': 'application/json'});
   res.write('[');
 
+  if(tweets.cursor == null) {
+    res.end(']');
+    return;
+  }
+
   var stream = tweets.cursor.stream();
 
   stream.on('data', function (tweet) {
