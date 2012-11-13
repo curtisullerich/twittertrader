@@ -259,7 +259,6 @@ public class ModelTester {
 	static SerialPipes getPipe4() {
 		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
 		// pipeList.add(new PrintInput());
-		pipe.add(new TweetPipe());
 		pipe.add(new Input2CharSequence("UTF-8"));
 		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
 		pipe.add(new CharSequence2TokenSequence(tokenPattern));

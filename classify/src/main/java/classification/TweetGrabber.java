@@ -110,7 +110,7 @@ public class TweetGrabber {
 			if (largest == null) {
 				largest = f;
 			}
-			if (f.getName().compareToIgnoreCase(largest.getName()) > 0) {
+			if (f.getName().compareToIgnoreCase(largest.getName()) < 0) {
 				largest = f;
 			}
 		}
@@ -164,11 +164,12 @@ public class TweetGrabber {
 						.getInstancePipe().instanceFrom(ti));
 			} catch (IllegalArgumentException e) {
 				System.out.println("Target: " + ti.getTarget());
-				// System.out.println("Source: " + ti.getSource());
+				System.out.println("Source: " + ti.getSource());
 				System.out.println("Name: " + ti.getName());
 				System.out.println("----------------------------");
 
 			}
+			System.out.println("made it out!");
 			System.out.println("["
 					+ companyC.getLabeling().getBestLabel()
 					+ "]"

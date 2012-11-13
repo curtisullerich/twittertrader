@@ -16,6 +16,9 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 
 import model.TweetInstance;
+import model.TweetJsonIterator;
+import model.TweetJsonIterator.Mode;
+import model.TweetJsonIterator.Type;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
@@ -80,12 +83,16 @@ public class ModelUpdater {
 						+ min;
 				System.out.println("Getting tweets from " + tweeturl);
 				String cur = getJsonFrom(tweeturl).toString();
-				List<TweetInstance> tweets = parseTweetsFromJson(cur, true);
-				for (TweetInstance t : tweets) {
-					if (t.setCompanyTarget()) {
-						il.addThruPipe(t);
-					}
-				}
+				TweetJsonIterator tji = new TweetJsonIterator(cur,
+						Mode.CLASSIFY, Type.COMPANY);
+				il.addThruPipe(tji);
+
+				// List<TweetInstance> tweets = parseTweetsFromJson(cur, true);
+				// for (TweetInstance t : tweets) {
+				// if (t.setCompanyTarget()) {
+				// il.addThruPipe(t);
+				// }
+				// }
 			}
 		}
 		Classifier c = trainer.train(il);
@@ -104,15 +111,15 @@ public class ModelUpdater {
 		oos.close();
 	}
 
-	public StringBuilder getTweetsFromLocal(String path)
-			throws FileNotFoundException {
-		StringBuilder builder = new StringBuilder();
-		Scanner in = new Scanner(new File(path));
-		while (in.hasNextLine()) {
-			builder.append(in.nextLine()).append("\n");
-		}
-		return builder;
-	}
+//	public StringBuilder getTweetsFromLocal(String path)
+//			throws FileNotFoundException {
+//		StringBuilder builder = new StringBuilder();
+//		Scanner in = new Scanner(new File(path));
+//		while (in.hasNextLine()) {
+//			builder.append(in.nextLine()).append("\n");
+//		}
+//		return builder;
+//	}
 
 	private StringBuilder getJsonFrom(String url) throws URISyntaxException,
 			HttpException, IOException {
@@ -133,7 +140,8 @@ public class ModelUpdater {
 		return builder;
 	}
 
-	public static List<TweetInstance> parseTweetsFromJson(String string, boolean setTargets) {
+	public static List<TweetInstance> parseTweetsFromJson(String string,
+			boolean setTargets) {
 		JsonParser parser = new JsonParser();
 
 		// Returns an array of all the json objects
@@ -150,7 +158,7 @@ public class ModelUpdater {
 					ins.setCompanyTarget();
 				}
 				tweets.add(ins);
-				
+
 			}
 		}
 		return tweets;
