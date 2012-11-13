@@ -38,7 +38,7 @@ import com.google.gson.JsonObject;
 
 public class TweetGrabber {
 
-	private static final String defaultTweetUrl = "http://danielstiner.com:9001/unclassified/random/100";
+	private static final String defaultTweetUrl = "http://danielstiner.com:9001/unclassified/random/200";
 	private static final String defaultPostUrl = "http://danielstiner.com:9001/classified/classify";
 
 	private static final String localTweets = "C:/Users/Brandon/Documents/School/ComS572/Project/TweetJSON.txt";
@@ -154,7 +154,7 @@ public class TweetGrabber {
 				largest = f;
 			}
 		}
-		if (largest != null) {
+		if (false){//largest != null) {
 			System.out.println("Using classifier: " + largest.getName());
 			return loadClassifier(largest);
 		} else {
@@ -199,11 +199,11 @@ public class TweetGrabber {
 		HttpPost request = new HttpPost(defaultPostUrl);
 		request.addHeader("content-type", "application/x-json");
 		String tost = jsa.toString();
-		System.out.println(tost);
+	//	System.out.println(tost);
 		StringEntity entity = new StringEntity(tost);
 		request.setEntity(entity);
 		HttpClient client = new DefaultHttpClient();
-	//	HttpResponse response = client.execute(request);
+		// HttpResponse response = client.execute(request);
 		client.getConnectionManager().shutdown();
 	}
 

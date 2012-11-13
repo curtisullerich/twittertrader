@@ -48,7 +48,7 @@ public class ModelTester {
 		oos2.writeObject(getBestSentimentClassifier());
 		oos2.close();
 
-		System.exit(1);
+//		System.exit(1);
 
 		ArrayList<SerialPipes> allPipes = new ArrayList<SerialPipes>();
 		// add all the pipe variations to the list

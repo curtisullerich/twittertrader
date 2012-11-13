@@ -26,7 +26,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import cc.mallet.classify.Classifier;
-import cc.mallet.classify.MaxEntTrainer;
+import cc.mallet.classify.NaiveBayesTrainer;
 import cc.mallet.types.InstanceList;
 
 import com.google.gson.JsonArray;
@@ -78,11 +78,12 @@ public class ModelUpdater {
 		}
 		min = 57;
 		System.out.println("Training with min = " + min + " instances");
-		MaxEntTrainer trainer = new MaxEntTrainer();
+		// MaxEntTrainer trainer = new MaxEntTrainer();
+		NaiveBayesTrainer trainer = new NaiveBayesTrainer();
 		InstanceList il = new InstanceList(ModelTester.getPipe4());
 		int i = 0;
 		for (Entry<String, JsonElement> e : counts.entrySet()) {
-			if (e.getValue().getAsInt() > 0 && i++ > 5) {
+			if (e.getValue().getAsInt() > 0) {
 				String tweeturl = verifiedUrlPre + e.getKey() + verifiedUrlPost
 						+ min;
 				System.out.println("Getting tweets from " + tweeturl);
