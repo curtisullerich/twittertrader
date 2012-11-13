@@ -126,7 +126,8 @@ public class ModelTester {
 	public static void jsonTest() throws FileNotFoundException, IOException,
 			ClassNotFoundException {
 
-		ObjectInputStream ois = new ObjectInputStream(new FileInputStream("../companyModel20121111040918.mallet"));
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(
+				"../companyModel20121111040918.mallet"));
 		Classifier classifier = (Classifier) ois.readObject();
 		ois.close();
 
@@ -255,7 +256,7 @@ public class ModelTester {
 		return new SerialPipes(pipe);
 	}
 
-	private static SerialPipes getPipe4() {
+	static SerialPipes getPipe4() {
 		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
 		// pipeList.add(new PrintInput());
 		pipe.add(new TweetPipe());

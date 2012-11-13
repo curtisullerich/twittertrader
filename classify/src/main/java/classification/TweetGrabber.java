@@ -50,7 +50,8 @@ public class TweetGrabber {
 		// StringBuilder json = getTweetsFromLocal(localTweets);
 		StringBuilder json = getTweetsFrom(defaultTweetUrl);
 
-		List<TweetInstance> tweetList = parseTweetsFromJson(json.toString());
+		List<TweetInstance> tweetList = ModelUpdater.parseTweetsFromJson(
+				json.toString(), true);
 
 		// Classifies the tweets and adds the Labels and values to the
 		// tweetInstance
@@ -90,25 +91,6 @@ public class TweetGrabber {
 		return builder;
 	}
 
-	private List<TweetInstance> parseTweetsFromJson(String string) {
-		JsonParser parser = new JsonParser();
-
-		// Returns an array of all the json objects
-		JsonArray ele = parser.parse(string).getAsJsonArray();
-
-		List<TweetInstance> tweets = new ArrayList<TweetInstance>();
-
-		for (JsonElement e : ele) {
-
-			JsonElement dan = e.getAsJsonObject().get("text");
-			if (dan != null) {
-				tweets.add(new TweetInstance(e));
-			}
-		}
-
-		return tweets;
-	}
-
 	private class Filter implements FilenameFilter {
 		String pattern;
 
@@ -137,7 +119,7 @@ public class TweetGrabber {
 			return loadClassifier(largest);
 		} else {
 			// there was no such file, so create one
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
 			Date date = new Date();
 			String stamp = sdf.format(date);
 
@@ -166,14 +148,30 @@ public class TweetGrabber {
 		Classifier sentimentClassifier = getBest("sentimentModel");
 
 		for (TweetInstance ti : tweetList) {
-			Classification companyC = companyClassifier
-					.classify(companyClassifier.getInstancePipe().instanceFrom(
-							ti));
-			Classification sentimentC = sentimentClassifier
-					.classify(sentimentClassifier.getInstancePipe()
-							.instanceFrom(ti));
 
-			System.out.println(companyC.getLabeling().getBestLabel()
+			// we have to do this or when it does the classification it will see
+			// that there's already a target there and be sad
+			// ti.setTarget(null);
+			System.out.println("Target: " + ti.getTarget());
+			Classification sentimentC = null;
+			Classification companyC = null;
+			try {
+				companyC = companyClassifier
+						.classify(companyClassifier.getInstancePipe()
+								.instanceFrom(ti));
+
+				sentimentC = sentimentClassifier.classify(sentimentClassifier
+						.getInstancePipe().instanceFrom(ti));
+			} catch (IllegalArgumentException e) {
+				System.out.println("Target: " + ti.getTarget());
+				// System.out.println("Source: " + ti.getSource());
+				System.out.println("Name: " + ti.getName());
+				System.out.println("----------------------------");
+
+			}
+			System.out.println("["
+					+ companyC.getLabeling().getBestLabel()
+					+ "]"
 					+ " ("
 					+ companyC.getLabeling().getBestValue()
 					+ ") "
@@ -184,10 +182,10 @@ public class TweetGrabber {
 					+ ((JsonElement) ti.getSource()).getAsJsonObject()
 							.get("text").getAsString());
 			// System.out.println("Data: " + ti.getData());
-			// System.out.println("Target: " + ti.getTarget());
+			System.out.println("Target: " + ti.getTarget());
 			// System.out.println("Source: " + ti.getSource());
-			// System.out.println("Name: " + ti.getName());
-			// System.out.println("----------------------------");
+			System.out.println("Name: " + ti.getName());
+			System.out.println("----------------------------");
 
 		}
 

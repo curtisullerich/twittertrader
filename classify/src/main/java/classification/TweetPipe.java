@@ -39,7 +39,6 @@ public class TweetPipe extends Pipe {
 //			String data = getTweetText((String) tweetI.getSource());
 //
 			tweetI.setData(e.getAsJsonObject().get("text").getAsString());
-
 			return tweetI;
 		}
 	}
