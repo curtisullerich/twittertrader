@@ -12,30 +12,34 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
 
-import model.TweetInstance;
+import model.TweetJsonIterator;
+import model.TweetJsonIterator.Mode;
+import model.TweetJsonIterator.Type;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import cc.mallet.classify.Classification;
 import cc.mallet.classify.Classifier;
+import cc.mallet.types.Instance;
+import cc.mallet.types.InstanceList;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonObject;
 
 public class TweetGrabber {
 
 	private static final String defaultTweetUrl = "http://danielstiner.com:9001/unclassified/random/100";
-	private static final String defaultPostUrl = "";
+	private static final String defaultPostUrl = "http://danielstiner.com:9001/classified/classify";
 
 	private static final String localTweets = "C:/Users/Brandon/Documents/School/ComS572/Project/TweetJSON.txt";
 
@@ -50,14 +54,50 @@ public class TweetGrabber {
 		// StringBuilder json = getTweetsFromLocal(localTweets);
 		StringBuilder json = getTweetsFrom(defaultTweetUrl);
 
-		List<TweetInstance> tweetList = ModelUpdater.parseTweetsFromJson(
-				json.toString(), true);
+		TweetJsonIterator tji = new TweetJsonIterator(json.toString(),
+				Mode.CLASSIFY, Type.UNCLASSIFIED);
+
+		// List<TweetInstance> tweetList = ModelUpdater.parseTweetsFromJson(
+		// json.toString(), true);
 
 		// Classifies the tweets and adds the Labels and values to the
 		// tweetInstance
-		classifyTweets(tweetList);
+		InstanceList il = new InstanceList(ModelTester.getPipe4());
+		Classifier companyClassifier = getBest("companyModel");
+		Classifier sentimentClassifier = getBest("sentimentModel");
+		il.addThruPipe(tji);
+		JsonArray jsa = new JsonArray();
+		for (Instance i : il) {
+			Classification cc = companyClassifier.classify(i);
+			Classification sc = sentimentClassifier.classify(i);
+			JsonObject jse = new JsonObject();
+			jse.addProperty("id_str", (String) i.getName());
+			jse.addProperty("company", cc.getLabeling().getBestLabel()
+					.toString());
+			jse.addProperty("sentiment", sc.getLabeling().getBestLabel()
+					.toString());
+			jse.addProperty("companyConfidence", cc.getLabeling()
+					.getBestValue());
+			jse.addProperty("sentimentConfidence", sc.getLabeling()
+					.getBestValue());
+			jse.addProperty("cstamp", getcstamp(false));
+			jsa.add(jse);
+			System.out.println("["
+					+ cc.getLabeling().getBestLabel()
+					+ "]"
+					+ " ("
+					+ cc.getLabeling().getBestValue()
+					+ ") ["
+					+ sc.getLabeling().getBestLabel()
+					+ "]"
+					+ " ("
+					+ sc.getLabeling().getBestValue()
+					+ ") "
+					+ ((JsonElement) cc.getInstance().getSource())
+							.getAsJsonObject().get("text").getAsString());
+		}
+		writeTweetsToServer(jsa);
 
-		writeTweetsToServer(tweetList);
 	}
 
 	public StringBuilder getTweetsFromLocal(String file)
@@ -110,7 +150,7 @@ public class TweetGrabber {
 			if (largest == null) {
 				largest = f;
 			}
-			if (f.getName().compareToIgnoreCase(largest.getName()) < 0) {
+			if (f.getName().compareToIgnoreCase(largest.getName()) > 0) {
 				largest = f;
 			}
 		}
@@ -119,13 +159,10 @@ public class TweetGrabber {
 			return loadClassifier(largest);
 		} else {
 			// there was no such file, so create one
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-			Date date = new Date();
-			String stamp = sdf.format(date);
 
 			ObjectOutputStream oos = new ObjectOutputStream(
-					new FileOutputStream(new File("../" + pattern + stamp
-							+ ".mallet")));
+					new FileOutputStream(new File("../" + pattern
+							+ getcstamp(true) + ".mallet")));
 
 			Classifier c = null;
 			if (pattern.equals("companyModel")) {
@@ -142,91 +179,32 @@ public class TweetGrabber {
 		}
 	}
 
-	private void classifyTweets(List<TweetInstance> tweetList)
-			throws IOException, ClassNotFoundException {
-		Classifier companyClassifier = getBest("companyModel");
-		Classifier sentimentClassifier = getBest("sentimentModel");
-
-		for (TweetInstance ti : tweetList) {
-
-			// we have to do this or when it does the classification it will see
-			// that there's already a target there and be sad
-			// ti.setTarget(null);
-			System.out.println("Target: " + ti.getTarget());
-			Classification sentimentC = null;
-			Classification companyC = null;
-			try {
-				companyC = companyClassifier
-						.classify(companyClassifier.getInstancePipe()
-								.instanceFrom(ti));
-
-				sentimentC = sentimentClassifier.classify(sentimentClassifier
-						.getInstancePipe().instanceFrom(ti));
-			} catch (IllegalArgumentException e) {
-				System.out.println("Target: " + ti.getTarget());
-				System.out.println("Source: " + ti.getSource());
-				System.out.println("Name: " + ti.getName());
-				System.out.println("----------------------------");
-
-			}
-			System.out.println("made it out!");
-			System.out.println("["
-					+ companyC.getLabeling().getBestLabel()
-					+ "]"
-					+ " ("
-					+ companyC.getLabeling().getBestValue()
-					+ ") "
-					+ sentimentC.getLabeling().getBestLabel()
-					+ " ("
-					+ sentimentC.getLabeling().getBestValue()
-					+ ") "
-					+ ((JsonElement) ti.getSource()).getAsJsonObject()
-							.get("text").getAsString());
-			// System.out.println("Data: " + ti.getData());
-			System.out.println("Target: " + ti.getTarget());
-			// System.out.println("Source: " + ti.getSource());
-			System.out.println("Name: " + ti.getName());
-			System.out.println("----------------------------");
-
+	private String getcstamp(boolean pretty) {
+		if (pretty) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+			Date date = new Date();
+			String stamp = sdf.format(date);
+			return stamp;
+		} else {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+			Date date = new Date();
+			String stamp = sdf.format(date);
+			return stamp;
 		}
-
-		// Classification[] companyClassifications = companyClassifier
-		// .classify(tweetList.toArray(new TweetInstance[] {}));
-		// Classification[] sentimentClassifications = sentimentClassifier
-		// .classify(tweetList.toArray(new TweetInstance[] {}));
-		//
-		// for (int i = 0; i < tweetList.size(); i++) {
-		// Label companyLabel = companyClassifications[i].getLabeling()
-		// .getBestLabel();
-		// double companyValue = companyClassifications[i].getLabeling()
-		// .getBestValue();
-		//
-		// Label sentimentLabel = sentimentClassifications[i].getLabeling()
-		// .getBestLabel();
-		// double sentimentValue = sentimentClassifications[i].getLabeling()
-		// .getBestValue();
-		//
-		// TweetInstance cur = tweetList.get(i);
-		//
-		// System.out.println(companyLabel + " (" + companyValue + ") "
-		// + sentimentLabel + " (" + sentimentValue + ") ");
-		// System.out.println("Data: " + cur.getData());
-		// System.out.println("Target: " + cur.getTarget());
-		// System.out.println("Source: " + cur.getSource());
-		// System.out.println("Name: " + cur.getName());
-		// System.out.println("----------------------------");
-		// // TODO possibly make the TweetInstance's source a JSON object so we
-		// // can call add on it
-		// // cur.add("companyLabel", companyLabel);
-		// // cur.add("companyValue", companyValue);
-		// // cur.add("sentimentLabel", sentimentLabel);
-		// // cur.add("sentimentValue", sentimentValue);
-		// }
 	}
 
-	private void writeTweetsToServer(List<TweetInstance> tweetList) {
+	private void writeTweetsToServer(JsonArray jsa) throws HttpException,
+			IOException, URISyntaxException {
 		// TODO Auto-generated method stub
-
+		HttpPost request = new HttpPost(defaultPostUrl);
+		request.addHeader("content-type", "application/x-json");
+		String tost = jsa.toString();
+		System.out.println(tost);
+		StringEntity entity = new StringEntity(tost);
+		request.setEntity(entity);
+		HttpClient client = new DefaultHttpClient();
+	//	HttpResponse response = client.execute(request);
+		client.getConnectionManager().shutdown();
 	}
 
 	private Classifier loadClassifier(File file) throws FileNotFoundException,

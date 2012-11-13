@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Scanner;
 
 import model.TweetInstance;
 import model.TweetJsonIterator;
@@ -36,9 +35,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class ModelUpdater {
+
 	public static void main(String... args) throws ClassNotFoundException,
 			URISyntaxException, HttpException, IOException {
-		new ModelUpdater().createModel();
+		new ModelUpdater().createModels();
 	}
 
 	private static final String defaultTweetUrl = "http://danielstiner.com:9001/unclassified/random/100";
@@ -48,16 +48,19 @@ public class ModelUpdater {
 	private static final String localTweets = "C:/Users/Brandon/Documents/School/ComS572/Project/TweetJSON.txt";
 	private static final String verifiedCountsUrl = "http://danielstiner.com:9001/verified/companies";
 
-	public void createModel() throws URISyntaxException, HttpException,
+	public void createModels() throws URISyntaxException, HttpException,
 			IOException, ClassNotFoundException {
-		createNewCompanyModel(defaultTweetUrl);
+		createNewCompanyModel();
+		createNewSentimentModel();
 	}
 
-	public void createNewCompanyModel(String url) throws URISyntaxException,
+	private void createNewSentimentModel() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void createNewCompanyModel() throws URISyntaxException,
 			HttpException, IOException, ClassNotFoundException {
-		// StringBuilder json = getTweetsFrom(url);
-		// StringBuilder json = getTweetsFromLocal(localTweets);
-		StringBuilder json = getJsonFrom(defaultTweetUrl);
 		StringBuilder verifiedCountJson = getJsonFrom(verifiedCountsUrl);
 		JsonParser parser = new JsonParser();
 
@@ -73,26 +76,20 @@ public class ModelUpdater {
 				min = val;
 			}
 		}
+		min = 57;
 		System.out.println("Training with min = " + min + " instances");
 		MaxEntTrainer trainer = new MaxEntTrainer();
 		InstanceList il = new InstanceList(ModelTester.getPipe4());
+		int i = 0;
 		for (Entry<String, JsonElement> e : counts.entrySet()) {
-			if (e.getValue().getAsInt() > 0) {
-
+			if (e.getValue().getAsInt() > 0 && i++ > 5) {
 				String tweeturl = verifiedUrlPre + e.getKey() + verifiedUrlPost
 						+ min;
 				System.out.println("Getting tweets from " + tweeturl);
 				String cur = getJsonFrom(tweeturl).toString();
-				TweetJsonIterator tji = new TweetJsonIterator(cur,
-						Mode.CLASSIFY, Type.COMPANY);
+				TweetJsonIterator tji = new TweetJsonIterator(cur, Mode.TRAIN,
+						Type.COMPANY);
 				il.addThruPipe(tji);
-
-				// List<TweetInstance> tweets = parseTweetsFromJson(cur, true);
-				// for (TweetInstance t : tweets) {
-				// if (t.setCompanyTarget()) {
-				// il.addThruPipe(t);
-				// }
-				// }
 			}
 		}
 		Classifier c = trainer.train(il);
@@ -111,15 +108,15 @@ public class ModelUpdater {
 		oos.close();
 	}
 
-//	public StringBuilder getTweetsFromLocal(String path)
-//			throws FileNotFoundException {
-//		StringBuilder builder = new StringBuilder();
-//		Scanner in = new Scanner(new File(path));
-//		while (in.hasNextLine()) {
-//			builder.append(in.nextLine()).append("\n");
-//		}
-//		return builder;
-//	}
+	// public StringBuilder getTweetsFromLocal(String path)
+	// throws FileNotFoundException {
+	// StringBuilder builder = new StringBuilder();
+	// Scanner in = new Scanner(new File(path));
+	// while (in.hasNextLine()) {
+	// builder.append(in.nextLine()).append("\n");
+	// }
+	// return builder;
+	// }
 
 	private StringBuilder getJsonFrom(String url) throws URISyntaxException,
 			HttpException, IOException {
