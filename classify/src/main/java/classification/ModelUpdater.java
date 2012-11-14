@@ -9,12 +9,9 @@ import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map.Entry;
 
-import model.TweetInstance;
 import model.TweetJsonIterator;
 import model.TweetJsonIterator.Mode;
 import model.TweetJsonIterator.Type;
@@ -29,7 +26,6 @@ import cc.mallet.classify.Classifier;
 import cc.mallet.classify.NaiveBayesTrainer;
 import cc.mallet.types.InstanceList;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -138,27 +134,27 @@ public class ModelUpdater {
 		return builder;
 	}
 
-	public static List<TweetInstance> parseTweetsFromJson(String string,
-			boolean setTargets) {
-		JsonParser parser = new JsonParser();
-
-		// Returns an array of all the json objects
-		JsonArray ele = parser.parse(string).getAsJsonArray();
-
-		List<TweetInstance> tweets = new ArrayList<TweetInstance>();
-
-		for (JsonElement e : ele) {
-
-			JsonElement dan = e.getAsJsonObject().get("text");
-			if (dan != null) {
-				TweetInstance ins = new TweetInstance(e);
-				if (setTargets) {
-					ins.setCompanyTarget();
-				}
-				tweets.add(ins);
-
-			}
-		}
-		return tweets;
-	}
+	// public static List<TweetInstance> parseTweetsFromJson(String string,
+	// boolean setTargets) {
+	// JsonParser parser = new JsonParser();
+	//
+	// // Returns an array of all the json objects
+	// JsonArray ele = parser.parse(string).getAsJsonArray();
+	//
+	// List<TweetInstance> tweets = new ArrayList<TweetInstance>();
+	//
+	// for (JsonElement e : ele) {
+	//
+	// JsonElement dan = e.getAsJsonObject().get("text");
+	// if (dan != null) {
+	// TweetInstance ins = new TweetInstance(e);
+	// if (setTargets) {
+	// ins.setCompanyTarget();
+	// }
+	// tweets.add(ins);
+	//
+	// }
+	// }
+	// return tweets;
+	// }
 }
