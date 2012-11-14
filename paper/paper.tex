@@ -1,0 +1,79 @@
+%File: formatting-instruction.tex
+\documentclass[letterpaper]{article}
+\usepackage{aaai}
+\usepackage{times}
+\usepackage{helvet}
+\usepackage{courier}
+\frenchspacing
+\pdfinfo{
+/Title (Twitter Trader)
+/Subject (AAAI Publications)
+/Author (Curtis Ullerich, Daniel Stiner, Brandon Maxwell)}
+\setcounter{secnumdepth}{0}  
+\begin{document}
+
+\title{Twitter Trader - Correlating \\ Stocks with Twitter Activity}
+\author{
+Curtis Ullerich, Daniel Stiner, Brandon Maxwell\\
+Department of Computer Science and Engineering\\
+Iowa State University
+Ames, Iowa, USA\\
+\{curtisu,stiner,bmaxwell\}@iastate.edu\\
+}
+\maketitle
+\begin{abstract}
+\begin{quote}
+Twitter is a popular source for data mining due to its massive scale and inclusivity of current trends. Similar studies into the correlation of overall Twitter sentiment (with respect to positivity) to the Dow Jones Industrial Average have been conducted before[1]. We propose using real-time Twitter sentiment ratings of specific companies to determine buy-sell-hold actions of small, short-term investments.
+\end{quote}
+\end{abstract}
+
+\noindent We will develop a system to collect the most recent set of tweets related to one company at any point in time and provide an aggregate binary classification of the set with a confidence rating. The classification and confidence value will provide a heuristic for potential investments. We may augment this heuristic by incorporating recent trends in stock prices and/or Twitter sentiment.
+
+Second paragraph.
+
+\section{Introduction}
+
+\subsection{Goals}
+
+\begin{itemize}
+
+\item Accurately classify the topicality of a tweet with respect to a particular company
+\item Accurately classify the sentiment of a tweet in the categories of positive, negative, neutral, and irrelevant
+\item Discover whether a correlation exists between sentiment of tweets about a particular company and the stock price of that company in the near future
+\item Make lucrative buy-sell-hold decisions using these correlations, if they exist
+
+\end{itemize}
+
+\subsection{Anticipated Results}
+Based on prior research by Ruiz and Hristidis[1], we expect to find a small but exploitable correlation between the volume and positivity of tweets about a company, and its stock price one to three days in the future. This is based on a close examination Table 8 from Ruiz and Hristidis which shows not only a significant correlation of 0.12 between activity and stock price the same day for the DEG.-STD, but smaller correlations of 0.10 and 0.07 for one day and two days in the future respectively. At three days the correlation is -0.04 and is no longer significant.
+
+We do not expect these correlations to exist for all companies. Given the tendency of Twitter users to be tech-friendly and young, the companies about which they tweet and their attitudes toward them will be varied. Additionally, the sheer volume of tweets about popular companies like Google and Microsoft have the potential to overshadow the number of tweets about Garmin (for instance) and other companies in our dataset. We do expect to find useful correlations for some profile of companies. The profitability of our decision process is easily verified using past data, though it will take time to accumulate enough data for this to be a solid recommendation. If the discovered correlation is not strong enough to predict future stock price, we will change our analysis to find correlation between Twitter activity and traded volume for the company stocks, a relationship that Ruiz and Hristidis[1] found to have a significantly higher correlation in their dataset than activity and stock price.
+
+\section{Related Work}
+
+\section{System Breakdown}
+
+\subsection{Basic Approach}
+
+\textbf{1) Develop classifiers for both sentiment and company-topicality} \\
+We do all machine learning with the Mallet[2] library developed by the University of Massachusetts. We are using an existing corpus from Sanders Analytics[3] to bootstrap our sentiment classifier. We created a very small corpus (500 total instances) of company-topical tweets by scraping the Twitter live stream based on keywords and verifying topicality by manual analysis. We trained a Mallet Classifier for each domain, specialized to accept Twitter's native JSON tweet format for classifying new instances. We have been collecting (hundreds of thousands of) tweets in a database to use as our corpus. We developed a basic web interface to efficiently human-verify the correct classification a large number of tweets as classified by our bootstrapped model. As we add more human-verified instances to the corpora, the accuracy of our models will improve over time.
+
+\textbf{2) Develop web interface for tracking sentiment and volume of tweets} \\
+We plan to filter the Twitter live stream for all tweets about the following companies:
+
+Amazon Boeing Cerner Coke Costco Dollar Tree eBay Ford Garmin Google HyVee Microsoft Monsanto Netflix Starbucks Travel Zoo Verizon Walmart Xerox
+
+\"About\" here is as classified by our models. We will classify each tweet's sentiment and store the statistics for 6-hour intervals. We will provide an interface for viewing this sentiment data graphically over time, as compared to stock market prices and the volume of tweets about each company.
+
+\textbf{3) Develop decision-making system for buy-sell-holding stocks}\\
+Based on the aggregated data, we will determine the buy-sell-hold decision that maximizes the likelihood of profiting.
+
+\section{Application}
+
+\section{Results}
+
+
+\section{ Acknowledgments}
+Blah blah.
+
+\end{document}
