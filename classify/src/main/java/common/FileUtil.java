@@ -28,18 +28,17 @@ public class FileUtil {
 	public static void saveClassifiertoDisk(Classifier c, String modelType)
 			throws FileNotFoundException, IOException {
 		Date date = new Date();
-		//Since windows doesn't allow ":" in the file name we 
-		//need to check which os it is to know what to save it as
-		//Or maybe just do
-		//String stamp = Constants.UGLY_SDF;
-		String stamp = (isWindowsOS() ? Constants.UGLY_SDF.format(date) : Constants.PRETTY_SDF.format(date));
-		
+		// Since windows doesn't allow ":" in the file name we
+		// need to check which os it is to know what to save it as
+		// Or maybe just do
+		String stamp = Constants.FRIENDLY_SDF.format(date);
+
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(
 				new File("../" + modelType + stamp + ".mallet")));
 		oos.writeObject(c);
 		oos.close();
 	}
-	
+
 	private static boolean isWindowsOS() {
 		String os = System.getProperty("os.name");
 		return os != null ? os.toLowerCase().contains("windows") : false;
@@ -64,23 +63,6 @@ public class FileUtil {
 	}
 
 	/**
-	 * A method to return the most recent classifier found on disk, or null 
-	 * if there is no most recent classifier
-	 * @param modelType
-	 * 					The type of the model you want to load
-	 * @return
-	 * 			A classifier object that was most recently saved, or null
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	public static Classifier loadMostRecentClassifierFromDisk(String modelType)
-			throws FileNotFoundException, IOException, ClassNotFoundException {
-		File mostRecent = getMostRecentFile(modelType);
-		return (mostRecent != null) ? loadClassifierFromDisk(mostRecent) : null;
-	}
-
-	/**
 	 * A method to return the most recently saved file that contains the string
 	 * modelType in the file name
 	 * 
@@ -101,6 +83,48 @@ public class FileUtil {
 		return largest;
 	}
 
+	/**
+	 * This method attempts to load the most recently saved classifier from
+	 * 	disk. If the classifier doesn't exist it creates a new one and saves it.
+	 * @param pattern
+	 * 					The type of classifier to create
+	 * @return
+	 * 			The most recently classifier saved or a new one if none have
+	 * 			been saved yet.
+	 * @throws FileNotFoundException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	public static Classifier loadBestClassifier(String pattern) throws FileNotFoundException,
+			ClassNotFoundException, IOException {
+		// This can also be replaced by
+		// FileUtil.loadMostRecentClassifierFromDisk
+		File largest = FileUtil.getMostRecentFile(pattern);
+		// This can also be replaced by
+		// FileUtil.loadMostRecentClassifierFromDisk
+		if (false) {// largest != null) {
+			System.out.println("Using classifier: " + largest.getName());
+			return FileUtil.loadClassifierFromDisk(largest);
+		} else {
+			// there was no such file, so create one
+
+			Classifier c = null;
+			String modelType = null;
+			if (pattern.equals(Constants.COMPANY_MODEL)) {
+				c = ModelFactory.getCompanyClassifier();
+				modelType = Constants.COMPANY_MODEL;
+
+			}
+			if (pattern.equals(Constants.SENTIMENT_MODEL)) {
+				c = ModelFactory.getBestSentimentClassifier();
+				modelType = Constants.SENTIMENT_MODEL;
+			}
+
+			FileUtil.saveClassifiertoDisk(c, modelType);
+			return c;
+		}
+	}
+
 	private static class Filter implements FilenameFilter {
 		String pattern;
 
@@ -112,13 +136,13 @@ public class FileUtil {
 			return name.contains(pattern);
 		}
 	}
-	
+
 	/**
 	 * A method to read tweets that are saved locally
+	 * 
 	 * @param filename
-	 * 					The filename of the file holding the tweets
-	 * @return
-	 * 			A StringBuilder holding all of the local tweets
+	 *            The filename of the file holding the tweets
+	 * @return A StringBuilder holding all of the local tweets
 	 * @throws FileNotFoundException
 	 */
 	public static StringBuilder getTweetsFromLocal(String filename)

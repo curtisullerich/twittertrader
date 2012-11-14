@@ -57,7 +57,7 @@ public class ServerInteractionsUtil {
 		HttpResponse response = client.execute(getUrl);
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				response.getEntity().getContent(), "UTF-8"));
+				response.getEntity().getContent(), Constants.CHAR_SET));
 		StringBuilder builder = new StringBuilder();
 
 		String in = reader.readLine();

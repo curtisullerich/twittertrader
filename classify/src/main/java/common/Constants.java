@@ -31,6 +31,7 @@ public class Constants {
 	//Date format for saving classifiers
 	public static final SimpleDateFormat PRETTY_SDF = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
 	public static final SimpleDateFormat UGLY_SDF = new SimpleDateFormat("yyyyMMddHHmmss");
+	public static final SimpleDateFormat FRIENDLY_SDF = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 
 	//Misc. constants
 	public static final String CHAR_SET = "UTF-8";
