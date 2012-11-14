@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import common.Constants;
+
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.classify.MaxEntTrainer;
@@ -35,9 +37,9 @@ import cc.mallet.util.Randoms;
 public class ModelTester {
 	public static void main(String[] args) throws IOException {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+		//SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
 		Date date = new Date();
-		String stamp = sdf.format(date);
+		String stamp = Constants.UGLY_SDF.format(date);
 
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(
 				new File("../companyModel" + stamp + ".mallet")));
@@ -48,7 +50,7 @@ public class ModelTester {
 		oos2.writeObject(getBestSentimentClassifier());
 		oos2.close();
 
-		System.exit(1);
+//		System.exit(1);
 
 		ArrayList<SerialPipes> allPipes = new ArrayList<SerialPipes>();
 		// add all the pipe variations to the list
@@ -68,15 +70,15 @@ public class ModelTester {
 		for (SerialPipes pipe : allPipes) {
 			InstanceList instances = new InstanceList(pipe);
 			// CsvIterator reader = new CsvIterator(new FileReader(new File(
-			// "tweets.txt")), "(\\w+)\\s+(\\w+)\\s+(.*)", 3, 2, 1);
+			// "tweets.txt")), Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
 			File file = new File("../corpus/sentiment.txt");
 			File file2 = new File("../corpus/tweets.txt");
 
 			CsvIterator reader = new CsvIterator(new FileReader(file),
-					"(\\w+)\\s+(\\w+)\\s+(.*)", 3, 2, 1);
+					Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
 			instances.addThruPipe(reader);
 			CsvIterator reader2 = new CsvIterator(new FileReader(file2),
-					"(\\w+)\\s+(\\w+)\\s+(.*)", 3, 2, 1);
+					Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
 			instances.addThruPipe(reader2);
 
 			InstanceList[] instanceLists = instances.split(new Randoms(),
@@ -140,10 +142,10 @@ public class ModelTester {
 		File file2 = new File("../corpus/tweets.txt");
 
 		CsvIterator reader = new CsvIterator(new FileReader(file),
-				"(\\w+)\\s+(\\w+)\\s+(.*)", 3, 2, 1);
+				Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
 		instances.addThruPipe(reader);
 		CsvIterator reader2 = new CsvIterator(new FileReader(file2),
-				"(\\w+)\\s+(\\w+)\\s+(.*)", 3, 2, 1);
+				Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
 		instances.addThruPipe(reader2);
 		MaxEntTrainer trainer = new MaxEntTrainer();
 		Classifier classifier = trainer.train(instances);
@@ -155,7 +157,7 @@ public class ModelTester {
 		InstanceList instances = new InstanceList(getPipe4());
 		File file = new File("../corpus/companyCorpus.txt");
 		CsvIterator reader = new CsvIterator(new FileReader(file),
-				"(\\w+)\\s+(\\w+)\\s+(.*)", 3, 2, 1);
+				Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
 		instances.addThruPipe(reader);
 		MaxEntTrainer trainer = new MaxEntTrainer();
 		Classifier classifier = trainer.train(instances);

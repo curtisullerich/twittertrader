@@ -41,7 +41,7 @@ exports.sentiments = function(req, res) {
 
 exports.company = {
   id: function(req, res) {
-    var tweets = tweetsdb.find({classification:"verified", company:req.params.id.toLowerCase()}).limit(parseInt(req.params.count));
+    var tweets = tweetsdb.find({companyConfidence:{$gt:1}, company:req.params.id.toLowerCase()}).limit(parseInt(req.params.count));
     writeJSON(res, tweets);
   },
   id_timestamp: function(req, res) {
@@ -76,6 +76,35 @@ exports.companies = function(req, res) {
 /*
  * POST verified
  */
+
+exports.postjson = function(req, res) {
+  var parser = JSONStream.parse([true]);
+  parser.on('data', function(data) {
+    var id_str = data.id_str;
+    var company = data.company;
+    var sentiment = data.sentiment;
+
+    tweetsdb.findOne({'id_str':id_str}, function(err, tweet) {
+      if(company) {
+        tweet.company = company;
+        tweet.companyConfidence = 2;
+      }
+      if(sentiment) {
+        tweet.sentiment = sentiment;
+        tweet.sentimentConfidence = 2;
+      }
+
+      tweet.classification = "verified";
+    });
+    console.dir(data);
+  });
+  parser.on('root', function(root, count) {
+    res.end();
+  });
+
+  req.pipe(parser);
+};
+
 
 exports.post = function(req, res){
 

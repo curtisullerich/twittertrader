@@ -1,22 +1,31 @@
+var JSONStream = require("JSONStream");
 
 exports.writeJSON = function(res, tweets) {
   res.writeHead(200, {'Content-Type': 'application/json'});
-  res.write('[');
+  var stream = JSONStream.stringify();
+  
+  stream.on('data', function(data) {
+    res.write(data);
+  });
+
+  stream.on('end', function() {
+    res.end();
+  });
+//  res.write('[');
 
   if(tweets.cursor == null) {
-    res.end(']');
+    res.end('[]');
     return;
   }
 
-  var stream = tweets.cursor.stream();
+  var tstream = tweets.cursor.stream();
 
-  stream.on('data', function (tweet) {
-      res.write(JSON.stringify(tweet));
-      res.write(',');
+  tstream.on('data', function (tweet) {
+      stream.write(tweet);
     });
 
-  stream.on('close', function () {
-    res.end('{}]');
+  tstream.on('close', function () {
+    stream.end();
   });
 }
 
