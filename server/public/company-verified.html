@@ -1,0 +1,84 @@
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body id='body'>
+<script>
+
+var endpoint = "/verified/company/count/10";
+var company;
+
+if(location.hash) {
+  endpoint = location.hash.substring(1);
+
+  if(endpoint[0] != '/')
+  {
+    var s = endpoint.indexOf('/');
+    company = endpoint.substring(0, s);
+    endpoint = endpoint.substring(s);
+  }
+}
+else location.hash = endpoint;
+
+$(window).ready(function() {
+  $("#endpoint").text(endpoint);
+});
+
+/*
+$(window).ready(function() {
+  $.each(companies, function(i, value) {
+    $("#companies").append($("<option>"+value+"</option>"));
+  });
+});*/
+
+var tweet = {};
+
+$.getJSON(endpoint, function(data, status) {
+
+  var el = $("#instances");
+
+  for(var i=0; i<data.length; i++) {
+    var tweet = data[i];
+
+  function makeTweet(tweet) {
+    var e = $("<div></div>");
+    var c = $("<span>["+tweet.company+", "+tweet.companyConfidence+"]</span>");
+    var b = $("<button>Remove</button>");
+    var p = $("<p>"+tweet.text+"</p><br/>");
+
+    $(b).click(function(e) {
+      unclassify(tweet.id_str);
+      $(e).hide();
+    });
+
+    e.append(c);
+    e.append(b);
+    e.append(p);
+
+    el.append(e);
+
+  }
+    makeTweet(tweet);
+  }
+});
+
+function unclassify(id_str) {
+
+     $.post("/classified/unclassify", {
+      'id_str':id_str,
+      'type': 'single',
+      'field':'company'
+      });
+}
+
+</script>
+
+<p>
+  Endpoint: <span id="endpoint">/unclassified/random</span>
+</p>
+<div style="border: 3px coral solid;">
+
+  <div id="instances"></div>
+
+</body>
+</html>
