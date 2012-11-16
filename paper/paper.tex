@@ -5,6 +5,7 @@
 \usepackage{helvet}
 \usepackage{courier}
 \usepackage{hyperref}
+
 \nocopyright
 \frenchspacing
 \pdfinfo{
@@ -45,7 +46,7 @@ Twitter is a popular source for data mining due to its massive scale and inclusi
 \end{itemize}
 
 \subsection{Anticipated Results}
-Based on prior research by Ruiz and Hristidis[1], we expect to find a small but exploitable correlation between the volume and positivity of tweets about a company, and its stock price one to three days in the future. This is based on a close examination Table 8 from Ruiz and Hristidis which shows not only a significant correlation of 0.12 between activity and stock price the same day for the DEG.-STD, but smaller correlations of 0.10 and 0.07 for one day and two days in the future respectively. At three days the correlation is -0.04 and is no longer significant.
+Based on prior research by J. Bollen, H. Mao, and X.-J. Zeng[1], we expect to find a small but exploitable correlation between the volume and positivity of tweets about a company, and its stock price one to three days in the future. This is based on a close examination Table 8 from Ruiz and Hristidis which shows not only a significant correlation of 0.12 between activity and stock price the same day for the DEG.-STD, but smaller correlations of 0.10 and 0.07 for one day and two days in the future respectively. At three days the correlation is -0.04 and is no longer significant.
 
 We do not expect these correlations to exist for all companies. Given the tendency of Twitter users to be tech-friendly and young, the companies about which they tweet and their attitudes toward them will be varied. Additionally, the sheer volume of tweets about popular companies like Google and Microsoft have the potential to overshadow the number of tweets about Garmin (for instance) and other companies in our dataset. We do expect to find useful correlations for some profile of companies. The profitability of our decision process is easily verified using past data, though it will take time to accumulate enough data for this to be a solid recommendation. If the discovered correlation is not strong enough to predict future stock price, we will change our analysis to find correlation between Twitter activity and traded volume for the company stocks, a relationship that Ruiz and Hristidis[1] found to have a significantly higher correlation in their dataset than activity and stock price.
 
@@ -65,11 +66,11 @@ We do all machine learning with the Mallet[2] library developed by the Universit
 A major component of this is corpus creation. Using Twitter's streaming API, we pull for tweets based on keyword. Using our trained models, we classify each tweets with the highest-confidence company and sentiment labels, including the confidences. We created a simple web interface for accessing the database in order to human-verify classifications for insertion into the database. \href{http://danielstiner.com:9001/company-yes-no.html#/classified/random/company/confidence/.2:1/count/1}{This page} displays a random classified tweet and asks the user if the tweet is correctly classified.
 
 \textbf{2) Develop web interface for tracking sentiment and volume of tweets} \\
-We plan to filter the Twitter live stream for all tweets about the following companies:
+We plan to filter the Twitter live stream for all tweets about the following companies: \\
 
-Amazon Boeing Cerner Coke Costco Dollar Tree eBay Ford Garmin Google HyVee Microsoft Monsanto Netflix Starbucks Travel Zoo Verizon Walmart Xerox
+Amazon Boeing Cerner Coke Costco Dollar Tree eBay Ford Garmin Google HyVee Microsoft Monsanto Netflix Starbucks Travel Zoo Verizon Walmart Xerox \\
 
-\"About\" here is as classified by our models. We will classify each tweet's sentiment and store the statistics for 6-hour intervals. We will provide an interface for viewing this sentiment data graphically over time, as compared to stock market prices and the volume of tweets about each company.
+"About" here is as classified by our models. We will classify each tweet's sentiment and store the statistics for 6-hour intervals. We will provide an interface for viewing this sentiment data graphically over time, as compared to stock market prices and the volume of tweets about each company.
 
 \textbf{3) Develop decision-making system for buy-sell-holding stocks}\\
 Based on the aggregated data, we will determine the buy-sell-hold decision that maximizes the likelihood of profiting.
@@ -81,5 +82,12 @@ Based on the aggregated data, we will determine the buy-sell-hold decision that 
 
 \section{ Acknowledgments}
 
+[1] J. Bollen, H. Mao, and X.-J. Zeng. Twitter mood predicts the
+stock market. Journal of Computational Science,
+abs/1010.3003, 2010\\
+
+[2] Mallett, University of Massachussetts Department of Computer Science\\
+
+[3] Sanders Analytics (http://www.sananalytics.com/lab/twitter-sentiment/)
 
 \end{document}
