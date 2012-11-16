@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 public class Constants {
 
 	//String url for getting tweets to classify
-	public static final String NEW_TWEET_GET_URL = "http://danielstiner.com:9001/unclassified/random/200";
+	public static final String NEW_TWEET_GET_URL = "http://danielstiner.com:9001/unclassified/random/100";
 	
 	//String url for posting classified tweets
 	public static final String CLASSIFIED_TWEET_POST_URL = "http://danielstiner.com:9001/classified/classify";

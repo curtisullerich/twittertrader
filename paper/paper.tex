@@ -4,6 +4,7 @@
 \usepackage{times}
 \usepackage{helvet}
 \usepackage{courier}
+\nocopyright
 \frenchspacing
 \pdfinfo{
 /Title (Twitter Trader)
@@ -52,11 +53,17 @@ We do not expect these correlations to exist for all companies. Given the tenden
 \section{Related Work}
 
 \section{System Breakdown}
+\textbf{Corpus creation}\\
+\textbf{Data aggregation and classification}\\
+\textbf{Decision-making}\\
+
 
 \subsection{Basic Approach}
 
 \textbf{1) Develop classifiers for both sentiment and company-topicality} \\
 We do all machine learning with the Mallet[2] library developed by the University of Massachusetts. We are using an existing corpus from Sanders Analytics[3] to bootstrap our sentiment classifier. We created a very small corpus (500 total instances) of company-topical tweets by scraping the Twitter live stream based on keywords and verifying topicality by manual analysis. We trained a Mallet Classifier for each domain, specialized to accept Twitter's native JSON tweet format for classifying new instances. We have been collecting (hundreds of thousands of) tweets in a database to use as our corpus. We developed a basic web interface to efficiently human-verify the correct classification a large number of tweets as classified by our bootstrapped model. As we add more human-verified instances to the corpora, the accuracy of our models will improve over time.
+
+A major component of this is corpus creation. Using Twitter's streaming API, we pull for tweets based on keyword. Using our trained models, we classify each tweets with the highest-confidence company and sentiment labels, including the confidences. We created a simple web interface for accessing the database in order to human-verify classifications for insertion into the database. \href{http://danielstiner.com:9001/company-yes-no.html#/classified/random/company/confidence/.2:1/count/1}{This page} displays a random classified tweet and asks the user if the tweet is correctly classified.
 
 \textbf{2) Develop web interface for tracking sentiment and volume of tweets} \\
 We plan to filter the Twitter live stream for all tweets about the following companies:
@@ -74,6 +81,6 @@ Based on the aggregated data, we will determine the buy-sell-hold decision that 
 
 
 \section{ Acknowledgments}
-Blah blah.
+
 
 \end{document}
