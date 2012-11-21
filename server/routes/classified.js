@@ -162,6 +162,39 @@ exports.company_confidence = function(req, res) {
 	writeJSON(res, tweets);
 };
 
+
+
+exports.company_timeslice = function(req, res) {
+	var confidence = req.params.confidence;
+	var count = parseInt(req.params.count);
+        var startDate = new Date(req.params.start);
+        var endDate = new Date(req.params.end);
+	var company = req.params.company;
+
+	var lowerConf = 0.0;
+        var upperConf = 1.0;
+
+	if(confidence[0] == '<') {
+		upperConf = parseFloat(confidence);
+	} else if(confidence[0] == '>') {
+		lowerConf = parseFloat(confidence);
+	} else {
+
+		try {
+			var confSplit = confidence.split(":");
+			lowerConf = parseFloat(confSplit[0]);
+			upperConf = parseFloat(confSplit[1]);
+		} catch(e) {
+			res.end("{\"error\":\"Invalid confidence param\"");
+			return;
+	}
+
+	}
+
+	var tweets = tweetsdb.find({company:req.params.company, classification:"classified", companyConfidence:{$gte:lowerConf, $lte:upperConf}}).limit(count);
+	writeJSON(res, tweets);
+};
+
 /*
  * GET companies listing.
  */

@@ -20,6 +20,7 @@ twitter.stream(
 			{
 				i = 0;
 				tweet.random = Math.random();
+				tweet.created_at = new Date(tweet.created_at);
 				db.twits.save(tweet);
 				console.log('tweet: '+ tweet.created_at);
 			}
