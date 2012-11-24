@@ -47,8 +47,9 @@ public class TweetGrabber {
 		// Classifies the tweets and adds the Labels and values to the
 		// tweetInstance
 		InstanceList il = new InstanceList(ModelTester.getPipe4());
-		Classifier companyClassifier = FileUtil
-				.loadBestClassifier(Constants.COMPANY_MODEL);
+		Classifier companyClassifier = (new ModelUpdater()).createNewCompanyWikipediaModel();
+//		Classifier companyClassifier = FileUtil
+//				.loadBestClassifier(Constants.COMPANY_MODEL);
 		Classifier sentimentClassifier = FileUtil
 				.loadBestClassifier(Constants.SENTIMENT_MODEL);
 		il.addThruPipe(tji);

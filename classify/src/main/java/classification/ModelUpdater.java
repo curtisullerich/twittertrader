@@ -1,9 +1,9 @@
 package classification;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map.Entry;
 
 import model.TweetJsonIterator;
@@ -13,7 +13,9 @@ import model.TweetJsonIterator.Type;
 import org.apache.http.HttpException;
 
 import cc.mallet.classify.Classifier;
+import cc.mallet.classify.MaxEntTrainer;
 import cc.mallet.classify.NaiveBayesTrainer;
+import cc.mallet.pipe.iterator.CsvIterator;
 import cc.mallet.types.InstanceList;
 
 import com.google.gson.JsonElement;
@@ -42,6 +44,21 @@ public class ModelUpdater {
 
 	}
 
+	public Classifier createNewCompanyWikipediaModel() throws IOException {
+		 MaxEntTrainer trainer = new MaxEntTrainer();
+		//NaiveBayesTrainer trainer = new NaiveBayesTrainer();
+
+		File file = new File("../corpus/wikorpus.txt");
+
+		CsvIterator reader = new CsvIterator(new FileReader(file),
+				Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
+		InstanceList instances = new InstanceList(PipeFactory.getPipe4());
+		instances.addThruPipe(reader);
+		Classifier c = trainer.train(instances);
+		FileUtil.saveClassifiertoDisk(c, Constants.COMPANY_MODEL);
+		return c;
+	}
+
 	public void createNewCompanyModel() throws URISyntaxException,
 			HttpException, IOException, ClassNotFoundException {
 		StringBuilder verifiedCountJson = ServerInteractionsUtil
@@ -68,10 +85,11 @@ public class ModelUpdater {
 		int i = 0;
 		for (Entry<String, JsonElement> e : counts.entrySet()) {
 			if (e.getValue().getAsInt() > 0) {
-				String tweeturl = Constants.VERIFIED_URL_PRE + e.getKey() + Constants.VERIFIED_URL_POST
-						+ min;
+				String tweeturl = Constants.VERIFIED_URL_PRE + e.getKey()
+						+ Constants.VERIFIED_URL_POST + min;
 				System.out.println("Getting tweets from " + tweeturl);
-				String cur = ServerInteractionsUtil.getTweetsFrom(tweeturl).toString();
+				String cur = ServerInteractionsUtil.getTweetsFrom(tweeturl)
+						.toString();
 				TweetJsonIterator tji = new TweetJsonIterator(cur, Mode.TRAIN,
 						Type.COMPANY);
 				il.addThruPipe(tji);
