@@ -1,9 +1,21 @@
-var nconf = require('nconf');
-// First consider commandline arguments and environment variables, respectively.
-nconf.argv().env();
-// Then load configuration from a designated file.
-nconf.file({ file: 'config.json' });
+var tweetsdb = require('store').tweets;
+var classifier = require('class');
 
+var batchSize = 1000;
+
+
+classifier.setup(function (classification) {
+	tweetsdb.update(
+		{ id_str : classification.id_str },
+		{ $set : classification }
+		);
+});
+
+while(true) {
+	var tweets = tweetsdb.find({classification:{$exists:false}}).limit(batchSize);
+
+	
+}
 
 var db = require("mongojs").connect(nconf.get('database'), [nconf.get('collection')]);
 
