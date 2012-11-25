@@ -23,7 +23,8 @@ import common.FileUtil;
 public class Classify {
 	public static void main(String... args) throws ClassNotFoundException,
 			IOException {
-		classify();
+//		classify();
+		stdio();
 	}
 
 	/**
