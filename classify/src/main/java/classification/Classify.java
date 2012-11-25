@@ -7,9 +7,18 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
+import model.TweetJsonIterator;
+import model.TweetJsonIterator.Mode;
+import model.TweetJsonIterator.Type;
 import cc.mallet.classify.Classification;
 import cc.mallet.classify.Classifier;
+import cc.mallet.types.Instance;
+import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
+
+import com.google.gson.JsonArray;
+import common.Constants;
+import common.FileUtil;
 
 public class Classify {
 	public static void main(String... args) throws ClassNotFoundException,
@@ -17,8 +26,47 @@ public class Classify {
 		classify();
 	}
 
+	/**
+	 * Takes json tweets, one instance per line, from std.in and writes to
+	 * std.out in the format
+	 * "tweetid, companyclassification, companyconfidence, sentimentclassification, sentimentconfidence"
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	public static void stdio() throws ClassNotFoundException, IOException {
+		Scanner s = new Scanner(System.in);
+
+		InstanceList il = new InstanceList(ModelTester.getPipe4());
+		// Classifier companyClassifier = (new
+		// ModelUpdater()).createNewCompanyWikipediaModel();
+		Classifier companyClassifier = FileUtil
+				.loadBestClassifier(Constants.COMPANY_MODEL);
+		Classifier sentimentClassifier = FileUtil
+				.loadBestClassifier(Constants.SENTIMENT_MODEL);
+
+		while (s.hasNextLine()) {
+			String line = s.nextLine();
+			TweetJsonIterator tji = new TweetJsonIterator(line, Mode.CLASSIFY,
+					Type.UNCLASSIFIED);
+			il.addThruPipe(tji);
+			for (Instance i : il) {// should just be one
+				Classification cc = companyClassifier.classify(i);
+				Classification sc = sentimentClassifier.classify(i);
+
+				System.out.println(i.getName() + ", "
+						+ cc.getLabeling().getBestLabel() + ", "
+						+ cc.getLabeling().getBestValue() + ", "
+						+ sc.getLabeling().getBestLabel() + ", "
+						+ sc.getLabeling().getBestValue());
+			}
+			il.clear();
+		}
+	}
+
 	public static void classify() throws IOException, ClassNotFoundException {
-		Scanner s = new Scanner(new File("../localcorpora/classificationset/new0.json"));
+		Scanner s = new Scanner(new File(
+				"../localcorpora/classificationset/new0.json"));
 		// ObjectInputStream ois = new ObjectInputStream(new
 		// FileInputStream(""));
 		// Classifier classifier = (Classifier) ois.readObject();
