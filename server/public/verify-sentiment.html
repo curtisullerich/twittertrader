@@ -1,0 +1,60 @@
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body>
+<script>
+
+var endpoint = "/unclassified/random/1";
+
+var tweet = {};
+
+$.getJSON(endpoint, function(data, status) {
+  tweet = data[0];
+
+  $("#text").text(data[0].text);
+  $("#name").text(data[0].user.screen_name);
+  $("#raw").text(JSON.stringify(data));
+  $("#id_str").val(data[0].id_str);
+});
+
+
+function next() {
+  $.post("/verified", {
+    id_str:tweet.id_str,
+    _id:tweet._id,
+    type: "single",
+    sentiment:$("#sentiment").val(),
+   }, function() { window.location.reload(true); } );
+    
+  return false;
+}
+
+</script>
+
+<p>
+Endpoint: /unclassified/random
+</p>
+
+<p>
+<div id="text"></div>
+</p>
+<p>
+By: <div id="name"></div>
+</p>
+
+<form method="post" action="/verified" onsubmit="return next();">
+  <select name="sentiment" id="sentiment" autofocus="autofocus">
+    <option>positive</option>
+    <option selected>neutral</option>
+    <option>negative</option>
+  </select>
+
+  <input type="submit" />
+</form>
+
+
+<div id="raw"> </div>
+
+</body>
+</html>

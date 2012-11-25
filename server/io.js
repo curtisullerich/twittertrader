@@ -2,28 +2,27 @@ var JSONStream = require("JSONStream");
 
 exports.writeJSON = function(res, tweets) {
   res.writeHead(200, {'Content-Type': 'application/json'});
-  var stream = JSONStream.stringify();
-  
-  stream.on('data', function(data) {
-    res.write(data);
-  });
 
-  stream.on('end', function() {
-    res.end();
-  });
-//  res.write('[');
-
+  // Check we have tweets to display
   if(tweets.cursor == null) {
     res.end('[]');
     return;
   }
+  
+  // Setup JSON stream to write to response
+  var stream = JSONStream.stringify();
+  stream.on('data', function(data) {
+    res.write(data);
+  });
+  stream.on('end', function() {
+    res.end();
+  });
 
+  // Stream tweets from database to json
   var tstream = tweets.cursor.stream();
-
   tstream.on('data', function (tweet) {
       stream.write(tweet);
-    });
-
+  });
   tstream.on('close', function () {
     stream.end();
   });
@@ -32,6 +31,7 @@ exports.writeJSON = function(res, tweets) {
 exports.writeCSV = function(res, tweets, field) {
   res.writeHead(200, {'Content-Type': 'text/csv'});
 
+  // Check we have tweets to display
   if(tweets.cursor == null) {
     res.end();
     return;

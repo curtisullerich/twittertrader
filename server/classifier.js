@@ -1,31 +1,26 @@
-var nconf = require('nconf');
-// First consider commandline arguments and environment variables, respectively.
-nconf.argv().env();
-// Then load configuration from a designated file.
-nconf.file({ file: 'config.json' });
+var tweetsdb = require('store').tweets;
+var classs = require('class');
+
+var batchSize = 1000;
 
 
-var db = require("mongojs").connect(nconf.get('database'), [nconf.get('collection')]);
+var classifier = classs.setup(function (classification) {
+	tweetsdb.update(
+		{ id_str : classification.id_str },
+		{ $set : classification }
+		);
+});
 
-var nTwitter = require("ntwitter");
-var twitter = new nTwitter(nconf.get('twitter_auth'));
+while(true) {
+	var tweets = tweetsdb.find({classification:{$exists:false}}).limit(batchSize);
 
-var i=0;
-twitter.stream(
-	'statuses/filter',
-	{ track: nconf.get('keywords') },
-	function(stream) {
-		stream.on('data', function(tweet) {
-			if(i > nconf.get('capture:frequency') && tweet.user.lang == 'en')
-			{
-				i = 0;
-				tweet.random = Math.random();
-				tweet.created_at = new Date(tweet.created_at);
-				db.twits.save(tweet);
-				console.log('tweet: '+ tweet.created_at);
-			}
-			i++;
-		});
-	}
-);
+	// Stream tweets from database
+	var tstream = tweets.cursor.stream();
+	tstream.on('data', function (tweet) {
+	  classifier.classify(tweet);
+	});
+	tstream.on('close', function () {
+	});
+}
 
+classifier.end();

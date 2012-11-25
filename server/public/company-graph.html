@@ -1,0 +1,98 @@
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body id='body'>
+<script>
+
+var company = "google";
+
+
+$(function() {
+	var seriesOptions = [],
+		yAxisOptions = [],
+		seriesCounter = 0,
+		seriesCounterMax = 2,
+		colors = Highcharts.getOptions().colors;
+
+	// TODO get yahoo financial data
+	$.getJSON("http://finance.yahoo.com/?company="+company, function(data) {
+		seriesOptions[0] = {
+			name:"stock",
+			data: data
+		}
+
+		seriesCounter++;
+
+		if (seriesCounter == seriesCounterMax) {
+			createChart();
+		}
+	});
+
+	$.getJSON("/classified/frequencies/company/"+company+"/confidence/0.1:2/timeslice/hour/start/2012.11.13/end/2012.11.15", function(data) {
+
+		var i=1;
+		$.each(data, function(sentiment,data) {
+			seriesOptions[i] = {
+				name: sentiment,
+				data: data
+			}
+		});
+
+		seriesCounter++;
+
+		if (seriesCounter == seriesCounterMax) {
+			createChart();
+		}
+	});
+
+
+
+	// create the chart when all data is loaded
+	function createChart() {
+
+		chart = new Highcharts.StockChart({
+		    chart: {
+		        renderTo: 'container'
+		    },
+
+		    rangeSelector: {
+		        selected: 4
+		    },
+
+		    yAxis: {
+		    	labels: {
+		    		formatter: function() {
+		    			return (this.value > 0 ? '+' : '') + this.value + '%';
+		    		}
+		    	},
+		    	plotLines: [{
+		    		value: 0,
+		    		width: 2,
+		    		color: 'silver'
+		    	}]
+		    },
+		    
+		    plotOptions: {
+		    	series: {
+		    		compare: 'percent'
+		    	}
+		    },
+		    
+		    tooltip: {
+		    	pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
+		    	valueDecimals: 2
+		    },
+		    
+		    series: seriesOptions
+		});
+	}
+
+});
+
+</script>
+
+<div id="container" />
+
+</body>
+</html>
