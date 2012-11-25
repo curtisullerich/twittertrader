@@ -48,6 +48,7 @@ app.get('/classified/sentiments', classified.sentiments);
 app.get('/classified/company/:company/confidence/:confidence/count/:count', classified.company_confidence);
 app.get('/classified/company/search/:company/confidence/:confidence/count/:count', classified.company_confidence_search);
 app.get('/classified/random/company/confidence/:confidence/count/:count', classified.company_random);
+app.get('/classified/frequencies/company/:company/confidence/:confidence/timeslice/:timeslice/start/:start/end/:end', classified.company_frequencies);
 app.post('/classified/classify', classified.post);
 app.post('/classified/unclassify', classified.post_unclassify);
 
