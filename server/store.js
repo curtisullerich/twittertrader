@@ -22,4 +22,4 @@ twits.ensureIndex( {"classification":1, "random":1});
 twits.ensureIndex( {"id_str":1} );
 
 exports.tweets = twits; // db.collection(nconf.get('collection'));
-
+exports.counts = db.collection('counts');

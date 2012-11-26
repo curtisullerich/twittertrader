@@ -15,6 +15,7 @@
 		"stylus": "*",
 		"mongoskin": "*",
 		"stache": "*",
-		"JSONStream": ">=0.4.2"
+		"JSONStream": ">=0.4.2",
+		"carrier":"*"
 	}
 }
