@@ -155,7 +155,7 @@ public class ModelTester {
 	public static Classifier getCompanyClassifier()
 			throws FileNotFoundException {
 		InstanceList instances = new InstanceList(getPipe4());
-		File file = new File("../corpus/companyCorpus.txt");
+		File file = new File("../corpus/companyset.txt");
 		CsvIterator reader = new CsvIterator(new FileReader(file),
 				Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
 		instances.addThruPipe(reader);

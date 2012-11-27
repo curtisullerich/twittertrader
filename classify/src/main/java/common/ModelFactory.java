@@ -5,9 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 import cc.mallet.classify.Classifier;
+import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.classify.MaxEntTrainer;
+import cc.mallet.classify.NaiveBayes;
 import cc.mallet.pipe.iterator.CsvIterator;
 import cc.mallet.types.InstanceList;
+import dualist.classify.NaiveBayesWithPriorsTrainer;
 
 public class ModelFactory {
 
@@ -27,6 +30,12 @@ public class ModelFactory {
 		MaxEntTrainer trainer = new MaxEntTrainer();
 		Classifier classifier = trainer.train(instances);
 		return classifier;
+	}
+	
+	public static Classifier getBackgroundKnowledgeClassifier() {
+		ClassifierTrainer<NaiveBayes> n = new NaiveBayesWithPriorsTrainer();
+		
+		return null;
 	}
 	
 	/**
