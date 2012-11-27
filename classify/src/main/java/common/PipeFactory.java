@@ -1,5 +1,6 @@
 package common;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -12,6 +13,9 @@ import cc.mallet.pipe.Target2Label;
 import cc.mallet.pipe.TokenSequence2FeatureSequence;
 import cc.mallet.pipe.TokenSequenceLowercase;
 import cc.mallet.pipe.TokenSequenceNGrams;
+import cc.mallet.pipe.TokenSequenceRemoveStopwords;
+import classification.SpellCheck;
+import classification.Stemmer;
 
 public class PipeFactory {
 
@@ -82,9 +86,31 @@ public class PipeFactory {
 		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
 		// pipeList.add(new PrintInput());
 //			pipe.add(new TweetPipe());
-		pipe.add(new Input2CharSequence("UTF-8"));
+		pipe.add(new Input2CharSequence("UTF-8"));		
 		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
 		pipe.add(new CharSequence2TokenSequence(tokenPattern));
+		int[] sizes = { 1, 2, 3, 4, 5 };
+		pipe.add(new TokenSequenceNGrams(sizes));
+		pipe.add(new TokenSequence2FeatureSequence());
+		pipe.add(new Target2Label());
+		pipe.add(new FeatureSequence2FeatureVector());
+		// pipeList.add(new PrintInputAndTarget());
+		return new SerialPipes(pipe);
+	}
+	
+	public static SerialPipes brandonsGetPipes() {
+		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
+		// pipeList.add(new PrintInput());
+//			pipe.add(new TweetPipe());
+		pipe.add(new Input2CharSequence("UTF-8"));
+		pipe.add(new SpellCheck());
+		//Stop words
+		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
+		pipe.add(new CharSequence2TokenSequence(tokenPattern));
+		//pipe.add(new TokenSequenceRemoveStopwords(new File("../Stopwords.txt"), "UTF-8", false, false, false));
+		pipe.add(new TokenSequenceRemoveStopwords());
+		//Stemming
+		pipe.add(new Stemmer());
 		int[] sizes = { 1, 2, 3, 4, 5 };
 		pipe.add(new TokenSequenceNGrams(sizes));
 		pipe.add(new TokenSequence2FeatureSequence());
