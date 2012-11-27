@@ -1,27 +1,50 @@
 <html>
 <head>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/stock/highstock.src.js"></script>
 </head>
 <body id='body'>
 <script>
 
 var company = "google";
-
+var companyStock = "GOOG";
+var startDate = "2012-08-07";
+var endDate = "2012-11-01";
 
 $(function() {
 	var seriesOptions = [],
 		yAxisOptions = [],
 		seriesCounter = 0,
-		seriesCounterMax = 2,
+		seriesCounterMax = 3,
 		colors = Highcharts.getOptions().colors;
 
-	// TODO get yahoo financial data
-	$.getJSON("http://finance.yahoo.com/?company="+company, function(data) {
-		seriesOptions[0] = {
-			name:"stock",
-			data: data
+
+	$.getJSON("http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.historicaldata%20where%20symbol%20%3D%20%22"+companyStock+"%22%20and%20startDate%20%3D%20%22"+startDate+"%22%20and%20endDate%20%3D%20%22" + endDate + "%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys", function(data) {
+
+		var r = data.query.results.quote;
+		var adj_close = [];
+		var volume = [];
+		
+		for(var i=0; i<r.length; i++) {
+			var timestamp = new Date(r[i]['date']).getTime();
+			adj_close.push([timestamp, parseFloat(r[i].Adj_Close)]);
+			volume.push([timestamp, parseInt(r[i].Volume)]);
 		}
 
+		adj_close.sort(function(a,b) { return a[0] - b[0]; });
+		volume.sort(function(a,b) { return a[0] - b[0]; });
+
+		seriesOptions[0] = {
+			name:"Adj_Close",
+			data: adj_close
+		}
+		seriesCounter++;
+
+		seriesOptions[1] = {
+			name:"Volume",
+			data: volume
+		}
 		seriesCounter++;
 
 		if (seriesCounter == seriesCounterMax) {
@@ -29,9 +52,10 @@ $(function() {
 		}
 	});
 
-	$.getJSON("/classified/frequencies/company/"+company+"/confidence/0.1:2/timeslice/hour/start/2012.11.13/end/2012.11.15", function(data) {
+	$.getJSON("/counts/company/"+company+"/timeslice/day/start/2012.11.13/end/2012.11.15", function(data) {
 
-		var i=1;
+
+		var i=2;
 		$.each(data, function(sentiment,data) {
 			seriesOptions[i] = {
 				name: sentiment,
@@ -57,7 +81,7 @@ $(function() {
 		    },
 
 		    rangeSelector: {
-		        selected: 4
+		        selected: 2
 		    },
 
 		    yAxis: {

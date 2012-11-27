@@ -7,6 +7,7 @@ var express = require('express')
   , pages = require('./routes/pages')
   , classified = require('./routes/classified')
   , verified = require('./routes/verified')
+  , counts = require('./routes/counts')
   , unclassified = require('./routes/unclassified')
   , http = require('http')
   , path = require('path')
@@ -42,6 +43,8 @@ app.configure('development', function(){
 
 app.get('/', pages.index);
 app.get('/verify', pages.verify);
+
+app.get('/counts/company/:company/timeslice/:timeslice/start/:start/end/:end', counts.company);
 
 app.get('/classified/companies', classified.companies);
 app.get('/classified/sentiments', classified.sentiments);

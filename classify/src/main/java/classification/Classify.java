@@ -38,7 +38,7 @@ public class Classify {
 	public static void stdio() throws ClassNotFoundException, IOException {
 		Scanner s = new Scanner(System.in);
 
-		InstanceList il = new InstanceList(ModelTester.getPipe4());
+		
 		// Classifier companyClassifier = (new
 		// ModelUpdater()).createNewCompanyWikipediaModel();
 		Classifier companyClassifier = FileUtil
@@ -47,6 +47,7 @@ public class Classify {
 				.loadBestClassifier(Constants.SENTIMENT_MODEL);
 
 		while (s.hasNextLine()) {
+			InstanceList il = new InstanceList(ModelTester.getPipe4());
 			String line = s.nextLine();
 			TweetJsonIterator tji = new TweetJsonIterator(line, Mode.CLASSIFY,
 					Type.UNCLASSIFIED);
@@ -61,7 +62,7 @@ public class Classify {
 						+ sc.getLabeling().getBestLabel() + ", "
 						+ sc.getLabeling().getBestValue());
 			}
-			il.clear();
+			//il.clear();
 		}
 	}
 
