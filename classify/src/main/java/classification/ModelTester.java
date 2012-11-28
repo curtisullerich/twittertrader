@@ -3,54 +3,29 @@ package classification;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Scanner;
-import java.util.regex.Pattern;
-
-import common.Constants;
 
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.classify.MaxEntTrainer;
+import cc.mallet.classify.NaiveBayesTrainer;
 import cc.mallet.classify.Trial;
-import cc.mallet.pipe.CharSequence2TokenSequence;
-import cc.mallet.pipe.FeatureSequence2FeatureVector;
-import cc.mallet.pipe.Input2CharSequence;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.SerialPipes;
-import cc.mallet.pipe.Target2Label;
-import cc.mallet.pipe.TokenSequence2FeatureSequence;
-import cc.mallet.pipe.TokenSequenceLowercase;
-import cc.mallet.pipe.TokenSequenceNGrams;
 import cc.mallet.pipe.iterator.CsvIterator;
 import cc.mallet.types.InstanceList;
 import cc.mallet.util.Randoms;
 
+import common.Constants;
+import common.PipeFactory;
+
 public class ModelTester {
 	public static void main(String[] args) throws IOException {
-
-		//SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
-		Date date = new Date();
-		String stamp = Constants.UGLY_SDF.format(date);
-
-		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(
-				new File("../companyModel" + stamp + ".mallet")));
-		oos.writeObject(getCompanyClassifier());
-		oos.close();
-		ObjectOutputStream oos2 = new ObjectOutputStream(new FileOutputStream(
-				new File("../sentimentModel" + stamp + ".mallet")));
-		oos2.writeObject(getBestSentimentClassifier());
-		oos2.close();
-
-//		System.exit(1);
 
 		ArrayList<SerialPipes> allPipes = new ArrayList<SerialPipes>();
 		// add all the pipe variations to the list
@@ -58,7 +33,8 @@ public class ModelTester {
 		// allPipes.add(getPipe1());
 		// allPipes.add(getPipe2());
 		// allPipes.add(getPipe3());
-		allPipes.add(getPipe4());
+//		allPipes.add(PipeFactory.getPipe4());
+		allPipes.add(PipeFactory.brandonsGetPipes());
 		// allPipes.add(getPipe5());
 		// allPipes.add(getPipe6());
 		// allPipes.add(getPipe7());
@@ -71,15 +47,19 @@ public class ModelTester {
 			InstanceList instances = new InstanceList(pipe);
 			// CsvIterator reader = new CsvIterator(new FileReader(new File(
 			// "tweets.txt")), Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
-			File file = new File("../corpus/sentiment.txt");
-			File file2 = new File("../corpus/tweets.txt");
-
+			// File file = new File("../corpus/sentiment.txt");
+			// File file2 = new File("../corpus/tweets.txt");
+			File file = new File("../corpus/appleBinary.txt");
 			CsvIterator reader = new CsvIterator(new FileReader(file),
 					Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
 			instances.addThruPipe(reader);
-			CsvIterator reader2 = new CsvIterator(new FileReader(file2),
+			File file2 = new File("../corpus/capple.txt");
+			CsvIterator reader2 = new CsvIterator(new FileReader(file),
 					Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
 			instances.addThruPipe(reader2);
+			// CsvIterator reader2 = new CsvIterator(new FileReader(file2),
+			// Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
+			// instances.addThruPipe(reader2);
 
 			InstanceList[] instanceLists = instances.split(new Randoms(),
 					new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,
@@ -137,7 +117,7 @@ public class ModelTester {
 
 	public static Classifier getBestSentimentClassifier()
 			throws FileNotFoundException {
-		InstanceList instances = new InstanceList(getPipe4());
+		InstanceList instances = new InstanceList(PipeFactory.getPipe4());
 		File file = new File("../corpus/sentiment.txt");
 		File file2 = new File("../corpus/tweets.txt");
 
@@ -154,7 +134,7 @@ public class ModelTester {
 
 	public static Classifier getCompanyClassifier()
 			throws FileNotFoundException {
-		InstanceList instances = new InstanceList(getPipe4());
+		InstanceList instances = new InstanceList(PipeFactory.getPipe4());
 		File file = new File("../corpus/companyset.txt");
 		CsvIterator reader = new CsvIterator(new FileReader(file),
 				Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
@@ -167,7 +147,7 @@ public class ModelTester {
 	// create a bunch of trainers
 	private static ArrayList<ClassifierTrainer<? extends Classifier>> trainers() {
 		ArrayList<ClassifierTrainer<? extends Classifier>> trainers = new ArrayList<ClassifierTrainer<? extends Classifier>>();
-		trainers.add(new MaxEntTrainer());
+		trainers.add(new NaiveBayesTrainer());
 		// trainers.add(new NaiveBayesTrainer());
 		// ~ trainers.add(new AdaBoostM2Trainer());
 		// ~ trainers.add(new AdaBoostTrainer());
@@ -193,143 +173,6 @@ public class ModelTester {
 			}
 		}
 		return copy;
-	}
-
-	// create a new serial pipes with varied characteristics
-	private static SerialPipes getPipe() {
-		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
-		// pipeList.add(new PrintInput());
-		pipe.add(new Input2CharSequence("UTF-8"));
-		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
-		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		pipe.add(new TokenSequenceLowercase());
-		int[] sizes = { 1, 2, 3, 4, 5 };
-		pipe.add(new TokenSequenceNGrams(sizes));
-		pipe.add(new TokenSequence2FeatureSequence());
-		pipe.add(new Target2Label());
-		pipe.add(new FeatureSequence2FeatureVector());
-		// pipeList.add(new PrintInputAndTarget());
-		return new SerialPipes(pipe);
-	}
-
-	private static SerialPipes getPipe1() {
-		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
-		// pipeList.add(new PrintInput());
-		pipe.add(new Input2CharSequence("UTF-8"));
-		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
-		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		pipe.add(new TokenSequenceLowercase());
-		int[] sizes = { 1, 2 };
-		pipe.add(new TokenSequenceNGrams(sizes));
-		pipe.add(new TokenSequence2FeatureSequence());
-		pipe.add(new Target2Label());
-		pipe.add(new FeatureSequence2FeatureVector());
-		// pipeList.add(new PrintInputAndTarget());
-		return new SerialPipes(pipe);
-	}
-
-	private static SerialPipes getPipe2() {
-		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
-		// pipeList.add(new PrintInput());
-		pipe.add(new Input2CharSequence("UTF-8"));
-		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
-		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		pipe.add(new TokenSequenceLowercase());
-		pipe.add(new TokenSequence2FeatureSequence());
-		pipe.add(new Target2Label());
-		pipe.add(new FeatureSequence2FeatureVector());
-		// pipeList.add(new PrintInputAndTarget());
-		return new SerialPipes(pipe);
-	}
-
-	private static SerialPipes getPipe3() {
-		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
-		// pipeList.add(new PrintInput());
-		pipe.add(new Input2CharSequence("UTF-8"));
-		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
-		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		pipe.add(new TokenSequenceLowercase());
-		int[] sizes = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-		pipe.add(new TokenSequenceNGrams(sizes));
-		pipe.add(new TokenSequence2FeatureSequence());
-		pipe.add(new Target2Label());
-		pipe.add(new FeatureSequence2FeatureVector());
-		// pipeList.add(new PrintInputAndTarget());
-		return new SerialPipes(pipe);
-	}
-
-	static SerialPipes getPipe4() {
-		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
-		// pipeList.add(new PrintInput());
-//			pipe.add(new TweetPipe());
-		pipe.add(new Input2CharSequence("UTF-8"));
-		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
-		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		int[] sizes = { 1, 2, 3, 4, 5 };
-		pipe.add(new TokenSequenceNGrams(sizes));
-		pipe.add(new TokenSequence2FeatureSequence());
-		pipe.add(new Target2Label());
-		pipe.add(new FeatureSequence2FeatureVector());
-		// pipeList.add(new PrintInputAndTarget());
-		return new SerialPipes(pipe);
-	}
-
-	private static SerialPipes getPipe5() {
-		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
-		// pipeList.add(new PrintInput());
-		pipe.add(new Input2CharSequence("UTF-8"));
-		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
-		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		int[] sizes = { 1, 2 };
-		pipe.add(new TokenSequenceNGrams(sizes));
-		pipe.add(new TokenSequence2FeatureSequence());
-		pipe.add(new Target2Label());
-		pipe.add(new FeatureSequence2FeatureVector());
-		// pipeList.add(new PrintInputAndTarget());
-		return new SerialPipes(pipe);
-	}
-
-	private static SerialPipes getPipe6() {
-		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
-		// pipeList.add(new PrintInput());
-		pipe.add(new Input2CharSequence("UTF-8"));
-		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
-		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		pipe.add(new TokenSequence2FeatureSequence());
-		pipe.add(new Target2Label());
-		pipe.add(new FeatureSequence2FeatureVector());
-		// pipeList.add(new PrintInputAndTarget());
-		return new SerialPipes(pipe);
-	}
-
-	private static SerialPipes getPipe7() {
-		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
-		// pipeList.add(new PrintInput());
-		pipe.add(new Input2CharSequence("UTF-8"));
-		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
-		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		int[] sizes = { 1, 2, 3, 4, 5 };
-		pipe.add(new TokenSequenceNGrams(sizes));
-		pipe.add(new TokenSequence2FeatureSequence());
-		pipe.add(new Target2Label());
-		pipe.add(new FeatureSequence2FeatureVector());
-		// pipeList.add(new PrintInputAndTarget());
-		return new SerialPipes(pipe);
-	}
-
-	private static SerialPipes getPipe8() {
-		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
-		// pipeList.add(new PrintInput());
-		pipe.add(new Input2CharSequence("UTF-8"));
-		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
-		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		int[] sizes = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-		pipe.add(new TokenSequenceNGrams(sizes));
-		pipe.add(new TokenSequence2FeatureSequence());
-		pipe.add(new Target2Label());
-		pipe.add(new FeatureSequence2FeatureVector());
-		// pipeList.add(new PrintInputAndTarget());
-		return new SerialPipes(pipe);
 	}
 
 	public static File convert() throws IOException {

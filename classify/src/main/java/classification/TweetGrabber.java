@@ -24,6 +24,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import common.Constants;
 import common.FileUtil;
+import common.PipeFactory;
 import common.ServerInteractionsUtil;
 
 public class TweetGrabber {
@@ -46,7 +47,7 @@ public class TweetGrabber {
 
 		// Classifies the tweets and adds the Labels and values to the
 		// tweetInstance
-		InstanceList il = new InstanceList(ModelTester.getPipe4());
+		InstanceList il = new InstanceList(PipeFactory.getPipe4());
 		Classifier companyClassifier = (new ModelUpdater()).createNewCompanyWikipediaModel();
 //		Classifier companyClassifier = FileUtil
 //				.loadBestClassifier(Constants.COMPANY_MODEL);

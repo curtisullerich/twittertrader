@@ -61,4 +61,18 @@ public class ModelFactory {
 		return classifier;
 	}
 
+	public static Classifier getAppleBinaryClassifier()
+			throws FileNotFoundException {
+		InstanceList instances = new InstanceList(PipeFactory.getPipe4());
+		File file = new File("../corpus/applebinary.txt");
+
+		CsvIterator reader = new CsvIterator(new FileReader(file),
+				Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
+		instances.addThruPipe(reader);
+		MaxEntTrainer trainer = new MaxEntTrainer();
+		Classifier classifier = trainer.train(instances);
+		return classifier;
+	}
+	
+	
 }

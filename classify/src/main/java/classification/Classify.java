@@ -16,14 +16,14 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Label;
 
-import com.google.gson.JsonArray;
 import common.Constants;
 import common.FileUtil;
+import common.PipeFactory;
 
 public class Classify {
 	public static void main(String... args) throws ClassNotFoundException,
 			IOException {
-//		classify();
+		// classify();
 		stdio();
 	}
 
@@ -38,7 +38,6 @@ public class Classify {
 	public static void stdio() throws ClassNotFoundException, IOException {
 		Scanner s = new Scanner(System.in);
 
-		
 		// Classifier companyClassifier = (new
 		// ModelUpdater()).createNewCompanyWikipediaModel();
 		Classifier companyClassifier = FileUtil
@@ -47,7 +46,7 @@ public class Classify {
 				.loadBestClassifier(Constants.SENTIMENT_MODEL);
 
 		while (s.hasNextLine()) {
-			InstanceList il = new InstanceList(ModelTester.getPipe4());
+			InstanceList il = new InstanceList(PipeFactory.getPipe4());
 			String line = s.nextLine();
 			TweetJsonIterator tji = new TweetJsonIterator(line, Mode.CLASSIFY,
 					Type.UNCLASSIFIED);
@@ -62,7 +61,7 @@ public class Classify {
 						+ sc.getLabeling().getBestLabel() + ", "
 						+ sc.getLabeling().getBestValue());
 			}
-			//il.clear();
+			// il.clear();
 		}
 	}
 
