@@ -16,6 +16,9 @@ public class Constants {
 	public final static String VERIFIED_URL_POST = "/count/";
 	public static final String VERIFIED_COUNTS_URL = "http://danielstiner.com:9001/verified/companies";
 	
+	//Http regex
+	public static final String HTTP_REGEX = "http\\:\\/\\/([^\\s]+)";
+	
 	//Classifier constant literals
 	public static final String COMPANY_MODEL = "companyModel";
 	public static final String SENTIMENT_MODEL = "sentimentModel";
