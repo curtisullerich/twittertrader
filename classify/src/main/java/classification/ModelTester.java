@@ -53,10 +53,6 @@ public class ModelTester {
 			CsvIterator reader = new CsvIterator(new FileReader(file),
 					Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
 			instances.addThruPipe(reader);
-			File file2 = new File("../corpus/capple.txt");
-			CsvIterator reader2 = new CsvIterator(new FileReader(file),
-					Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
-			instances.addThruPipe(reader2);
 			// CsvIterator reader2 = new CsvIterator(new FileReader(file2),
 			// Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
 			// instances.addThruPipe(reader2);
