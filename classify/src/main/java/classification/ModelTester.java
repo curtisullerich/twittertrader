@@ -33,8 +33,8 @@ public class ModelTester {
 		// allPipes.add(getPipe1());
 		// allPipes.add(getPipe2());
 		// allPipes.add(getPipe3());
-//		allPipes.add(PipeFactory.getPipe4());
-		allPipes.add(PipeFactory.brandonsGetPipes());
+		allPipes.add(PipeFactory.getPipe4());
+//		allPipes.add(PipeFactory.brandonsGetPipes());
 		// allPipes.add(getPipe5());
 		// allPipes.add(getPipe6());
 		// allPipes.add(getPipe7());
@@ -73,7 +73,6 @@ public class ModelTester {
 				for (int i = 0; i < 10; i++) {
 					Classifier classifier = trainer.train(getAllButIndex(
 							instanceLists, i));
-
 					Trial trial = new Trial(classifier, instanceLists[i]);
 					accuracies += trial.getAccuracy();
 					rankings += trial.getAverageRank();
@@ -83,8 +82,8 @@ public class ModelTester {
 					}
 				}
 				info.add("Average accuracy: " + accuracies / 10);
-				info.add("Average ranking: " + rankings / 10);
-				info.add("---");
+			//	info.add("Average ranking: " + rankings / 10);
+			//	info.add("---");
 			}
 			info.add("~~~~~~~~~");
 		}
@@ -93,12 +92,12 @@ public class ModelTester {
 			System.out.println(s);
 		}
 
-		for (Trial trial : trials) {
-			System.out.println(trial.getClassifier().getClass().getName());
-			System.out.println("Accuracy: " + trial.getAccuracy());
-			System.out.println("Average rank: " + trial.getAverageRank());
-			System.out.println("~~~~~~~~");
-		}
+//		for (Trial trial : trials) {
+//			System.out.println(trial.getClassifier().getClass().getName());
+//			System.out.println("Accuracy: " + trial.getAccuracy());
+//			System.out.println("Average rank: " + trial.getAverageRank());
+//			System.out.println("~~~~~~~~");
+//		}
 	}
 
 	public static void jsonTest() throws FileNotFoundException, IOException,
