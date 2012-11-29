@@ -1,11 +1,17 @@
 package classification;
 
-import org.xeustechnologies.googleapi.spelling.SpellChecker;
-import org.xeustechnologies.googleapi.spelling.SpellCorrection;
-import org.xeustechnologies.googleapi.spelling.SpellResponse;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import cc.mallet.pipe.Pipe;
 import cc.mallet.types.Instance;
+
+import com.swabunga.spell.engine.SpellDictionaryHashMap;
+import com.swabunga.spell.engine.Word;
+import com.swabunga.spell.event.SpellChecker;
 
 public class SpellCheck extends Pipe {
 
@@ -13,6 +19,27 @@ public class SpellCheck extends Pipe {
 	 * 
 	 */
 	private static final long serialVersionUID = 5452951467629627217L;
+	
+	private SpellDictionaryHashMap dictionary;
+	private SpellChecker spellchecker;
+	
+	private String dictionaryLoc = "../classify/eng_com.dic";
+	private int threshold = 100;
+	
+	//Look at this block!
+	{
+		try {
+			dictionary = new SpellDictionaryHashMap(new File(dictionaryLoc));
+			spellchecker = new SpellChecker(dictionary);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	
 	/**
 	 * Takes the given instance and does a spell check on the tweet text, replacing misspelled words with the
@@ -26,36 +53,34 @@ public class SpellCheck extends Pipe {
 			return carrier;
 		}
 		
-		//Sends the text to Google to be spell checked
-		SpellResponse resp = new SpellChecker().check(text);
-		
-		StringBuilder sb = new StringBuilder();
-		int lastIndex = 0;
-		if (resp.getCorrections() != null) {
-			for (SpellCorrection sc: resp.getCorrections()) {
-				/*
-				 * If we got a valid correction then add the first (most likely to be correct) 
-				 * correction in place of the old word
-				*/
-				if (sc.getConfidence() != 0) {
-					/*
-					 * Get everything that hasn't been appended already that comes before the 
-					 * newly spell checked word
-					*/
-					sb.append(text.substring(lastIndex, sc.getOffset()));
-					//TODO do we need to check that this exists or will it always be there because 
-					//of the confidence or does the spell checker always try to match words with something?
-					sb.append(sc.getWords()[0]);
-					lastIndex = sc.getOffset() + sc.getLength();
-				}
+		StringTokenizer st = new StringTokenizer(text);
+		StringBuilder result = new StringBuilder();
+		while (st.hasMoreTokens()) {
+			String token = st.nextToken();
+			//One letter words don't play well  with others
+			if (token.length() != 1) {
+				List<Word> words = (List<Word>) spellchecker.getSuggestions(token, threshold);
+				Word best = findBest(words);
+				token = (best != null && best.getCost() < threshold) ? best.getWord() : token;
 			}
+			result.append(token).append(" ");
 		}
-		
-		//Flush the buffer!
-		sb.append(text.substring(lastIndex, text.length()));
-		
-		carrier.setData(sb.toString());
+		carrier.setData(result.toString());
 		return carrier;
 	}
+	
+	private Word findBest(List<Word> words) {
+		if (words.size() == 0) {
+			return null;
+		}
+		Word best = words.get(0);
+		for (Word w: words) {
+			if (w.getCost() < best.getCost()) {
+				best = w;
+			}
+		}
+		return best;
+	}
+
 
 }
