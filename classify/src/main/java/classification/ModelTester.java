@@ -161,7 +161,7 @@ public class ModelTester {
 		// -- trainers.add(new MaxEntGETrainer());
 		// -- trainers.add(new MaxEntPRTrainer());
 		// trainers.add(new MCMaxEntTrainer());
-		// trawiners.add(new NaiveBayesEMTrainer());
+		// trainers.add(new NaiveBayesEMTrainer());
 		// trainers.add(new WinnowTrainer());
 		return trainers;
 	}
