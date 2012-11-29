@@ -82,14 +82,16 @@ public class PipeFactory {
 		return new SerialPipes(pipe);
 	}
 
-	public static SerialPipes getPipe4() {
+	public static SerialPipes getDefault() {
 		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
 		// pipeList.add(new PrintInput());
-//			pipe.add(new TweetPipe());
 		pipe.add(new Input2CharSequence("UTF-8"));		
-		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
+//		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
+		Pattern tokenPattern = Pattern.compile("[^\\s]+");
 		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		int[] sizes = { 1, 2, 3, 4, 5 };
+		//pipe.add(new TokenSequenceRemoveStopwords());
+//		pipe.add(new Stemmer());
+		int[] sizes = {1, 2};
 		pipe.add(new TokenSequenceNGrams(sizes));
 		pipe.add(new TokenSequence2FeatureSequence());
 		pipe.add(new Target2Label());
@@ -103,7 +105,7 @@ public class PipeFactory {
 		// pipeList.add(new PrintInput());
 //			pipe.add(new TweetPipe());
 		pipe.add(new Input2CharSequence("UTF-8"));
-		pipe.add(new SpellCheck());
+//		pipe.add(new SpellCheck());
 		//Stop words
 		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
 		pipe.add(new CharSequence2TokenSequence(tokenPattern));
@@ -111,7 +113,7 @@ public class PipeFactory {
 		pipe.add(new TokenSequenceRemoveStopwords());
 		//Stemming
 		pipe.add(new Stemmer());
-		int[] sizes = { 1, 2, 3, 4, 5 };
+		int[] sizes = { 1, 2 };
 		pipe.add(new TokenSequenceNGrams(sizes));
 		pipe.add(new TokenSequence2FeatureSequence());
 		pipe.add(new Target2Label());

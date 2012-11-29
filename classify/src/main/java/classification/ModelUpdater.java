@@ -52,7 +52,7 @@ public class ModelUpdater {
 
 		CsvIterator reader = new CsvIterator(new FileReader(file),
 				Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
-		InstanceList instances = new InstanceList(PipeFactory.getPipe4());
+		InstanceList instances = new InstanceList(PipeFactory.getDefault());
 		instances.addThruPipe(reader);
 		Classifier c = trainer.train(instances);
 		FileUtil.saveClassifiertoDisk(c, Constants.COMPANY_MODEL);
@@ -81,7 +81,7 @@ public class ModelUpdater {
 		System.out.println("Training with min = " + min + " instances");
 		// MaxEntTrainer trainer = new MaxEntTrainer();
 		NaiveBayesTrainer trainer = new NaiveBayesTrainer();
-		InstanceList il = new InstanceList(PipeFactory.getPipe4());
+		InstanceList il = new InstanceList(PipeFactory.getDefault());
 		int i = 0;
 		for (Entry<String, JsonElement> e : counts.entrySet()) {
 			if (e.getValue().getAsInt() > 0) {
