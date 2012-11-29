@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 import cc.mallet.classify.Classifier;
@@ -25,15 +27,19 @@ import common.Constants;
 import common.PipeFactory;
 
 public class ModelTester {
+	
+	private static final int random_seed = 0xDEADBEEF;
+	
 	public static void main(String[] args) throws IOException {
 
-		ArrayList<SerialPipes> allPipes = new ArrayList<SerialPipes>();
+		List<SerialPipes> allPipes = new LinkedList<SerialPipes>();
 		// add all the pipe variations to the list
 //		allPipes.add(PipeFactory.getPipe());
 		//allPipes.add(PipeFactory.getPipe1());
 		//allPipes.add(PipeFactory.getPipe2());
 //		allPipes.add(PipeFactory.getPipe3());
 		allPipes.add(PipeFactory.getDefault());
+		allPipes.add(PipeFactory.getDansPipes());
 		//allPipes.add(PipeFactory.brandonsGetPipes());
 //		allPipes.add(PipeFactory.getPipe5());
 //		allPipes.add(PipeFactory.getPipe6());
@@ -43,7 +49,8 @@ public class ModelTester {
 		ArrayList<Trial> trials = new ArrayList<Trial>();
 		ArrayList<String> info = new ArrayList<String>();
 
-		for (SerialPipes pipe : allPipes) {
+		while (!allPipes.isEmpty()) {
+			SerialPipes pipe  = allPipes.remove(0);
 			InstanceList instances = new InstanceList(pipe);
 			// CsvIterator reader = new CsvIterator(new FileReader(new File(
 			// "tweets.txt")), Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
@@ -57,7 +64,7 @@ public class ModelTester {
 			// Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
 			// instances.addThruPipe(reader2);
 
-			InstanceList[] instanceLists = instances.split(new Randoms(),
+			InstanceList[] instanceLists = instances.split(new Randoms(random_seed),
 					new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,
 							0.1 });
 
