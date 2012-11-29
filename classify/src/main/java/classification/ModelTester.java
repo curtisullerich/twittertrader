@@ -39,7 +39,6 @@ public class ModelTester {
 		//allPipes.add(PipeFactory.getPipe2());
 //		allPipes.add(PipeFactory.getPipe3());
 		allPipes.add(PipeFactory.getDefault());
-		allPipes.add(PipeFactory.getDansPipes());
 		//allPipes.add(PipeFactory.brandonsGetPipes());
 //		allPipes.add(PipeFactory.getPipe5());
 //		allPipes.add(PipeFactory.getPipe6());

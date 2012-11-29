@@ -1,10 +1,10 @@
 package common;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import cc.mallet.pipe.CharSequence2TokenSequence;
+import cc.mallet.pipe.CharSequenceLowercase;
 import cc.mallet.pipe.FeatureSequence2FeatureVector;
 import cc.mallet.pipe.Input2CharSequence;
 import cc.mallet.pipe.Pipe;
@@ -14,8 +14,9 @@ import cc.mallet.pipe.TokenSequence2FeatureSequence;
 import cc.mallet.pipe.TokenSequenceLowercase;
 import cc.mallet.pipe.TokenSequenceNGrams;
 import cc.mallet.pipe.TokenSequenceRemoveStopwords;
-import classification.SpellCheck;
+import classification.Link2Title;
 import classification.Stemmer;
+import classification.TwitterFeatures;
 
 public class PipeFactory {
 
@@ -85,13 +86,26 @@ public class PipeFactory {
 	public static SerialPipes getDefault() {
 		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
 		// pipeList.add(new PrintInput());
-		pipe.add(new Input2CharSequence("UTF-8"));		
-//		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
+		pipe.add(new Input2CharSequence("UTF-8"));
+		pipe.add(new CharSequenceLowercase());
+		// Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
+		// pipe.add(new
+		// CharSequenceReplace(Pattern.compile("http\\:\\/\\/.*\\b",
+		// Pattern.CASE_INSENSITIVE), "HTTPLINK"));
+		// pipe.add( new
+		// CharSequenceReplace(Pattern.compile("\\@[\\p{L}\\p{Mn}]+",
+		// Pattern.CASE_INSENSITIVE), "@USERLINK"));
+		// pipe.add(new CharSequenceReplace(Pattern.compile("\\'"), ""));
+		// pipe.add(new CharSequenceReplace(Pattern.compile("\\!\\!+"), "!!"));
+		// pipe.add(new CharSequenceReplace(Pattern.compile("\\?\\?+"), "??"));
+//		pipe.add(new TwitterFeatures());
+//		pipe.add(new Link2Title());
+
 		Pattern tokenPattern = Pattern.compile("[^\\s]+");
 		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		//pipe.add(new TokenSequenceRemoveStopwords());
-//		pipe.add(new Stemmer());
-		int[] sizes = {1, 2};
+		pipe.add(new TokenSequenceRemoveStopwords());
+		pipe.add(new Stemmer());
+		int[] sizes = { 1, 2 };
 		pipe.add(new TokenSequenceNGrams(sizes));
 		pipe.add(new TokenSequence2FeatureSequence());
 		pipe.add(new Target2Label());
@@ -99,19 +113,20 @@ public class PipeFactory {
 		// pipeList.add(new PrintInputAndTarget());
 		return new SerialPipes(pipe);
 	}
-	
+
 	public static SerialPipes brandonsGetPipes() {
 		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
 		// pipeList.add(new PrintInput());
-//			pipe.add(new TweetPipe());
+		// pipe.add(new TweetPipe());
 		pipe.add(new Input2CharSequence("UTF-8"));
-//		pipe.add(new SpellCheck());
-		//Stop words
+		// pipe.add(new SpellCheck());
+		// Stop words
 		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
 		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		//pipe.add(new TokenSequenceRemoveStopwords(new File("../Stopwords.txt"), "UTF-8", false, false, false));
+		// pipe.add(new TokenSequenceRemoveStopwords(new
+		// File("../Stopwords.txt"), "UTF-8", false, false, false));
 		pipe.add(new TokenSequenceRemoveStopwords());
-		//Stemming
+		// Stemming
 		pipe.add(new Stemmer());
 		int[] sizes = { 1, 2 };
 		pipe.add(new TokenSequenceNGrams(sizes));

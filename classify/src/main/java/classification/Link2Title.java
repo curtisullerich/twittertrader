@@ -42,7 +42,7 @@ public class Link2Title extends Pipe {
 		 * look it up if it is, otherwise just append the string, and move on.
 		 */
 		
-		for (String s: text.split(" ")) {
+		for (String s: text.split("\\s+")) {
 			//We found a link so look it up
 			if (s.matches(Constants.HTTP_REGEX) && m.find()) {
 				String url = m.group();
@@ -52,14 +52,17 @@ public class Link2Title extends Pipe {
 					if (doc.title() != null && !doc.title().equals("")) {
 						//Flawless victory!
 						sb.append(doc.title());
+						System.out.println("replaced " + url + " with " + doc.title());
 					}
 					else {
 						//try to resolve the url
 						sb.append(doc.baseUri());
+						System.out.println("replaced " + url + " with " + doc.baseUri());
 					}
 				} catch (IOException e) {
 					//Ignore it and put the url back into the string
 					sb.append(url);
+					System.out.println("did not replace url " + url);
 				}
 			}
 			//Regular word so just throw it into the result
@@ -69,6 +72,7 @@ public class Link2Title extends Pipe {
 			sb.append(" ");
 		}
 		
+		System.out.println("After replacing: " + sb.toString());
 		carrier.setData(sb.toString());
 		return carrier;
 	}

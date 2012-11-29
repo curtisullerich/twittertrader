@@ -27,27 +27,27 @@ public class TwitterPipe extends Pipe {
 
     private Pipe myPipe = new SerialPipes(new Pipe[] {
             new CopyData2Source(),
-            new CharSequenceLowercase(),
+//            new CharSequenceLowercase(),
             anonmymize 
-            ? new CharSequenceReplace(Pattern.compile("http\\:\\/\\/.*\\b"), "HTTPLINK") 
+            ? new CharSequenceReplace(Pattern.compile("http\\:\\/\\/.*\\b", Pattern.CASE_INSENSITIVE), "HTTPLINK") 
             : new Noop(),
             anonmymize 
-            ? new CharSequenceReplace(Pattern.compile("\\@[\\p{L}\\p{Mn}]+"), "@USERLINK") 
+            ? new CharSequenceReplace(Pattern.compile("\\@[\\p{L}\\p{Mn}]+", Pattern.CASE_INSENSITIVE), "@USERLINK") 
             : new Noop(),
             new CharSequenceReplace(Pattern.compile("\\'"), ""),
             new CharSequenceReplace(Pattern.compile("\\!\\!+"), "!!"),
             new CharSequenceReplace(Pattern.compile("\\?\\?+"), "??"),
-            new CharSequenceReplace(Pattern.compile("\\bno\\s+"), "no_"),
-            new CharSequenceReplace(Pattern.compile("\\bnot\\s+"), "not_"),
-            new CharSequenceReplace(Pattern.compile("\\bdoesnt\\s+"), "doesnt_"),
-            new CharSequenceReplace(Pattern.compile("\\bdont\\s+"), "dont_"),
-            new CharSequenceReplace(Pattern.compile("\\baint\\s+"), "aint_"),
-            emoticons
-            ? new FixEmoticons(Pattern.compile(emoticonPattern, Pattern.CASE_INSENSITIVE))
-            : new Noop(),
-            emoticons
-            ? new CharSequence2TokenSequence(Pattern.compile(corePattern+"|"+emoticonPattern, Pattern.CASE_INSENSITIVE))
-            : new CharSequence2TokenSequence(Pattern.compile(corePattern, Pattern.CASE_INSENSITIVE)),
+//            new CharSequenceReplace(Pattern.compile("\\bno\\s+"), "no_"),
+//            new CharSequenceReplace(Pattern.compile("\\bnot\\s+"), "not_"),
+//            new CharSequenceReplace(Pattern.compile("\\bdoesnt\\s+"), "doesnt_"),
+//            new CharSequenceReplace(Pattern.compile("\\bdont\\s+"), "dont_"),
+//            new CharSequenceReplace(Pattern.compile("\\baint\\s+"), "aint_"),
+//            emoticons
+//            ? new FixEmoticons(Pattern.compile(emoticonPattern, Pattern.CASE_INSENSITIVE))
+//            : new Noop(),
+//            emoticons
+//            ? new CharSequence2TokenSequence(Pattern.compile(corePattern+"|"+emoticonPattern, Pattern.CASE_INSENSITIVE))
+//            : new CharSequence2TokenSequence(Pattern.compile(corePattern, Pattern.CASE_INSENSITIVE)),
             new TokenSequenceBiGrammer(),
             new TokenSequenceRemoveStopwords(),
             new TokenSequence2FeatureSequence(),
