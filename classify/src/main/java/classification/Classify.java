@@ -46,7 +46,7 @@ public class Classify {
 				.loadBestClassifier(Constants.SENTIMENT_MODEL);
 
 		while (s.hasNextLine()) {
-			InstanceList il = new InstanceList(PipeFactory.getPipe4());
+			InstanceList il = new InstanceList(PipeFactory.getDefault());
 			String line = s.nextLine();
 			TweetJsonIterator tji = new TweetJsonIterator(line, Mode.CLASSIFY,
 					Type.UNCLASSIFIED);

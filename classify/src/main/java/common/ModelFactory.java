@@ -22,7 +22,7 @@ public class ModelFactory {
 	 */
 	public static Classifier getCompanyClassifier()
 			throws FileNotFoundException {
-		InstanceList instances = new InstanceList(PipeFactory.getPipe4());
+		InstanceList instances = new InstanceList(PipeFactory.getDefault());
 		File file = new File("../corpus/companyCorpus.txt");
 		CsvIterator reader = new CsvIterator(new FileReader(file),
 				Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
@@ -46,7 +46,7 @@ public class ModelFactory {
 	 */
 	public static Classifier getBestSentimentClassifier()
 			throws FileNotFoundException {
-		InstanceList instances = new InstanceList(PipeFactory.getPipe4());
+		InstanceList instances = new InstanceList(PipeFactory.getDefault());
 		File file = new File("../corpus/sentiment.txt");
 		File file2 = new File("../corpus/tweets.txt");
 
@@ -63,7 +63,7 @@ public class ModelFactory {
 
 	public static Classifier getAppleBinaryClassifier()
 			throws FileNotFoundException {
-		InstanceList instances = new InstanceList(PipeFactory.getPipe4());
+		InstanceList instances = new InstanceList(PipeFactory.getDefault());
 		File file = new File("../corpus/applebinary.txt");
 
 		CsvIterator reader = new CsvIterator(new FileReader(file),

@@ -29,16 +29,16 @@ public class ModelTester {
 
 		ArrayList<SerialPipes> allPipes = new ArrayList<SerialPipes>();
 		// add all the pipe variations to the list
-		// allPipes.add(getPipe());
-		// allPipes.add(getPipe1());
-		// allPipes.add(getPipe2());
-		// allPipes.add(getPipe3());
-		allPipes.add(PipeFactory.getPipe4());
-//		allPipes.add(PipeFactory.brandonsGetPipes());
-		// allPipes.add(getPipe5());
-		// allPipes.add(getPipe6());
-		// allPipes.add(getPipe7());
-		// allPipes.add(getPipe8());
+//		allPipes.add(PipeFactory.getPipe());
+		//allPipes.add(PipeFactory.getPipe1());
+		//allPipes.add(PipeFactory.getPipe2());
+//		allPipes.add(PipeFactory.getPipe3());
+		allPipes.add(PipeFactory.getDefault());
+		//allPipes.add(PipeFactory.brandonsGetPipes());
+//		allPipes.add(PipeFactory.getPipe5());
+//		allPipes.add(PipeFactory.getPipe6());
+//		allPipes.add(PipeFactory.getPipe7());
+//		allPipes.add(PipeFactory.getPipe8());
 
 		ArrayList<Trial> trials = new ArrayList<Trial>();
 		ArrayList<String> info = new ArrayList<String>();
@@ -82,8 +82,8 @@ public class ModelTester {
 					}
 				}
 				info.add("Average accuracy: " + accuracies / 10);
-			//	info.add("Average ranking: " + rankings / 10);
-			//	info.add("---");
+				// info.add("Average ranking: " + rankings / 10);
+				// info.add("---");
 			}
 			info.add("~~~~~~~~~");
 		}
@@ -92,12 +92,12 @@ public class ModelTester {
 			System.out.println(s);
 		}
 
-//		for (Trial trial : trials) {
-//			System.out.println(trial.getClassifier().getClass().getName());
-//			System.out.println("Accuracy: " + trial.getAccuracy());
-//			System.out.println("Average rank: " + trial.getAverageRank());
-//			System.out.println("~~~~~~~~");
-//		}
+		// for (Trial trial : trials) {
+		// System.out.println(trial.getClassifier().getClass().getName());
+		// System.out.println("Accuracy: " + trial.getAccuracy());
+		// System.out.println("Average rank: " + trial.getAverageRank());
+		// System.out.println("~~~~~~~~");
+		// }
 	}
 
 	public static void jsonTest() throws FileNotFoundException, IOException,
@@ -112,7 +112,7 @@ public class ModelTester {
 
 	public static Classifier getBestSentimentClassifier()
 			throws FileNotFoundException {
-		InstanceList instances = new InstanceList(PipeFactory.getPipe4());
+		InstanceList instances = new InstanceList(PipeFactory.getDefault());
 		File file = new File("../corpus/sentiment.txt");
 		File file2 = new File("../corpus/tweets.txt");
 
@@ -129,7 +129,7 @@ public class ModelTester {
 
 	public static Classifier getCompanyClassifier()
 			throws FileNotFoundException {
-		InstanceList instances = new InstanceList(PipeFactory.getPipe4());
+		InstanceList instances = new InstanceList(PipeFactory.getDefault());
 		File file = new File("../corpus/companyset.txt");
 		CsvIterator reader = new CsvIterator(new FileReader(file),
 				Constants.CSV_ITERATOR_REGEX, 3, 2, 1);

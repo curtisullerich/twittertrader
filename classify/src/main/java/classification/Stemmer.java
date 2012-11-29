@@ -37,7 +37,11 @@ public class Stemmer extends Pipe {
                     Token token = tokenSequence.get(i);
                     stemmer.setCurrent(token.getText());
                     stemmer.stem();
-                    stemmedTokenSequence.add(new Token(stemmer.getCurrent()));
+                    String s = stemmer.getCurrent();
+                    stemmedTokenSequence.add(new Token(s));
+//                    if (!token.getText().equals(s)) {
+//                    System.out.println(token.getText() + "   :   " + s);
+//                    }
             }
             carrier.setData(stemmedTokenSequence);
             return carrier;
