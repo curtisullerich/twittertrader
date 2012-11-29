@@ -49,6 +49,8 @@ public class LabelingFrame extends JFrame implements ActionListener {
 	//Field to hold the tweet text
 	private JTextArea tweetArea;
 	
+	JLabel tweetTitlePanel;
+	
 	//List iterator for moving thru tweets
 	private ListIterator<Tweet> tweetIterator;
 	
@@ -64,6 +66,8 @@ public class LabelingFrame extends JFrame implements ActionListener {
 	JButton openFile, prev, next, delete, finish, firstLabel, secondLabel;
 	
 	private JFileChooser fc;
+	
+	private int curTweet, totalTweets;
 
 	/**
 	 * Launch the application.
@@ -107,9 +111,9 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		next.addActionListener(this);
 		buttonPanel.add(next);
 		
-		delete = new JButton("Delete");
-		delete.addActionListener(this);
-		buttonPanel.add(delete);
+//		delete = new JButton("Delete");
+//		delete.addActionListener(this);
+//		buttonPanel.add(delete);
 		
 		finish = new JButton("Finish");
 		finish.addActionListener(this);
@@ -193,7 +197,7 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		setLabelsPanel.add(secondLabelField, gbc_secondLabelField);
 		secondLabelField.setColumns(10);
 		
-		JLabel tweetTitlePanel = new JLabel("Tweet");
+		tweetTitlePanel = new JLabel("Tweet");
 		tweetTitlePanel.setHorizontalAlignment(SwingConstants.LEFT);
 		labelPanel.add(tweetTitlePanel, BorderLayout.NORTH);
 		
@@ -218,8 +222,8 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		else if (e.getSource() == prev) {
 			if (tweetIterator != null && tweetIterator.hasPrevious()) {
 				currentTweet = tweetIterator.previous();
+				--curTweet;
 				this.updateUi(currentTweet);
-				this.repaint();
 			}
 			else {
 				JOptionPane.showMessageDialog(this, "You can't do that!", "User Error",
@@ -229,6 +233,7 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		else if (e.getSource() == next) {
 			if (tweetIterator != null && tweetIterator.hasNext()) {
 				currentTweet = tweetIterator.next(); 
+				++curTweet;
 				this.updateUi(currentTweet);
 			}
 		}
@@ -236,7 +241,8 @@ public class LabelingFrame extends JFrame implements ActionListener {
 			try {
 				if (tweetIterator != null) {
 					tweetIterator.remove();
-					currentTweet = null;
+					currentTweet = new Tweet(0, "Freshly Deleted!");
+					updateUi(currentTweet);
 				}
 				else {
 					JOptionPane.showMessageDialog(this, "You can't do that!", "User Error",
@@ -263,6 +269,7 @@ public class LabelingFrame extends JFrame implements ActionListener {
 				}
 				if (tweetIterator.hasNext()) {
 					currentTweet = tweetIterator.next();
+					++curTweet;
 				}
 				else {
 					JOptionPane.showMessageDialog(this, "That's all of them!", "Info",
@@ -281,7 +288,6 @@ public class LabelingFrame extends JFrame implements ActionListener {
             			JOptionPane.ERROR_MESSAGE);
 			}
 		}
-		
 	}
 	
 	private void saveAndQuit() {
@@ -312,6 +318,7 @@ public class LabelingFrame extends JFrame implements ActionListener {
 
 	private void updateUi(Tweet newTweet) {
 		tweetArea.setText(newTweet.text);
+		tweetTitlePanel.setText("Tweet number " + curTweet + " of " + totalTweets);
 	}
 
 	public void loadFile() {
@@ -329,6 +336,8 @@ public class LabelingFrame extends JFrame implements ActionListener {
 				}
 				br.close();
 				tweetIterator = tweets.listIterator();
+				totalTweets = tweets.size();
+				curTweet = 1;
 					
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(this, "Unable to open file", "IO Error",
@@ -367,7 +376,7 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		
 		@Override
 		public String toString() {
-			return label + " " + id + " " + text;
+			return label.toLowerCase() + " " + id + " " + text;
 		}
 		
 		@Override
