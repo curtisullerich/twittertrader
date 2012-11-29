@@ -32,21 +32,28 @@
 			<version>4.0-alpha1</version>
 		</dependency>
 
-	<!-- Stemmer api -->
-	<dependency>
-		<groupId>org.apache.lucene</groupId>
-		<artifactId>lucene-snowball</artifactId>
-		<version>3.0.3</version>
-	</dependency>
+		<!-- Stemmer api -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-snowball</artifactId>
+			<version>3.0.3</version>
+		</dependency>
 
-	<dependency>
-		<!-- jsoup HTML parser library @ http://jsoup.org/ -->
-		<groupId>org.jsoup</groupId>
-		<artifactId>jsoup</artifactId>
-		<version>1.7.1</version>
-	</dependency>
-            
-            
+		<dependency>
+			<!-- jsoup HTML parser library @ http://jsoup.org/ -->
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.7.1</version>
+		</dependency>
+
+		<!-- Spell Checker api -->
+		<dependency>
+			<groupId>net.sf.jazzy</groupId>
+			<artifactId>jazzy</artifactId>
+			<version>0.5.2-rtext-1.4.1-2</version>
+		</dependency>
+
+
 	</dependencies>
 	<build>
 		<plugins>
@@ -67,13 +74,13 @@
 					<finalName>${artifactId}-${version}</finalName>
 				</configuration>
 				<executions>
-		          <execution>
-		            <phase>package</phase>
-		            <goals>
-		              <goal>shade</goal>
-		            </goals>
-		          </execution>
-		        </executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
