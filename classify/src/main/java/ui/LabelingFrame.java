@@ -319,6 +319,8 @@ public class LabelingFrame extends JFrame implements ActionListener {
 	private void updateUi(Tweet newTweet) {
 		tweetArea.setText(newTweet.text);
 		tweetTitlePanel.setText("Tweet number " + curTweet + " of " + totalTweets);
+		firstLabel.setText("Label as: " + firstLabelField.getText());
+		secondLabel.setText("Label as: " + secondLabelField.getText());
 	}
 
 	public void loadFile() {
