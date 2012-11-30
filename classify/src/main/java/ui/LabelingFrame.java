@@ -365,7 +365,10 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		}
 		catch (NumberFormatException e) {
 			return null;
+		} catch (IndexOutOfBoundsException e) {
+						
 		}
+
 	
 	}
 	
