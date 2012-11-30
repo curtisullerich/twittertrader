@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -359,6 +360,8 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		} catch (NumberFormatException e) {
 			return null;
 		} catch (IndexOutOfBoundsException e) {
+			return null;
+		} catch (NoSuchElementException e) {
 			return null;
 		}
 	}
