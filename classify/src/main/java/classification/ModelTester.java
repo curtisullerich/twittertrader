@@ -55,9 +55,9 @@ public class ModelTester {
 			// "tweets.txt")), Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
 			// File file = new File("../corpus/sentiment.txt");
 			// File file2 = new File("../corpus/tweets.txt");
-			File file = new File("../corpus/appleBinary.txt");
+			File file = new File("../corpus/appleBinaryFiltered.txt");
 			CsvIterator reader = new CsvIterator(new FileReader(file),
-					Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
+					Constants.CSV_ITERATOR_REGEX, 3, 1, 2);
 			instances.addThruPipe(reader);
 			// CsvIterator reader2 = new CsvIterator(new FileReader(file2),
 			// Constants.CSV_ITERATOR_REGEX, 3, 2, 1);

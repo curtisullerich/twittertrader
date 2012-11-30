@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import cc.mallet.pipe.CharSequence2TokenSequence;
-import cc.mallet.pipe.CharSequenceLowercase;
 import cc.mallet.pipe.FeatureSequence2FeatureVector;
 import cc.mallet.pipe.Input2CharSequence;
 import cc.mallet.pipe.Pipe;
@@ -88,7 +87,7 @@ public class PipeFactory {
 		// pipeList.add(new PrintInput());
 		pipe.add(new Input2CharSequence("UTF-8"));
 		pipe.add(new UnescapeHTML());
-//		pipe.add(new CharSequenceLowercase());
+		// pipe.add(new CharSequenceLowercase());
 		// Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
 		// pipe.add(new
 		// CharSequenceReplace(Pattern.compile("http\\:\\/\\/.*\\b",
@@ -99,15 +98,38 @@ public class PipeFactory {
 		// pipe.add(new CharSequenceReplace(Pattern.compile("\\'"), ""));
 		// pipe.add(new CharSequenceReplace(Pattern.compile("\\!\\!+"), "!!"));
 		// pipe.add(new CharSequenceReplace(Pattern.compile("\\?\\?+"), "??"));
-//		pipe.add(new TwitterFeatures());
-//		pipe.add(new Link2Title());
-		
+		// pipe.add(new TwitterFeatures());
+		// pipe.add(new Link2Title());
+
+		Pattern tokenPattern = Pattern.compile("[^\\s]+");
+		//pipe.add(new CharSequence2TokenSequence(tokenPattern));
+		 pipe.add(new Tokenizer());
+		 pipe.add(new TokenSequenceRemoveStopwords());
+		 pipe.add(new Stemmer());
+		int[] sizes = { 1, 2 };
+//		pipe.add(new PrintTokenSequenceFeatures());
+		pipe.add(new TokenSequenceNGrams(sizes));
+		pipe.add(new TokenSequence2FeatureSequence());
+		pipe.add(new Target2Label());
+		pipe.add(new FeatureSequence2FeatureVector());
+//		pipe.add(new PrintInputAndTarget());
+		// pipeList.add(new PrintInputAndTarget());
+		return new SerialPipes(pipe);
+	}
+
+	public static SerialPipes getDansPipes() {
+		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
+		// pipeList.add(new PrintInput());
+		pipe.add(new Input2CharSequence("UTF-8"));
+
+		// pipe.add(new Emotes());
+
+		// Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
 		Pattern tokenPattern = Pattern.compile("[^\\s]+");
 		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-//		pipe.add(new Tokenizer());
-//		pipe.add(new TokenSequenceRemoveStopwords());
-//		pipe.add(new Stemmer());
-		int[] sizes = { 1, 2 };
+		pipe.add(new TokenSequenceRemoveStopwords());
+		pipe.add(new Stemmer());
+		int[] sizes = { 1, 2, 3 };
 		pipe.add(new TokenSequenceNGrams(sizes));
 		pipe.add(new TokenSequence2FeatureSequence());
 		pipe.add(new Target2Label());
@@ -115,27 +137,7 @@ public class PipeFactory {
 		// pipeList.add(new PrintInputAndTarget());
 		return new SerialPipes(pipe);
 	}
-	public static SerialPipes getDansPipes() {
-		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
-		// pipeList.add(new PrintInput());
-		pipe.add(new Input2CharSequence("UTF-8"));
-		
-//		pipe.add(new Emotes());
-		
-//		Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
-		Pattern tokenPattern = Pattern.compile("[^\\s]+");
-		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		pipe.add(new TokenSequenceRemoveStopwords());
- 		pipe.add(new Stemmer());
-		int[] sizes = {1, 2, 3};
-		pipe.add(new TokenSequenceNGrams(sizes));
-		pipe.add(new TokenSequence2FeatureSequence());
-		pipe.add(new Target2Label());
-		pipe.add(new FeatureSequence2FeatureVector());
-		//pipeList.add(new PrintInputAndTarget());
-		return new SerialPipes(pipe);
-	}
-	
+
 	public static SerialPipes brandonsGetPipes() {
 		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
 		// pipeList.add(new PrintInput());
