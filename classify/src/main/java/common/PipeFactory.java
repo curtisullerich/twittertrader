@@ -15,6 +15,8 @@ import cc.mallet.pipe.TokenSequenceLowercase;
 import cc.mallet.pipe.TokenSequenceNGrams;
 import cc.mallet.pipe.TokenSequenceRemoveStopwords;
 import classification.Stemmer;
+import classification.Tokenizer;
+import classification.UnescapeHTML;
 
 public class PipeFactory {
 
@@ -85,7 +87,8 @@ public class PipeFactory {
 		ArrayList<Pipe> pipe = new ArrayList<Pipe>();
 		// pipeList.add(new PrintInput());
 		pipe.add(new Input2CharSequence("UTF-8"));
-		pipe.add(new CharSequenceLowercase());
+		pipe.add(new UnescapeHTML());
+//		pipe.add(new CharSequenceLowercase());
 		// Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
 		// pipe.add(new
 		// CharSequenceReplace(Pattern.compile("http\\:\\/\\/.*\\b",
@@ -98,11 +101,12 @@ public class PipeFactory {
 		// pipe.add(new CharSequenceReplace(Pattern.compile("\\?\\?+"), "??"));
 //		pipe.add(new TwitterFeatures());
 //		pipe.add(new Link2Title());
-
+		
 		Pattern tokenPattern = Pattern.compile("[^\\s]+");
 		pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		pipe.add(new TokenSequenceRemoveStopwords());
-		pipe.add(new Stemmer());
+//		pipe.add(new Tokenizer());
+//		pipe.add(new TokenSequenceRemoveStopwords());
+//		pipe.add(new Stemmer());
 		int[] sizes = { 1, 2 };
 		pipe.add(new TokenSequenceNGrams(sizes));
 		pipe.add(new TokenSequence2FeatureSequence());
