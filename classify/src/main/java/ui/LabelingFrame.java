@@ -326,15 +326,25 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
-			
+			String line = "";
+			int failedTweets = 0;
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				List<Tweet> tweets = new LinkedList<Tweet>();
-				String line;
 				while ((line = br.readLine()) != null) {
-					tweets.add(new Tweet(line));
+					Tweet n = makeTweet(line);
+					if (n != null) {
+						tweets.add(n);
+					}
+					else {
+						++failedTweets;
+					}
 				}
 				br.close();
+				JOptionPane.showMessageDialog(this, "Successfully read: " + tweets.size() + 
+						((tweets.size() != 1) ? " Tweets. " : " Tweet. ") + "Failed to read " + failedTweets +
+						((failedTweets != 1) ? " Tweets." : " Tweet"), "IO Error",
+            			JOptionPane.INFORMATION_MESSAGE);
 				tweetIterator = tweets.listIterator();
 				totalTweets = tweets.size();
 				curTweet = 1;
@@ -342,11 +352,19 @@ public class LabelingFrame extends JFrame implements ActionListener {
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(this, "Unable to open file", "IO Error",
             			JOptionPane.ERROR_MESSAGE);
-			} catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(this, "File had unreadable tweet", "Parse Error",
-            			JOptionPane.ERROR_MESSAGE);
 			}
 		}
+	}
+	
+	private Tweet makeTweet(String tweetText) {
+		try {
+			Tweet newTweet = new Tweet(tweetText);
+			return newTweet;
+		}
+		catch (NumberFormatException e) {
+			return null;
+		}
+	
 	}
 	
 	private class Tweet {
@@ -363,6 +381,8 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		public Tweet(String tweet) {
 			StringTokenizer st = new StringTokenizer(tweet);
 			id = Long.parseLong(st.nextToken());
+
+
 			
 			StringBuilder sb = new StringBuilder();
 			
