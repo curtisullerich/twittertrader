@@ -42,7 +42,7 @@ public class UnescapeHTML extends Pipe {
 //			}
 //			sb.append(" ");
 //		}
-		carrier.setData(sb.toString());
+//		carrier.setData(sb.toString());
 //		System.out.println("After UnescapeHTML: " + sb);
 		return carrier;
 	}
