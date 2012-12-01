@@ -28,6 +28,7 @@ import cc.mallet.types.InstanceList;
 
 import common.Constants;
 import common.PipeFactory;
+import common.SetItem;
 
 public class ModelTester {
 
@@ -37,22 +38,19 @@ public class ModelTester {
 
 	public static void main(String[] args) throws IOException {
 
-		List<SerialPipes> allPipes = new LinkedList<SerialPipes>();
-		// add all the pipe variations to the list
-		allPipes.add(PipeFactory.getDefault());
-		// allPipes.add(PipeFactory.brandonsGetPipes());
+		Iterator<SetItem<SerialPipes>> pipesIterator = PipeFactory.getPipes();
 
-		Iterator<SerialPipes> pipesIterator = PipeFactory.getPipes();
-
-		while (pipesIterator.hasNext()) {
-			SerialPipes pipes = pipesIterator.next();
-		}
-
-		ArrayList<Trial> trials = new ArrayList<Trial>();
 		ArrayList<String> info = new ArrayList<String>();
 
-		while (!allPipes.isEmpty()) {
-			SerialPipes pipe = allPipes.remove(0);
+		while (pipesIterator.hasNext()) {
+			SetItem<SerialPipes> n = pipesIterator.next();
+			SerialPipes pipe = n.value;
+			String pipeLabel = n.label;
+
+			ArrayList<Trial> trials = new ArrayList<Trial>();
+
+			info.add(pipeLabel);
+
 			InstanceList instances = new InstanceList(pipe);
 			File file = new File("../corpus/appleBinaryFiltered.txt");
 			CsvIterator reader = new CsvIterator(new FileReader(file),
@@ -93,59 +91,17 @@ public class ModelTester {
 					rankings += trial.getAverageRank();
 					trials.add(trial);
 				}
-
-				// for (int i = 0; i < instanceLists.length; i++) {
-				// Classifier classifier = trainer.train(getAllButIndex(
-				// instanceLists, i));
-				// // System.err.println(classifier.getAlphabet());
-				//
-				// Trial trial = new Trial(classifier, instanceLists[i]);
-				// System.err.println(trial.getAccuracy());
-				// System.err.println(classifier.getLabelAlphabet());
-				// accuracies += trial.getAccuracy();
-				// rankings += trial.getAverageRank();
-				// trials.add(trial);
-				// if (i == 0) {
-				// info.add(trial.getClassifier().getClass().getName());
-				// }
-				//
-				// for (int j = 0; j < instanceLists.length; j++) {
-				// for (Instance inst : instanceLists[j]) {
-				// // classifier.classify(inst);
-				// // inst.unLock();
-				// // inst.setLabeling(null);
-				// //
-				// System.err.println(String.valueOf(c.toInstance().getName())+
-				// // " arst " + c.getLabelVector().toString(true) +
-				// // "   ");
-				// }
-				// }
-				//
-				// for (Classification c : trial) {
-				//
-				// //
-				// System.err.println(String.valueOf(c.toInstance().getName())+
-				// // " arst " + c.getLabelVector().toString(true) +
-				// // "   ");
-				// }
-				// }
 				info.add("Average accuracy: " + accuracies / i);
 				// info.add("Average ranking: " + rankings / 10);
 				// info.add("---");
 			}
 			info.add("~~~~~~~~~");
+
 		}
 
 		for (String s : info) {
 			System.out.println(s);
 		}
-
-		// for (Trial trial : trials) {
-		// System.out.println(trial.getClassifier().getClass().getName());
-		// System.out.println("Accuracy: " + trial.getAccuracy());
-		// System.out.println("Average rank: " + trial.getAverageRank());
-		// System.out.println("~~~~~~~~");
-		// }
 	}
 
 	public static void jsonTest() throws FileNotFoundException, IOException,

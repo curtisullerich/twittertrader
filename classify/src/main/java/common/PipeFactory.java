@@ -3,9 +3,8 @@ package common;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
-
-import com.google.common.collect.Iterators;
 
 import cc.mallet.pipe.CharSequence2TokenSequence;
 import cc.mallet.pipe.CharSequenceLowercase;
@@ -20,37 +19,37 @@ import cc.mallet.pipe.TokenSequenceRemoveStopwords;
 import classification.Stemmer;
 import classification.UnescapeHTML;
 
+import com.google.common.collect.Iterators;
+
 public class PipeFactory {
 
-	public static Iterator<SerialPipes> getPipes() {
+	public static Iterator<SetItem<SerialPipes>> getPipes() {
 		return new SetCombiner<SerialPipes, Pipe>() {
 
 			@Override
-			public SerialPipes combine(Iterable<Pipe> in) {
-				return new SerialPipes(Iterators.toArray(in.iterator(),
-						Pipe.class));
+			public SetItem<SerialPipes> combine(List<Pipe> pipes,
+					List<String> labels) {
+
+				return new SetItem<SerialPipes>(new SerialPipes(pipes),
+						labels.toString());
 			}
 
 		}.add(new SetFactory<Pipe>() {
-
 			@Override
-			public Iterable<Pipe> build() {
-				ArrayList<Pipe> pipes = new ArrayList<Pipe>();
-				pipes.add(new Input2CharSequence("UTF-8"));
-				pipes.add(new UnescapeHTML());
-				pipes.add(new CharSequenceLowercase());
-				return pipes;
+			protected void build() {
+				this.add(new Input2CharSequence("UTF-8"), "Input2CharSequence");
+				this.add(new UnescapeHTML(), "UnescapeHTML");
+				this.add(new CharSequenceLowercase(), "CharSequenceLowercase");
 			}
-
-		}).add(new SetFactory<Pipe>() {
-
+		}).add(new SetFactory<Pipe>(true) {
 			@Override
-			public Iterable<Pipe> build() {
-
-				return Arrays.asList(new Pipe[] {
-						new CharSequence2TokenSequence(Pattern.compile("[\\p{L}\\p{N}_]+")),
-						new CharSequence2TokenSequence(Pattern.compile("[^\\s]+"))
-				});
+			protected void build() {
+				this.add(
+						new CharSequence2TokenSequence(Pattern
+								.compile("[\\p{L}\\p{N}_]+")), "p{L}\\p{N}");
+				this.add(
+						new CharSequence2TokenSequence(Pattern
+								.compile("[^\\s]+")), "\\s");
 			}
 
 		}).iterator();
