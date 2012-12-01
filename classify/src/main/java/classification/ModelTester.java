@@ -8,24 +8,23 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-import cc.mallet.classify.Classification;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.classify.MaxEntTrainer;
+import cc.mallet.classify.NaiveBayes;
 import cc.mallet.classify.NaiveBayesTrainer;
 import cc.mallet.classify.Trial;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.SerialPipes;
 import cc.mallet.pipe.iterator.CsvIterator;
 import cc.mallet.types.CrossValidationIterator;
-import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
-import cc.mallet.util.Randoms;
 
 import common.Constants;
 import common.PipeFactory;
@@ -33,8 +32,8 @@ import common.PipeFactory;
 public class ModelTester {
 
 	private static final int random_seed = 0xDEADBEEF;
-	
-	private static final int folds = 10;
+
+	private static final int folds = 6;
 
 	public static void main(String[] args) throws IOException {
 
@@ -42,6 +41,12 @@ public class ModelTester {
 		// add all the pipe variations to the list
 		allPipes.add(PipeFactory.getDefault());
 		// allPipes.add(PipeFactory.brandonsGetPipes());
+
+		Iterator<SerialPipes> pipesIterator = PipeFactory.getPipes();
+
+		while (pipesIterator.hasNext()) {
+			SerialPipes pipes = pipesIterator.next();
+		}
 
 		ArrayList<Trial> trials = new ArrayList<Trial>();
 		ArrayList<String> info = new ArrayList<String>();
@@ -54,7 +59,8 @@ public class ModelTester {
 					Constants.CSV_ITERATOR_REGEX, 3, 1, 2);
 			instances.addThruPipe(reader);
 
-			CrossValidationIterator cvi = new CrossValidationIterator(instances, folds, new Random(random_seed));
+			CrossValidationIterator cvi = new CrossValidationIterator(
+					instances, folds, new Random(random_seed));
 
 			String description = "";
 			for (Pipe p : pipe.pipes()) {
@@ -65,57 +71,65 @@ public class ModelTester {
 			for (ClassifierTrainer<? extends Classifier> trainer : trainers()) {
 				double accuracies = 0;
 				double rankings = 0;
-				
-				while(cvi.hasNext()) {
+
+				int i = 0;
+				while (cvi.hasNext()) {
+					i++;
 					InstanceList[] instanceLists = cvi.next();
 					InstanceList train = instanceLists[0];
 					InstanceList test = instanceLists[1];
-					
+
 					Classifier classifier = trainer.train(train);
-					
+
+					System.err.println(((NaiveBayes) classifier).getPriors());
+
+					((NaiveBayes) classifier).printWords(30);
+
 					Trial trial = new Trial(classifier, test);
-					
+
 					System.err.println(trial.getAccuracy());
 					System.err.println(classifier.getLabelAlphabet());
 					accuracies += trial.getAccuracy();
 					rankings += trial.getAverageRank();
 					trials.add(trial);
 				}
-				
-//				for (int i = 0; i < instanceLists.length; i++) {
-//					Classifier classifier = trainer.train(getAllButIndex(
-//							instanceLists, i));
-//					// System.err.println(classifier.getAlphabet());
-//
-//					Trial trial = new Trial(classifier, instanceLists[i]);
-//					System.err.println(trial.getAccuracy());
-//					System.err.println(classifier.getLabelAlphabet());
-//					accuracies += trial.getAccuracy();
-//					rankings += trial.getAverageRank();
-//					trials.add(trial);
-//					if (i == 0) {
-//						info.add(trial.getClassifier().getClass().getName());
-//					}
-//
-//					for (int j = 0; j < instanceLists.length; j++) {
-//						for (Instance inst : instanceLists[j]) {
-//							// classifier.classify(inst);
-////							inst.unLock();
-//						//	inst.setLabeling(null);
-//							// System.err.println(String.valueOf(c.toInstance().getName())+
-//							// " arst " + c.getLabelVector().toString(true) +
-//							// "   ");
-//						}
-//					}
-//
-//					for (Classification c : trial) {
-//
-//						// System.err.println(String.valueOf(c.toInstance().getName())+
-//						// " arst " + c.getLabelVector().toString(true) +
-//						// "   ");
-//					}
-//				}
-				info.add("Average accuracy: " + accuracies / 10);
+
+				// for (int i = 0; i < instanceLists.length; i++) {
+				// Classifier classifier = trainer.train(getAllButIndex(
+				// instanceLists, i));
+				// // System.err.println(classifier.getAlphabet());
+				//
+				// Trial trial = new Trial(classifier, instanceLists[i]);
+				// System.err.println(trial.getAccuracy());
+				// System.err.println(classifier.getLabelAlphabet());
+				// accuracies += trial.getAccuracy();
+				// rankings += trial.getAverageRank();
+				// trials.add(trial);
+				// if (i == 0) {
+				// info.add(trial.getClassifier().getClass().getName());
+				// }
+				//
+				// for (int j = 0; j < instanceLists.length; j++) {
+				// for (Instance inst : instanceLists[j]) {
+				// // classifier.classify(inst);
+				// // inst.unLock();
+				// // inst.setLabeling(null);
+				// //
+				// System.err.println(String.valueOf(c.toInstance().getName())+
+				// // " arst " + c.getLabelVector().toString(true) +
+				// // "   ");
+				// }
+				// }
+				//
+				// for (Classification c : trial) {
+				//
+				// //
+				// System.err.println(String.valueOf(c.toInstance().getName())+
+				// // " arst " + c.getLabelVector().toString(true) +
+				// // "   ");
+				// }
+				// }
+				info.add("Average accuracy: " + accuracies / i);
 				// info.add("Average ranking: " + rankings / 10);
 				// info.add("---");
 			}
