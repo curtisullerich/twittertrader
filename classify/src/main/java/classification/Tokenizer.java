@@ -98,12 +98,16 @@ public class Tokenizer extends Pipe {
 			s = s.replaceAll("\\.{2,}", " ... ");
 			String spl[] = s.split("\\s+");
 			for (String ss : spl) {
-				if (!ss.equals(ss.toUpperCase())) {
+				if (!ss.toLowerCase().contains("apple")) { //!ss.equals(ss.toUpperCase())) {
 					ss = ss.toLowerCase();
+				} else {
+					//do it anyway!
+//					ss = ss.toLowerCase();
 				}
+				
 				ss = ss.replaceAll("([A-Za-z])\\1{3,}", "$1$1$1");
-				ss = ss.replaceAll("^[^\\w]", "");
-				ss = ss.replaceAll("[^\\w]$", "");
+				ss = ss.replaceAll("^[\\W]+", "");
+				ss = ss.replaceAll("[\\W]+$", "");
 				if (ss.length() > 0) {
 					ts.add(ss);
 					System.out.println(ss);

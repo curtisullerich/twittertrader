@@ -49,9 +49,10 @@ public class PipeFactory {
 			public Iterable<Pipe> build() {
 
 				return Arrays.asList(new Pipe[] {
-						new CharSequence2TokenSequence(Pattern.compile("[\\p{L}\\p{N}_]+")),
-						new CharSequence2TokenSequence(Pattern.compile("[^\\s]+"))
-				});
+						new CharSequence2TokenSequence(Pattern
+								.compile("[\\p{L}\\p{N}_]+")),
+						new CharSequence2TokenSequence(Pattern
+								.compile("[^\\s]+")) });
 			}
 
 		}).iterator();
@@ -62,7 +63,6 @@ public class PipeFactory {
 		// pipeList.add(new PrintInput());
 		pipe.add(new Input2CharSequence("UTF-8"));
 		pipe.add(new UnescapeHTML());
-		pipe.add(new CharSequenceLowercase());
 		// Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
 		// pipe.add(new
 		// CharSequenceReplace(Pattern.compile("http\\:\\/\\/.*\\b",
@@ -76,8 +76,8 @@ public class PipeFactory {
 		// pipe.add(new TwitterFeatures());
 		// pipe.add(new Link2Title());
 
-		Pattern tokenPattern = Pattern.compile("[^\\s]+");
-		//pipe.add(new CharSequence2TokenSequence(tokenPattern));
+		// Pattern tokenPattern = Pattern.compile("[^\\s]+");
+		// pipe.add(new CharSequence2TokenSequence(tokenPattern));
 		pipe.add(new Tokenizer());
 		pipe.add(new TokenSequenceRemoveStopwords());
 		pipe.add(new Stemmer());
