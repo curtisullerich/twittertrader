@@ -52,6 +52,31 @@ public class PipeFactory {
 								.compile("[^\\s]+")), "\\s");
 			}
 
+		}).add(new SetFactory<Pipe>() {
+			@Override
+			protected void build() {
+				this.add(new TokenSequenceRemoveStopwords(), "TokenSequenceRemoveStopwords");
+				this.add(new Stemmer(), "Stemmed");
+			}
+
+		}).add(new SetFactory<Pipe>(true) {
+			@Override
+			protected void build() {
+				this.add(new TokenSequence2FeatureSequence(), "TokenSequence2FeatureSequence");
+			}
+
+		}).add(new SetFactory<Pipe>(true) {
+			@Override
+			protected void build() {
+				this.add(new Target2Label(), "Target2Label");
+			}
+
+		}).add(new SetFactory<Pipe>(true) {
+			@Override
+			protected void build() {
+				this.add(new FeatureSequence2FeatureVector(), "FeatureSequence2FeatureVector");
+			}
+
 		}).iterator();
 	}
 

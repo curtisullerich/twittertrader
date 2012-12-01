@@ -99,7 +99,6 @@ public abstract class SetCombiner<O, I> implements Iterable<SetItem<O>> {
 
 				if (j > 0) {
 					i[j] = 0;
-
 					i[j - 1]++;
 				}
 			}
