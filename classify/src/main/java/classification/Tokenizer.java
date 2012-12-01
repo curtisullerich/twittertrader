@@ -64,10 +64,10 @@ public class Tokenizer extends Pipe {
 
 	public Instance pipe(Instance carrier) {
 		TokenSequence ts = new TokenSequence();
-
+		
 		String str = (String) carrier.getData();
 		System.out.println(str);
-
+		str = str.replaceAll("( RT )(^RT)( RT:)", "");
 		str = str.replaceAll("\\.{2,}", " ... ");
 		List<String> supersuperA = match(specialcases, ts, str, false, null);
 		List<String> superA = new ArrayList<String>();

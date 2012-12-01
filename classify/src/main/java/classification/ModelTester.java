@@ -79,9 +79,9 @@ public class ModelTester {
 
 					Classifier classifier = trainer.train(train);
 
-					System.err.println(((NaiveBayes) classifier).getPriors());
+//					System.err.println(((NaiveBayes) classifier).getPriors());
 
-					((NaiveBayes) classifier).printWords(30);
+	//				((NaiveBayes) classifier).printWords(30);
 
 					Trial trial = new Trial(classifier, test);
 
