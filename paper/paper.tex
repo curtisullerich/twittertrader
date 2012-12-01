@@ -14,7 +14,7 @@
 \setcounter{secnumdepth}{0}  
 \begin{document}
 
-\title{Tweet Classification - Filtering \\ of Twitter for Company-relevant Tweets}
+\title{Tweet Classification: Filtering \\ of Twitter for Company-relevant Tweets}
 \author{
 Curtis Ullerich, Daniel Stiner, Brandon Maxwell\\
 Department of Computer Science and Engineering\\
@@ -30,57 +30,49 @@ Twitter is a popular source for data mining due to its massive scale and inclusi
 \end{abstract}
 
 \section{Introduction}
-
-\subsection{Goals}
-
-\begin{itemize}
-
-\item Collect a corpus that represents a superset of tweets about Apple and label these instances as "apple" or "none"
-\item Create preprocessing steps to maximize the accuracy of binary classification
-
-\end{itemize}
-
-\subsection{Hypotheses}
-\item Using URL-replacement will improve disambiguation accuracy. 
-\item adding features for emoticon classes....
-\item adding features for @references, retweets, and hashtags, will decrease the feature set while improving accuracy
-\item selection of a proper tokenization regex will have profound effects on accuracy
-\item Stopping and stemming....
+Tweets are used as a source of data mining for applications ranging from predicting future stock price changes based on sentiment \cite{Ruiz:2012:CFT:2124295.2124358}, ... [ADD MORE]
+In many cases, the problem of determining which tweets are relevant for a particular application is prerequisite to meaningful results. In some domains, filtering tweets based solely on keywords may be appropriate, but disambiguation remains an interest natural language processing problem in many cases. We present a system to disambiguate tweets about the company Apple.
 
 \section{Related Work}
 DUALIST is a system that extends Mallet by user-interactive feedback during training[Settles]. Included in their implementation was a TwitterPipe that performed some simple feature extraction. 
-Part of the Sentiment Analysis Symposium focuses on tokenization of tweets for sentiment analysis, demonstrating that it provides consistent improvement over whitespace-based tokenizing \cite{potts2011}. A good deal of research has been done into sentiment classification of tweets \cite{Pak10}
+Part of the Sentiment Analysis Symposium focuses on tokenization of tweets for sentiment analysis, demonstrating that it provides consistent improvement over whitespace-based tokenizing \cite{potts2011}. A good deal of research has been done into sentiment classification of tweets, which requires very similar text processing and tokenization \cite{Pak10}. 
 
-\section{System Breakdown}
-\textbf{Corpus creation}\\
-By accessing the Twitter "Firehose" stream through their public API, we harvested tens of thousands of tweets using broad keyword filters with the goal of collecting a superset of relevant tweets. This provides us a smaller set of features in the overal corpus. The keywords used for the company of choice during this round of testing, Apple, were collected from information on the company's website and the Wikipedia page about Apple:\\
+\section{Method}
+\subsection{Corpus creation}\\
+By accessing the Twitter "Firehose" stream through their public API, we harvested 115,000 tweets using broad keyword filters with the goal of collecting a superset of relevant tweets. This provides us a smaller set of features in the overall corpus. The keywords used for the company of choice during this round of testing, Apple, were collected manually from information on the company's website and the Wikipedia page about Apple:\\
 ...\\
 \\
-This set of keywords clearly allows in a large number of false positives:\\
+This set of keywords clearly allows a large number of false positives:\\
 nice fish and chip.. good pie apple :-) http://t.co/KVDN5r5l \\
 20 chicken nuggets, chips, big mac, and a vanilla milkshake LIFE IS GOOD \\
 1 more day whoop plus safari ride yay \\
 shley staples an apple.  "AHHHH!!!!  Apple juice in my eye!" \\
 I ain't seen uncle Mac in a while\\
 \\
-During the time period of our data collection (give time period), the ratio was 40\% topical and 60\% false positives [need to analyze this for sure].
-On Twitter, a single message posted is often reposted, or "re-tweeted," many more times in a very short timespan. To reduce the effects of temporal overfitting, in which our model would overfit the data for a particular time slice, we filtered the data to remove retweets and near-duplicates. Tweets automatically osted by applications, iPad games, for instance, are often near-duplicates, so we removed these from the data set as well. This reduced a collection of 100,000 tweets by 50\%. \\
-A computer-posted tweet: I've collected 10,650 gold coins! http://t.co/H0V0O6yP #ipad, #ipadgames, #gameinsight\\
+We define a tweet to be "about" Apple if the tweet mentions the company (via direct reference or stock symbol), one of its products, or a service it offers. We make the assumption that spam will be filtered from the testing set. This could be done via an existing Naive Bayes classifier, but we simply did not include instances of spam in our corpus during the manual labeling process. We collected our tweets over the course of twelve hours. On Twitter, a single message posted is often reposted, or "re-tweeted," many more times in a very short timespan. Because of the small timespan of our data collection, a large number of retweets (effectively duplicates) appeared in the dataset. We filtered these duplicates out of the dataset as well to prevent over-fitting in our model. After filtering, our original set of 115,000 tweets was reduced to 65,000. A representative sample of non-spam, non-duplicate tweets has composition of 60\% topical instances and 40\% false positives [need to analyze this for sure].
+A computer-posted spam tweet: I've collected 10,650 gold coins! http://t.co/H0V0O6yP #ipad, #ipadgames, #gameinsight\\
 A retweet, signified by "RT": RT @PHILerNotebook: Trying to fix my Mac. This gray loading bar takes 10 minutes to start up. Grr. Shall take it to an _Apple_ _store_ soon! \\
 \\
 We hand labeled 2000 tweets for use in training and testing, including only English-language tweets in our training set. \\
 Data sets and scripts used for processing text data are available on the project website.
 
-\textbf{Data aggregation and classification}\\
+\subsection{Preprocessing Pipeline}
 
-\subsection{Basic Approach}
+We do all machine learning with the Mallet[2] library developed by the University of Massachusetts. Mallet includes abstractions for a data processing pipeline, during which we use both existing and custom processing "Pipes" to transform the data, beginning in our case with raw tweets text and ending in Mallet's internal FeatureVector format. We built several Pipes to analyze the effect of different filters and processes on the accuracy of classification:
 
-We do all machine learning with the Mallet[2] library developed by the University of Massachusetts. Mallet includes abstractions for a data processing pipeline, during which we use pre-built and custom processing "Pipes" to transform the data, beginning in our case with raw tweets text and ending in Mallet's internal FeatureVector format. We built several Pipes to analyze the effect of different filters and processes on the accuracy of classification:
-SpellCheck\\
+\subsubsection{Feature-space Enrichment}
+Stopword removal:
+N-grams:
+Fix emoticons:
+HTML corrections: 
+URL replacement:
+Spell checking:
 
-Stemmer\\
+\subsubsection{Disambiguation}
+Lowercasing:
+Stemming:
 
-Tokenizer\\
+\subsubsection{Tokenization}
 Twitter data, and user-generated web content in general, provides unique challenges to an automatic tokenizing system due to the relatively small number of features present and high level of noise in the feature set [citation and more details]. Features on twitter include excessive and irregular punctuation, frequent misspellings, emoticons, URLs, emoticons, and hashtags, to name a few.
 
 Cool ranch , 4 berry sundae , apple juice #yessuh #latenight #snack http://t.co/ttc3vujp \\
@@ -94,32 +86,32 @@ We approach this problem using a layered feature extraction system using regular
 Capitalization\\
 As presented in our results, because of irregular capitalization, two tokens likely to be semantically identical with respect to company classification may be represented in multiple cases: {Nooo, NOOO, nooo, NoOo}. To alleviate this, we attempt three different approaches. In the first, we simply lowercase all remaining text (note that many URLs become invalid after modifying case). In the second, we lowercase any text that is not in all caps. This serves to retain acronyms. In the third, we lowercase everything, leaving the case of all strings containing "apple" (case insensitive) alone. We made this decision based on the semantic difference between the capitalization of Apple the company and apple the fruit. This can be generalized to a larger set of keywords and applied to other companies in a similar fashion. 
 
-Miscenalaneous\\
 
-
-Unescape HTML\\
-
-N-grams\\
-
-Link2Title\\
-
-Stopword Removal\\
-
+\section{Experimental Setup}
+...constant-size test set with sliced training
+...comparison to n-fold validation
 
 \section{Results}
+...baseline using priors
+  baseline using whitespace splitting in naive bayes.
+  select interesting improvements.
+  graphs of both validation types
+  most useful features for classification
 
-Discussion of accuracy etc
-
-\section{Applications and Future Work}
+\section{Conclusion and Future Work}
 
 Things that could be done....
+
+[These guys] demonstrate a system of using background knowledge and relatedness, in which current information in the Twitter stream is used to more accurately estimate the priors for a Naive Bayes classification.
 
 \section{Contributions}
 
 We have built several reusable Java components that extend the Mallet API for processig of data from Twitter. We created a TweetJsonIterator that accepts Twitter's JSON-formatted tweets and creates Mallet Instances containing their values for easy processing by Mallet's pipeline during model training. We have also created several Pipe implementations that can be reused or easily modified to suit a similar Twitter processing. These include FixEmoticons, Link2Title, Stemmer, SpellCheck, and TwitterFeatures. All code is available through our project website.
 
 \section{ Acknowledgments}
+Thank you to Dr. Jin Tian and our TA Ru He for their guidance during this research project. We also extend our thanks to our friends for their help in manual labeling of tweets.
 
+\section{References}
 \begin{thebibliography}{99}
 @article{potts2011,
     author    = "Christopher Potts",
@@ -146,6 +138,23 @@ We have built several reusable Java components that extend the Mallet API for pr
   url = {http://www.lrec-conf.org/proceedings/lrec2010/pdf/385_Paper.pdf},
   year = 2010
 }
+@inproceedings{Ruiz:2012:CFT:2124295.2124358,
+ author = {Ruiz, Eduardo J. and Hristidis, Vagelis and Castillo, Carlos and Gionis, Aristides and Jaimes, Alejandro},
+ title = {Correlating financial time series with micro-blogging activity},
+ booktitle = {Proceedings of the fifth ACM international conference on Web search and data mining},
+ series = {WSDM '12},
+ year = {2012},
+ isbn = {978-1-4503-0747-5},
+ location = {Seattle, Washington, USA},
+ pages = {513--522},
+ numpages = {10},
+ url = {http://doi.acm.org/10.1145/2124295.2124358},
+ doi = {10.1145/2124295.2124358},
+ acmid = {2124358},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {financial time series, micro-blogging, social networks},
+} 
 \end{thebibliography}
 
 [1] J. Bollen, H. Mao, and X.-J. Zeng. Twitter mood predicts the
