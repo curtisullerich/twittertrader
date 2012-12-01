@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,6 +35,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
+import java.awt.Color;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class LabelingFrame extends JFrame implements ActionListener {
 
@@ -42,8 +46,11 @@ public class LabelingFrame extends JFrame implements ActionListener {
 	 */
 	private static final long serialVersionUID = -2225603632488216748L;
 	private JPanel contentPane;
+	
+	List<Tweet> tweets;
+	
+	//Fields holding the two types of labels for labeling
 
-	// Fields holding the two types of labels for labeling
 	private JTextField firstLabelField;
 	private JTextField secondLabelField;
 
@@ -63,9 +70,9 @@ public class LabelingFrame extends JFrame implements ActionListener {
 
 	// Dummy tweet for beginning and ending
 	private Tweet defaultTweet;
-
-	JButton openFile, prev, next, delete, finish, firstLabel, secondLabel;
-
+	
+	JButton openFile, prev, next, delete, finish, firstLabel, secondLabel, check;
+	
 	private JFileChooser fc;
 
 	private int curTweet, totalTweets;
@@ -91,24 +98,35 @@ public class LabelingFrame extends JFrame implements ActionListener {
 	 */
 	public LabelingFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 500, 350);
 		contentPane = new JPanel();
+		contentPane.setBackground(new Color(0, 0, 0));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 
 		Panel buttonPanel = new Panel();
+		buttonPanel.setBackground(new Color(0, 0, 0));
 		contentPane.add(buttonPanel, BorderLayout.SOUTH);
 
 		openFile = new JButton("Open File");
+		openFile.setFont(new Font("Verdana", Font.PLAIN, 11));
+		openFile.setBackground(new Color(0, 0, 0));
+		openFile.setForeground(new Color(148, 0, 211));
 		openFile.addActionListener(this);
 		buttonPanel.add(openFile);
 
 		prev = new JButton("Previous");
+		prev.setFont(new Font("Verdana", Font.PLAIN, 11));
+		prev.setForeground(new Color(148, 0, 211));
+		prev.setBackground(new Color(0, 0, 0));
 		prev.addActionListener(this);
 		buttonPanel.add(prev);
 
 		next = new JButton("Next");
+		next.setFont(new Font("Verdana", Font.PLAIN, 11));
+		next.setForeground(new Color(148, 0, 211));
+		next.setBackground(new Color(0, 0, 0));
 		next.addActionListener(this);
 		buttonPanel.add(next);
 
@@ -117,11 +135,20 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		// buttonPanel.add(delete);
 
 		finish = new JButton("Finish");
+		finish.setFont(new Font("Verdana", Font.PLAIN, 11));
+		finish.setBackground(new Color(0, 0, 0));
+		finish.setForeground(new Color(148, 0, 211));
 		finish.addActionListener(this);
 		buttonPanel.add(finish);
+		
+//		check = new JButton("Check Finished");
+//		check.addActionListener(this);
+//		buttonPanel.add(check);
 
 		JLabel Title = new JLabel("Labler");
-		Title.setFont(new Font("Tahoma", Font.PLAIN, 32));
+		Title.setForeground(new Color(148, 0, 211));
+		Title.setBackground(new Color(0, 0, 0));
+		Title.setFont(new Font("Verdana", Font.PLAIN, 32));
 		Title.setHorizontalAlignment(SwingConstants.CENTER);
 		contentPane.add(Title, BorderLayout.NORTH);
 
@@ -130,23 +157,35 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		labelPanel.setLayout(new BorderLayout(0, 0));
 
 		tweetArea = new JTextArea();
+		tweetArea.setText("Sample");
+		tweetArea.setFont(new Font("Verdana", Font.PLAIN, 20));
+		tweetArea.setForeground(new Color(148, 0, 211));
+		tweetArea.setBackground(Color.BLACK);
 		tweetArea.setLineWrap(true);
 		tweetArea.setWrapStyleWord(true);
 		tweetArea.setEditable(false);
 		labelPanel.add(tweetArea);
 
 		Panel labelOptionsPanel = new Panel();
+		labelOptionsPanel.setBackground(new Color(0, 0, 0));
 		labelPanel.add(labelOptionsPanel, BorderLayout.SOUTH);
 
 		firstLabel = new JButton("Label as First");
+		firstLabel.setFont(new Font("Verdana", Font.PLAIN, 11));
+		firstLabel.setBackground(new Color(0, 0, 0));
+		firstLabel.setForeground(new Color(148, 0, 211));
 		firstLabel.addActionListener(this);
 		labelOptionsPanel.add(firstLabel);
 
 		secondLabel = new JButton("Label as Second");
+		secondLabel.setFont(new Font("Verdana", Font.PLAIN, 11));
+		secondLabel.setForeground(new Color(148, 0, 211));
+		secondLabel.setBackground(new Color(0, 0, 0));
 		secondLabel.addActionListener(this);
 		labelOptionsPanel.add(secondLabel);
 
 		Panel setLabelsPanel = new Panel();
+		setLabelsPanel.setBackground(new Color(0, 0, 0));
 		labelPanel.add(setLabelsPanel, BorderLayout.EAST);
 		GridBagLayout gbl_setLabelsPanel = new GridBagLayout();
 		gbl_setLabelsPanel.columnWidths = new int[] { 30, 30, 30 };
@@ -156,6 +195,9 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		setLabelsPanel.setLayout(gbl_setLabelsPanel);
 
 		JLabel lblLabels = new JLabel("Labels");
+		lblLabels.setFont(new Font("Verdana", Font.PLAIN, 11));
+		lblLabels.setForeground(new Color(148, 0, 211));
+		lblLabels.setBackground(new Color(0, 0, 0));
 		GridBagConstraints gbc_lblLabels = new GridBagConstraints();
 		gbc_lblLabels.insets = new Insets(0, 0, 5, 5);
 		gbc_lblLabels.gridx = 1;
@@ -163,6 +205,8 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		setLabelsPanel.add(lblLabels, gbc_lblLabels);
 
 		JLabel lblFirst = new JLabel("First: ");
+		lblFirst.setFont(new Font("Verdana", Font.PLAIN, 11));
+		lblFirst.setForeground(new Color(148, 0, 211));
 		GridBagConstraints gbc_lblFirst = new GridBagConstraints();
 		gbc_lblFirst.anchor = GridBagConstraints.EAST;
 		gbc_lblFirst.insets = new Insets(0, 0, 5, 5);
@@ -171,6 +215,9 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		setLabelsPanel.add(lblFirst, gbc_lblFirst);
 
 		firstLabelField = new JTextField();
+		firstLabelField.setFont(new Font("Verdana", Font.PLAIN, 11));
+		firstLabelField.setForeground(new Color(148, 0, 211));
+		firstLabelField.setBackground(new Color(0, 0, 0));
 		firstLabelField.setText("<Enter text>");
 		GridBagConstraints gbc_firstLabelField = new GridBagConstraints();
 		gbc_firstLabelField.insets = new Insets(0, 0, 5, 5);
@@ -181,6 +228,8 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		firstLabelField.setColumns(10);
 
 		JLabel lblNewLabel_1 = new JLabel("Second:");
+		lblNewLabel_1.setFont(new Font("Verdana", Font.PLAIN, 11));
+		lblNewLabel_1.setForeground(new Color(148, 0, 211));
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
 		gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
 		gbc_lblNewLabel_1.insets = new Insets(0, 0, 0, 5);
@@ -189,6 +238,9 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		setLabelsPanel.add(lblNewLabel_1, gbc_lblNewLabel_1);
 
 		secondLabelField = new JTextField();
+		secondLabelField.setFont(new Font("Verdana", Font.PLAIN, 11));
+		secondLabelField.setForeground(new Color(148, 0, 211));
+		secondLabelField.setBackground(new Color(0, 0, 0));
 		secondLabelField.setText("<Enter text>");
 		GridBagConstraints gbc_secondLabelField = new GridBagConstraints();
 		gbc_secondLabelField.insets = new Insets(0, 0, 0, 5);
@@ -199,6 +251,9 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		secondLabelField.setColumns(10);
 
 		tweetTitlePanel = new JLabel("Tweet");
+		tweetTitlePanel.setFont(new Font("Verdana", Font.PLAIN, 15));
+		tweetTitlePanel.setForeground(new Color(148, 0, 211));
+		tweetTitlePanel.setBackground(new Color(0, 0, 0));
 		tweetTitlePanel.setHorizontalAlignment(SwingConstants.LEFT);
 		labelPanel.add(tweetTitlePanel, BorderLayout.NORTH);
 
@@ -214,7 +269,7 @@ public class LabelingFrame extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == openFile) {
-			this.loadFile();
+			this.loadUnLabeledFile();
 			if (tweetIterator != null) {
 				currentTweet = tweetIterator.next();
 				this.updateUi(currentTweet);
@@ -281,6 +336,48 @@ public class LabelingFrame extends JFrame implements ActionListener {
 						JOptionPane.ERROR_MESSAGE);
 			}
 		}
+//		else if (e.getSource() == check) {
+//			Set<Tweet> labelled = this.loadLabledFile();
+//			List<Tweet> lk = new LinkedList<Tweet>(labelled);
+//			List<Tweet> toRemove = new ArrayList<Tweet>();
+//			if (labelled != null) {
+//				labelledTweets.removeAll(labelled);
+//				int removed = 0;
+//				while (tweetIterator.hasNext()) {
+//					Tweet cur = tweetIterator.next();
+////					if (labelled.contains(cur)) {
+////						tweetIterator.remove();
+////						++removed;
+////					}
+//					
+//					for (int i = 0; i < lk.size(); ++i) {
+//						if (cur.tweetEquals(lk.get(i))) {
+//							//tweetIterator.remove();
+//							toRemove.add(cur);
+//							++removed;
+//							break;
+//						}
+//					}
+//					//Fast break if we found everything already
+//					if (removed == labelled.size()) {
+//						break;
+//					}
+//				}
+//				
+//				tweets.removeAll(toRemove);
+//				tweetIterator = tweets.listIterator();
+//				if (tweetIterator.hasNext()) {
+//					currentTweet = tweetIterator.next();
+//				}
+//				else {
+//					currentTweet = defaultTweet;
+//				}
+//				JOptionPane.showMessageDialog(this, "Removed: " + removed + 
+//						((removed != 1) ? " Tweets," : " Tweet,") + " already classified", "Info",
+//            			JOptionPane.INFORMATION_MESSAGE);
+//			}
+//		}
+		updateUi(currentTweet);
 	}
 
 	private void saveAndQuit() {
@@ -311,13 +408,41 @@ public class LabelingFrame extends JFrame implements ActionListener {
 
 	private void updateUi(Tweet newTweet) {
 		tweetArea.setText(newTweet.text);
-		tweetTitlePanel.setText("Tweet number " + curTweet + " of "
-				+ totalTweets);
-		firstLabel.setText("Label as: " + firstLabelField.getText());
-		secondLabel.setText("Label as: " + secondLabelField.getText());
+		tweetTitlePanel.setText("Tweet number " + curTweet + " of " + totalTweets);
+		String ftext = firstLabelField.getText().equals("<Enter text>") ? "first" : firstLabelField.getText();
+		String stext = secondLabelField.getText().equals("<Enter text>") ? "second" : secondLabelField.getText();
+		firstLabel.setText("Label as: " + (ftext));
+		secondLabel.setText("Label as: " + stext);
 	}
+	
+//	public Set<Tweet> loadLabledFile() {
+//		int returnVal = fc.showOpenDialog(this);
+//		
+//		if (returnVal == JFileChooser.APPROVE_OPTION) {
+//			File file = fc.getSelectedFile();
+//			String line = "";
+//			try {
+//				BufferedReader br = new BufferedReader(new FileReader(file));
+//				Set<Tweet> tweets = new HashSet<Tweet>();
+//				while ((line = br.readLine()) != null) {
+//					Tweet n = makeLabelledTweet(line);
+//					//Tweet n = makeTweet(line);
+//					if (n != null) {
+//						tweets.add(n);
+//					}
+//				}
+//				br.close();
+//				return tweets;
+//					
+//			} catch (IOException e) {
+//				JOptionPane.showMessageDialog(this, "Unable to open file", "IO Error",
+//            			JOptionPane.ERROR_MESSAGE);
+//			}
+//		}
+//		return null;
+//	}
 
-	public void loadFile() {
+	public void loadUnLabeledFile() {
 		int returnVal = fc.showOpenDialog(this);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -326,7 +451,7 @@ public class LabelingFrame extends JFrame implements ActionListener {
 			int failedTweets = 0;
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(file));
-				List<Tweet> tweets = new LinkedList<Tweet>();
+				tweets = new LinkedList<Tweet>();
 				while ((line = br.readLine()) != null) {
 					Tweet n = makeTweet(line);
 					if (n != null) {
@@ -364,7 +489,15 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		} catch (NoSuchElementException e) {
 			return null;
 		}
+
 	}
+	
+//	private Tweet makeLabelledTweet(String tweetText) {
+//		int firstSpace = tweetText.indexOf(" ");
+//		String label = tweetText.substring(0, firstSpace);
+//		Tweet t = makeTweet(tweetText.substring(firstSpace + 1, tweetText.length()));
+//		return t;
+//	}
 
 	private class Tweet {
 		public long id;
@@ -400,8 +533,27 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		public int hashCode() {
 			long hash = 7;
 			hash = hash * 31 + id;
-			hash = hash * 31 + text.hashCode();
+			//hash = hash * 31 + text.hashCode();
+			for (String s: text.split(" ")) {
+				hash = hash * 31 + s.hashCode();
+			}
 			return (int) hash;
+		}
+		
+		public boolean tweetEquals(Tweet other) {
+			if (this.id == other.id) {
+				StringTokenizer me = new StringTokenizer(text);
+				StringTokenizer them = new StringTokenizer(other.text);
+				while (me.hasMoreTokens() && them.hasMoreElements()) {
+					if (!me.nextToken().equals(them.nextToken())) {
+						return false;
+					}
+				}
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 	}
 
