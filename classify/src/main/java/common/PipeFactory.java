@@ -76,12 +76,12 @@ public class PipeFactory {
 		// pipe.add(new TwitterFeatures());
 		// pipe.add(new Link2Title());
 
-		// Pattern tokenPattern = Pattern.compile("[^\\s]+");
+		Pattern tokenPattern = Pattern.compile("[^\\s]+");
 		// pipe.add(new CharSequence2TokenSequence(tokenPattern));
 		pipe.add(new Tokenizer());
 		pipe.add(new TokenSequenceRemoveStopwords());
 		pipe.add(new Stemmer());
-		int[] sizes = { 1, 2, 3 };
+		int[] sizes = { 1, 2 };
 		// pipe.add(new PrintTokenSequenceFeatures());
 		// pipe.add(new TokenSequenceNGrams(sizes));
 		pipe.add(new TokenSequence2FeatureSequence());
