@@ -1,7 +1,7 @@
 package classification;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,16 +15,60 @@ import cc.mallet.types.TokenSequence;
 public class Tokenizer extends Pipe {
 
 	private static final long serialVersionUID = 1013696874537828543L;
+	// "-_+-
 	private static final String emoticons = "([<>]?[:;=8][\\-o\\*\\']?[\\)\\]\\(\\[dDpP/\\:\\}\\{@\\|\\\\]|[\\)\\]\\(\\[dDP/\\:\\}\\{@\\|\\\\][\\-o\\*\\']?[:;=8][<>]?)";
 	private static final String usernames = "@[\\w_]+";
 	private static final String hashtags = "\\#[\\w_]+[\\w\\'_\\-]*[\\w_]+";
+	private static final String links = "\\b(((ht|f)tp(s?)\\:\\/\\/|~\\/|\\/)|www.)"
+			+ "(\\w+:\\w+@)?(([-\\w]+\\.)+(com|org|net|gov"
+			+ "|mil|biz|info|mobi|name|aero|jobs|museum"
+			+ "|travel|[a-z]{2}))(:[\\d]{1,5})?"
+			+ "(((\\/([-\\w~!$+|.,=]|%[a-f\\d]{2})+)+|\\/)+|\\?|#)?"
+			+ "((\\?([-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?"
+			+ "([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)"
+			+ "(&(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?"
+			+ "([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*"
+			+ "(#([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?\\b"; // "http\\:\\/\\/.*?\\s";
 
 	// 1. finds emoticons
 	// 2. finds usernames -> adds them lowercased
 	// 3. finds hashtags -> adds them lowercased
-	// 4. split apart repeated ? and !
-	// 5. normalize repetitions of alpha chars and periods
-	//
+	// 4. normalize repetitions of all characters
+	// 5. maintain capitalization of "apple"
+	// 6. remove commas, colons, semicolons, hyphens?
+	// possible remove RT and -
+
+	private List<String> match(String regex, TokenSequence ts, String str,
+			boolean toLowercase) {
+		List<String> ret = new ArrayList<String>();
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(str);
+		int prevEnd = 0;
+		while (m.find()) {
+			String s = m.group();
+			if (toLowercase) {
+				s = s.toLowerCase();
+			}
+			System.out.println(s);
+			ts.add(s);
+			if (m.start() >= prevEnd) {
+				ret.add(str.substring(prevEnd, m.start()));
+			} else {
+				// System.out.println("!!!!!!!!!!!!!!!Didn't add supposedly empty string1: "
+				// + s + " with prevEnd=" + prevEnd + " and m.start=" +
+				// m.start());
+			}
+			prevEnd = m.end();
+		}
+		if (str.length() > prevEnd) {
+			ret.add(str.substring(prevEnd));
+		} else {
+			// System.out.println("!!!!!!!!!!!!!!!Didn't add supposedly empty string2: "
+			// + str.substring(prevEnd));
+
+		}
+		return ret;
+	}
 
 	public Instance pipe(Instance carrier) {
 		TokenSequence ts = new TokenSequence();
@@ -32,104 +76,52 @@ public class Tokenizer extends Pipe {
 		String str = (String) carrier.getData();
 		// tokenize(str, ts);
 		System.out.println(str);
-		Map<Integer, String> matches = new HashMap<Integer, String>();
-		Map<String, Integer> unmatchedAfterEmoticons = new HashMap<String, Integer>();// offset,
 
-		Pattern p = Pattern.compile(emoticons);
-		Matcher m = p.matcher(str);
-		int earliestUnmatched = 0;
-		int prevEnd = earliestUnmatched;
-		while (m.find()) {
-			matches.put(m.start(), m.group());
-			unmatchedAfterEmoticons.put(str.substring(prevEnd, m.start()),
-					m.start());
-			prevEnd = m.end();
-		}
-		if (prevEnd == 0) {
-			unmatchedAfterEmoticons.put(str, 0);
-		} else {
-			unmatchedAfterEmoticons.put(str.substring(prevEnd), prevEnd);
+		List<String> superA = match(links, ts, str, false);
+
+		List<String> a = new ArrayList<String>();
+		for (String s : superA) {
+			a.addAll(match(emoticons, ts, s, false));
 		}
 
-		Map<String, Integer> unmatchedAfterUsernames = new HashMap<String, Integer>();// offset,
-		Pattern userPattern = Pattern.compile(usernames);
-		for (String s : unmatchedAfterEmoticons.keySet()) {
-			Matcher userMatcher = userPattern.matcher(s);
-			prevEnd = 0;
-			while (userMatcher.find()) {
-				matches.put(
-						userMatcher.start() + unmatchedAfterEmoticons.get(s),
-						userMatcher.group().toLowerCase());
-				unmatchedAfterUsernames.put(
-						str.substring(prevEnd, userMatcher.start()),
-						userMatcher.start());
-				prevEnd = userMatcher.end();
-			}
-			if (prevEnd == 0) {
-				unmatchedAfterUsernames.put(str, 0);
-			} else {
-				unmatchedAfterUsernames.put(str.substring(prevEnd), prevEnd);
-			}
+		List<String> b = new ArrayList<String>();
+		for (String s : a) {
+			b.addAll(match(usernames, ts, s, true));
+		}
+		List<String> c = new ArrayList<String>();
+		for (String s : b) {
+			c.addAll(match(hashtags, ts, s, true));
 		}
 
-		Map<String, Integer> unmatchedAfterHashtags = new HashMap<String, Integer>();// offset,
-		Pattern hashtagPattern = Pattern.compile(hashtags);
-		for (String s : unmatchedAfterUsernames.keySet()) {
-			Matcher hashtagMatcher = hashtagPattern.matcher(s);
-			prevEnd = 0;
-			while (hashtagMatcher.find()) {
-				matches.put(
-						hashtagMatcher.start() + unmatchedAfterUsernames.get(s),
-						hashtagMatcher.group().toLowerCase());
-				unmatchedAfterHashtags.put(
-						str.substring(prevEnd, hashtagMatcher.start()),
-						hashtagMatcher.start());
-				prevEnd = hashtagMatcher.end();
-			}
-			if (prevEnd == 0) {
-				unmatchedAfterHashtags.put(str, 0);
-			} else {
-				unmatchedAfterHashtags.put(str.substring(prevEnd), prevEnd);
-			}
-		}
-
-		for (String s : unmatchedAfterHashtags.keySet()) {
-			int offset = unmatchedAfterHashtags.get(s);
-			for (int i = 0; i < s.length(); i++) {
-				char c = s.charAt(i);
-				if (c == '!' || c == '?') {
-					matches.put(i + offset, c + "");
+		List<String> d = new ArrayList<String>();
+		for (String s : c) {
+			s = s.replaceAll("\\.{2,}", " ... ");
+			String spl[] = s.split("\\s+");
+			for (String ss : spl) {
+				if (!ss.equals(ss.toUpperCase())) {
+					ss = ss.toLowerCase();
 				}
-			}
-			String t = s.replaceAll("[?!]", " ");
-			String split[] = t.split("\\s+");
-			for (int j = 0; j < split.length; j++) {
-				if (split[j].equals(split[j].toUpperCase())) {
-					matches.put(offset + j,
-							split[j].replaceAll("([A-Z])\\1{3,}", "$1$1$1")
-									.replaceAll("\\.{2,}", " ... "));
+				ss = ss.replaceAll("([A-Za-z])\\1{3,}", "$1$1$1");
+				ss = ss.replaceAll("^[^\\w]", "");
+				ss = ss.replaceAll("[^\\w]$", "");
+				if (ss.length() > 0) {
+					ts.add(ss);
+					System.out.println(ss);
 				} else {
-					matches.put(
-							offset + j,
-							split[j].toLowerCase()
-									.replaceAll("([a-z])\\1{3,}", "$1$1$1")
-									.replaceAll("\\.{2,}", " ... "));
+					// System.out.println("!!!!!!!!!!!!!!!Didn't add supposedly empty string3: "
+					// + ss);
 				}
+				// d.addAll(match("[^\\s]+",ts,ss));
 			}
-		}
 
-		int found = 0;
-		int k = 0;
-		while (found < matches.size()) {
-			if (matches.containsKey(k)) {
-				String mat = matches.get(k);
-				System.out.print(mat + " ");
-				ts.add(mat);
-				found++;
-			}
-			k++;
 		}
-		System.out.println();
+		// if (!d.isEmpty()) {
+		// System.out.print("Still had some tokens remaining! :");
+		// for (String s : d) {
+		// System.out.print(" " + s);
+		// }
+		// System.out.println();
+		// }
 		System.out
 				.println("---------------------------------------------------------");
 		carrier.setData(ts);
