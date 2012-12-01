@@ -47,10 +47,11 @@ public class PipeFactory {
 			protected void build() {
 				this.add(
 						new CharSequence2TokenSequence(Pattern
-								.compile("[\\p{L}\\p{N}_]+")), "p{L}\\p{N}");
+								.compile("[\\p{L}\\p{N}_]+")), "numdig tokenizer");
 				this.add(
 						new CharSequence2TokenSequence(Pattern
-								.compile("[^\\s]+")), "\\s");
+								.compile("[^\\s]+")), "whitespace tokenizer");
+				this.add(new Tokenizer(), "twitter tokenizer");
 			}
 
 		}).add(new SetFactory<Pipe>() {
@@ -85,18 +86,6 @@ public class PipeFactory {
 		// pipeList.add(new PrintInput());
 		pipe.add(new Input2CharSequence("UTF-8"));
 		pipe.add(new UnescapeHTML());
-		// Pattern tokenPattern = Pattern.compile("[\\p{L}\\p{N}_]+");
-		// pipe.add(new
-		// CharSequenceReplace(Pattern.compile("http\\:\\/\\/.*\\b",
-		// Pattern.CASE_INSENSITIVE), "HTTPLINK"));
-		// pipe.add( new
-		// CharSequenceReplace(Pattern.compile("\\@[\\p{L}\\p{Mn}]+",
-		// Pattern.CASE_INSENSITIVE), "@USERLINK"));
-		// pipe.add(new CharSequenceReplace(Pattern.compile("\\'"), ""));
-		// pipe.add(new CharSequenceReplace(Pattern.compile("\\!\\!+"), "!!"));
-		// pipe.add(new CharSequenceReplace(Pattern.compile("\\?\\?+"), "??"));
-		// pipe.add(new TwitterFeatures());
-		// pipe.add(new Link2Title());
 
 		Pattern tokenPattern = Pattern.compile("[^\\s]+");
 		// pipe.add(new CharSequence2TokenSequence(tokenPattern));
