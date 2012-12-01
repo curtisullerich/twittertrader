@@ -40,17 +40,8 @@ public class ModelTester {
 
 		List<SerialPipes> allPipes = new LinkedList<SerialPipes>();
 		// add all the pipe variations to the list
-		// allPipes.add(PipeFactory.getPipe());
-		// allPipes.add(PipeFactory.getPipe1());
-		// allPipes.add(PipeFactory.getPipe2());
-		// allPipes.add(PipeFactory.getPipe3());
 		allPipes.add(PipeFactory.getDefault());
-		// allPipes.add(PipeFactory.getDansPipes());
 		// allPipes.add(PipeFactory.brandonsGetPipes());
-		// allPipes.add(PipeFactory.getPipe5());
-		// allPipes.add(PipeFactory.getPipe6());
-		// allPipes.add(PipeFactory.getPipe7());
-		// allPipes.add(PipeFactory.getPipe8());
 
 		ArrayList<Trial> trials = new ArrayList<Trial>();
 		ArrayList<String> info = new ArrayList<String>();
@@ -58,22 +49,12 @@ public class ModelTester {
 		while (!allPipes.isEmpty()) {
 			SerialPipes pipe = allPipes.remove(0);
 			InstanceList instances = new InstanceList(pipe);
-			// CsvIterator reader = new CsvIterator(new FileReader(new File(
-			// "tweets.txt")), Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
-			// File file = new File("../corpus/sentiment.txt");
-			// File file2 = new File("../corpus/tweets.txt");
 			File file = new File("../corpus/appleBinaryFiltered.txt");
 			CsvIterator reader = new CsvIterator(new FileReader(file),
 					Constants.CSV_ITERATOR_REGEX, 3, 1, 2);
 			instances.addThruPipe(reader);
-			// CsvIterator reader2 = new CsvIterator(new FileReader(file2),
-			// Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
-			// instances.addThruPipe(reader2);
-			
-			CrossValidationIterator cvi = new CrossValidationIterator(instances, folds, new Random(random_seed));
 
-//			InstanceList[] instanceLists = instances.split(new Randoms(),
-//					new double[] { 0.3, 0.4, 0.3 });
+			CrossValidationIterator cvi = new CrossValidationIterator(instances, folds, new Random(random_seed));
 
 			String description = "";
 			for (Pipe p : pipe.pipes()) {
