@@ -27,45 +27,30 @@ import common.Constants;
 import common.PipeFactory;
 
 public class ModelTester {
-	
+
 	private static final int random_seed = 0xDEADBEEF;
-	
+
 	public static void main(String[] args) throws IOException {
 
 		List<SerialPipes> allPipes = new LinkedList<SerialPipes>();
 		// add all the pipe variations to the list
-//		allPipes.add(PipeFactory.getPipe());
-		//allPipes.add(PipeFactory.getPipe1());
-		//allPipes.add(PipeFactory.getPipe2());
-//		allPipes.add(PipeFactory.getPipe3());
 		allPipes.add(PipeFactory.getDefault());
-		//allPipes.add(PipeFactory.brandonsGetPipes());
-//		allPipes.add(PipeFactory.getPipe5());
-//		allPipes.add(PipeFactory.getPipe6());
-//		allPipes.add(PipeFactory.getPipe7());
-//		allPipes.add(PipeFactory.getPipe8());
+		// allPipes.add(PipeFactory.brandonsGetPipes());
 
 		ArrayList<Trial> trials = new ArrayList<Trial>();
 		ArrayList<String> info = new ArrayList<String>();
 
 		while (!allPipes.isEmpty()) {
-			SerialPipes pipe  = allPipes.remove(0);
+			SerialPipes pipe = allPipes.remove(0);
 			InstanceList instances = new InstanceList(pipe);
-			// CsvIterator reader = new CsvIterator(new FileReader(new File(
-			// "tweets.txt")), Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
-			// File file = new File("../corpus/sentiment.txt");
-			// File file2 = new File("../corpus/tweets.txt");
 			File file = new File("../corpus/appleBinaryFiltered.txt");
 			CsvIterator reader = new CsvIterator(new FileReader(file),
 					Constants.CSV_ITERATOR_REGEX, 3, 1, 2);
 			instances.addThruPipe(reader);
-			// CsvIterator reader2 = new CsvIterator(new FileReader(file2),
-			// Constants.CSV_ITERATOR_REGEX, 3, 2, 1);
-			// instances.addThruPipe(reader2);
 
-			InstanceList[] instanceLists = instances.split(new Randoms(random_seed),
-					new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,
-							0.1 });
+			InstanceList[] instanceLists = instances.split(new Randoms(
+					random_seed), new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,
+					0.1, 0.1, 0.1, 0.1 });
 
 			String description = "";
 			for (Pipe p : pipe.pipes()) {

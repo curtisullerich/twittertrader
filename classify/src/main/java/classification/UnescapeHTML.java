@@ -18,6 +18,7 @@ public class UnescapeHTML extends Pipe {
 
 	public Instance pipe(Instance carrier) {
 		String str = (String) carrier.getData();
+		System.out.println("----------------------------------------------");
 		System.out.println("Before UnescapeHTML: " + str);
 		String str2 = StringEscapeUtils.unescapeHtml(str);
 		if (!str2.equals(str)) {
@@ -34,7 +35,7 @@ public class UnescapeHTML extends Pipe {
 		for (int i = 0; i < split.length; i++) {
 			if (split[i].equals(split[i].toUpperCase())) {
 				sb.append(split[i]);
-			} else if (!split[i].contains("http://")) {
+			} else if (!split[i].contains("http://") && !split[i].equalsIgnoreCase("apple")) {
 				sb.append(split[i].toLowerCase());
 			} else {
 				sb.append(split[i]);
@@ -43,7 +44,6 @@ public class UnescapeHTML extends Pipe {
 		}
 		carrier.setData(sb.toString());
 		System.out.println("After UnescapeHTML: " + sb);
-		System.out.println("----------------------------------------------");
 		return carrier;
 	}
 }
