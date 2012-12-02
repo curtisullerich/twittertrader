@@ -40,8 +40,8 @@ public class ModelTester {
 
 	public static void main(String[] args) throws IOException {
 
-		int d = 5;
-		int max = 100;
+		int d = 100;
+		int max = 1800;
 
 		ArrayList<String> info = new ArrayList<String>();
 
@@ -72,7 +72,7 @@ public class ModelTester {
 			ArrayList<Trial> trials = new ArrayList<Trial>();
 
 			InstanceList instances = new InstanceList(pipe);
-			File file = new File("../corpus/appleBinaryFiltered.txt");
+			File file = new File("../corpus/appleBinaryFilteredRandomized.txt");
 			CsvIterator reader = new CsvIterator(new FileReader(file),
 					Constants.CSV_ITERATOR_REGEX, 3, 1, 2);
 			instances.addThruPipe(reader);
