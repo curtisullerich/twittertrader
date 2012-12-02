@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
+import cc.mallet.classify.Classification;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
 import cc.mallet.classify.MaxEntTrainer;
@@ -34,23 +37,23 @@ public class ModelTester {
 
 	private static final int random_seed = 0xDEADBEEF;
 
-	private static final int folds = 6;
-	
+	private static final int folds = 10;
+
 	private static final int test_size = 200;
 
 	public static void main(String[] args) throws IOException {
-		
+
 		int d = 40;
 		int max = 1000;
-		
+
 		ArrayList<String> info = new ArrayList<String>();
-		
-		for(int p=d; p<=max; p+=d) {
+
+		for (int p = d; p <= max; p += d) {
 			List<String> r = run(p);
-			for(String s : r)
-				info.add(String.valueOf(p) + " - " + s);
+			for (String s : r)
+				info.add(String.valueOf(p) + "\t" + s);
 		}
-		
+
 		for (String s : info) {
 			System.out.println(s);
 		}
@@ -69,71 +72,68 @@ public class ModelTester {
 
 			ArrayList<Trial> trials = new ArrayList<Trial>();
 
-			info.add(pipeLabel);
-
 			InstanceList instances = new InstanceList(pipe);
 			File file = new File("../corpus/appleBinaryFiltered.txt");
 			CsvIterator reader = new CsvIterator(new FileReader(file),
 					Constants.CSV_ITERATOR_REGEX, 3, 1, 2);
 			instances.addThruPipe(reader);
-			
-			
-			InstanceList[] testSplit = instances.splitInOrder(new int[] {test_size, instances.size()-test_size});
+
+			InstanceList[] testSplit = instances.splitInOrder(new int[] {
+					test_size, instances.size() - test_size });
 			InstanceList testList = testSplit[0];
 			InstanceList trainList = testSplit[1];
 
 			// Filter instances
-			//double proportion = (double)count / trainList.size();
-			InstanceList[] randomInstanceLists = trainList.splitInOrder(new int[] {count, trainList.size()-count});
-//					.split(new Random(random_seed), new double[] { proportion,
-//							1.0 - proportion });
-
-			CrossValidationIterator cvi = new CrossValidationIterator(
-					randomInstanceLists[0], folds, new Random(random_seed));
-
-//			String description = "";
-//			for (Pipe p : pipe.pipes()) {
-//				description += p.getClass().getName() + " ";
-//			}
-//			info.add(description);
+			// double proportion = (double)count / trainList.size();
+			InstanceList[] randomInstanceLists = trainList
+					.splitInOrder(new int[] { count, trainList.size() - count });
+			// .split(new Random(random_seed), new double[] { proportion,
+			// 1.0 - proportion });
 
 			for (ClassifierTrainer<? extends Classifier> trainer : trainers()) {
-				double accuracies = 0;
+				double accuracySum = 0;
+				double stdDevSum = 0;
 				double rankings = 0;
+
+				CrossValidationIterator cvi = new CrossValidationIterator(
+						randomInstanceLists[0], folds, new Random(random_seed));
 
 				int i = 0;
 				while (cvi.hasNext()) {
 					i++;
 					InstanceList[] instanceLists = cvi.next();
 					InstanceList train = instanceLists[0];
-					//InstanceList test = instanceLists[1];
+					// InstanceList test = instanceLists[1];
 					InstanceList test = testList;
 
 					Classifier classifier = trainer.train(train);
 
-//					System.err.println(((NaiveBayes) classifier).getPriors());
-//
-//					((NaiveBayes) classifier).printWords(30);
+					// System.err.println(((NaiveBayes)
+					// classifier).getPriors());
+					//
+					// ((NaiveBayes) classifier).printWords(30);
 
 					Trial trial = new Trial(classifier, test);
 
-//					System.err.println(trial.getAccuracy());
-//					System.err.println(classifier.getLabelAlphabet());
-					accuracies += trial.getAccuracy();
+					DescriptiveStatistics ds = new DescriptiveStatistics();
+					for (Classification c : trial) {
+						ds.addValue(c.bestLabelIsCorrect() ? 1 : 0);
+					}
+					stdDevSum = ds.getStandardDeviation();
+
+					accuracySum += trial.getAccuracy();
 					rankings += trial.getAverageRank();
 					trials.add(trial);
 				}
-				info.add("Average accuracy: " + accuracies / i);
-				// info.add("Average ranking: " + rankings / 10);
-				// info.add("---");
+				info.add(pipeLabel + "\t" + accuracySum / i + "\t" + stdDevSum
+						/ i);
 			}
-			info.add("~~~~~~~~~");
 
 		}
 
-//		for (String s : info) {
-//			System.out.println(s);
-//		}
+		// for (String s : info) {
+		// System.out.println(s);
+		// }
 		return info;
 	}
 
@@ -193,7 +193,7 @@ public class ModelTester {
 		// trainers.add(new MCMaxEntTrainer());
 		// trainers.add(new NaiveBayesEMTrainer());
 		// trainers.add(new WinnowTrainer());
-		trainers.add(new MaxEntTrainer());
+		// trainers.add(new MaxEntTrainer());
 		return trainers;
 	}
 
