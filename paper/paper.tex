@@ -30,12 +30,12 @@ Twitter is a popular source for data mining due to its massive scale and inclusi
 \end{abstract}
 
 \section{Introduction}
-Tweets are used as a source of data mining for applications ranging from predicting future stock price changes based on sentiment \cite{Ruiz:2012:CFT:2124295.2124358}, ... [ADD MORE]
+Tweets are used as a source of data mining for applications ranging from predicting future stock price changes based on sentiment% \cite{Ruiz:2012:CFT:2124295.2124358}, ... [ADD MORE]
 In many cases, the problem of determining which tweets are relevant for a particular application is prerequisite to meaningful results. In some domains, filtering tweets based solely on keywords may be appropriate, but disambiguation remains an interest natural language processing problem in many cases. We present a system to disambiguate tweets about the company Apple.
 
 \section{Related Work}
 DUALIST is a system that extends Mallet by user-interactive feedback during training[Settles]. Included in their implementation was a TwitterPipe that performed some simple feature extraction. 
-Part of the Sentiment Analysis Symposium focuses on tokenization of tweets for sentiment analysis, demonstrating that it provides consistent improvement over whitespace-based tokenizing \cite{potts2011}. A good deal of research has been done into sentiment classification of tweets, which requires very similar text processing and tokenization \cite{Pak10}. 
+Part of the Sentiment Analysis Symposium focuses on tokenization of tweets for sentiment analysis, demonstrating that it provides consistent improvement over whitespace-based tokenizing %\cite{potts2011}. A good deal of research has been done into sentiment classification of tweets, which requires very similar text processing and tokenization \cite{Pak10}. 
 
 \section{Method}
 \subsection{Corpus creation}
@@ -62,21 +62,23 @@ Data sets and scripts used for processing text data are available on the project
 
 \subsection{Preprocessing Pipeline}
 
-We do all machine learning with the Mallet\cite{McCallumMALLET} library developed by the University of Massachusetts. Mallet includes abstractions for a data processing pipeline, during which we use both existing and custom processing "Pipes" to transform the data, beginning in our case with raw tweets text and ending in Mallet's internal FeatureVector format. We built several Pipes to analyze the effect of different filters and processes on the accuracy of classification. Not every Pipe proved to increase accuracy--some decreased it. We present the descriptions of and motivations for these Pipes here.
+We do all machine learning with the Mallet%\cite{McCallumMALLET} library developed by the University of Massachusetts. Mallet includes abstractions for a data processing pipeline, during which we use both existing and custom processing "Pipes" to transform the data, beginning in our case with raw tweets text and ending in Mallet's internal FeatureVector format. We built several Pipes to analyze the effect of different filters and processes on the accuracy of classification. Not every Pipe proved to increase accuracy--some decreased it. We present the descriptions of and motivations for these Pipes here.
 
 \subsubsection{Feature-space Enrichment}
 ~\\
-\textit{Stopword removal}: In order to improve accuracy of classification we decided to run each tweet through a pipe that would remove stopwords. Stopwords are generally known as adverbs, conjunctions, pronouns, and prepositions commonly found in English sentences, By removing these words, we hoped that the classifiers would be able to focus more on the relevant text and less on meaningless parts of the tweets. Since this is a common task for natural language processing we were able to make use of one of Mallet's stopwords pipes, using a default list of stopwords.\\
-\textit{N-grams}:\\
-\textit{Fix emoticons}:\\
-\textit{HTML corrections}:\\ 
-\textit{URL replacement}:\\
-Spell checking: Since Twitter is an informal form of communication, we found that a fair number of tweets were being classified that had misspelled words. We decided that performing a spell check on the tweet might help the classifier work, since then it would only have to process proper English. In order to perform the spell check, we made use of an api that would return suggestions for misspelled words. Along with the suggested correct spellings of words, we were also given a "confidence" level for each suggestion. By using this value we were able to choose the best suggestion, and also filter out any suggestions that were too far from the original word.\\
-
+\textit{Stopword removal}: We wrote a Pipe to remove any tokens that appeared in a list of the 50 most common words in the English language.\\
+~\\
+\textit{N-grams}: Using n-grams is a common method of increasing the number of features present in short text [FIND CITATION]. Often, this is enough to increase accuracy significantly. During our testing, this was not the case. Rather, including bigrams and trigrams actually reduced accuracy slightly.\\
+~\\
+\textit{HTML corrections}: When accessing tweets through Twitter's public API, the native JSON format includes HTML-encoded entities that can add confusing features to the tweets if not un-escaped. For instance, angle brackets are replaced with \&lt; and \&gt; (less-than and greater-than), causing emoticons, for instance, to no longer be parseable. The emoticon ">.<", for instance, would be "\&gt;.\&lt;". This Pipe un-escapes all such entities, making them easier to parse.\\
+~\\
+\textit{URL replacement}: 
+~\\
+\textit{Spell checking}: Twitter's user-generated content contains a large volume of misspelled words. Using a spell-checking library, we wrote a Pipe to replace unrecognized words (misspelled words) with their corrections if the confidence for correction was above a certain threshold. \\
+~\\
 \subsubsection{Disambiguation}
 ~\\
-\textit{Lowercasing}:\\
-Stemming: Stemming is the process of reducing words to their "stem." While this stem does not necessarily have to be the root of the word, it should satisfy the property that related words have the same stem. Therefore the stem of the related words "argue," "argued," and "arguing" all have the stem of "argu," even though argu is not a real word. We believed that by reducing each word in the tweet to a its stem, we would be able to improve the classifying algorithm's ability to classify. In order to add stemming we made use of an api that used a Porter stemming algorithm to find the stem of each word.\\
+\textit{Stemming}: Stemming is the process of reducing words to their "stem." While this stem does not necessarily have to be the root of the word, it should satisfy the property that related words have the same stem. Therefore the stem of the related words "argue," "argued," and "arguing" all have the stem of "argu," even though argu is not the true linguistic stem. We used the standard Porter stemmer to implement this[CITATION].\\
 
 \subsubsection{Tokenization}
 ~\\
@@ -125,71 +127,24 @@ As presented in our results, because of irregular capitalization, two tokens lik
 
 \section{Conclusion and Future Work}
 
-Things that could be done....
+We could test the robustness of this system by applying this process to other companies for a similar-length time slice of training data. We could also test this model against tweets from a different time span to determine whether the data is subject to temporal overfitting, and to what degree.
 
 [These guys] demonstrate a system of using background knowledge and relatedness, in which current information in the Twitter stream is used to more accurately estimate the priors for a Naive Bayes classification.
 
+Inclusion of background knowledge.
+
+Use of Wikipedia for disambiguation.
+
 \section{Contributions}
-We have built several reusable Java components that extend the Mallet API for processing of data from Twitter. We created a TweetJsonIterator that accepts a file of Twitter's JSON-formatted tweets and creates training Instances containing their values for easy processing during model training. We have implemented several Pipes that can be reused or easily modified to suit a similar Twitter processing purpose. These include FixEmoticons, Link2Title, Stemmer, SpellCheck, and Tokenize, which serves as a more extensible tokenizer than Mallet's default. All code is available through our project website. We also provide a corpus of 115,000 tweets selected by Apple-related keyword and our labeled data set of 2000 tweets. The bash scripts used to filter the data for near-duplicates and spam are also available for download.
+We have built several reusable Java components that extend the Mallet API for processing of data from Twitter. We created a TweetJsonIterator that accepts a file of Twitter's JSON-formatted tweets and creates training Instances containing their values for easy processing during model training. We have implemented several Pipes that can be reused or easily modified to suit a similar Twitter processing purpose. These include Link2Title, Stemmer, SpellCheck, and Tokenize, the latter of which serves as a more extensible tokenizer than Mallet's default. All code is available through our project website. We also provide a corpus of 115,000 tweets selected by Apple-related keyword and our labeled data set of 2000 tweets. The bash scripts used to filter the data for near-duplicates and spam are also available for download.
 
 \section{ Acknowledgments}
 Thank you to Dr. Jin Tian and our TA Ru He for their guidance during this research project. We also extend our thanks to our friends for their help in manual labeling of tweets.
 
 \section{References}
-\begin{thebibliography}{99}
-@article{potts2011,
-    author    = "Christopher Potts",
-    title     = "Sentiment Symposium Tutorial: Tokenizing",
-    journal   = "",
-    year      = "2011"
-}
-@inproceedings{Pak10,
-  added-at = {2010-06-01T10:23:44.000+0200},
-  address = {Valletta, Malta},
-  author = {Pak, Alexander and Paroubek, Patrick},
-  biburl = {http://www.bibsonomy.org/bibtex/25656c3bb1adf00c58a85e3204096961c/frederik},
-  booktitle = {Proceedings of the Seventh conference on International Language Resources and Evaluation (LREC'10)},
-  date = {19-21},
-  interhash = {ac930b0459a3c8a2fc2d74c52a475026},
-  intrahash = {5656c3bb1adf00c58a85e3204096961c},
-  isbn = {2-9517408-6-7},
-  keywords = {imported},
-  language = {english},
-  month = may,
-  publisher = {European Language Resources Association (ELRA)},
-  timestamp = {2010-06-01T10:23:44.000+0200},
-  title = {Twitter as a Corpus for Sentiment Analysis and Opinion Mining},
-  url = {http://www.lrec-conf.org/proceedings/lrec2010/pdf/385\_Paper.pdf},
-  year = 2010
-}
-@inproceedings{Ruiz:2012:CFT:2124295.2124358,
- author = {Ruiz, Eduardo J. and Hristidis, Vagelis and Castillo, Carlos and Gionis, Aristides and Jaimes, Alejandro},
- title = {Correlating financial time series with micro-blogging activity},
- booktitle = {Proceedings of the fifth ACM international conference on Web search and data mining},
- series = {WSDM '12},
- year = {2012},
- isbn = {978-1-4503-0747-5},
- location = {Seattle, Washington, USA},
- pages = {513--522},
- numpages = {10},
- url = {http://doi.acm.org/10.1145/2124295.2124358},
- doi = {10.1145/2124295.2124358},
- acmid = {2124358},
- publisher = {ACM},
- address = {New York, NY, USA},
- keywords = {financial time series, micro-blogging, social networks},
-} 
-@unpublished{McCallumMALLET,
-    author = "Andrew Kachites McCallum",
-    title = "MALLET: A Machine Learning for Language Toolkit",
-    note = "http://mallet.cs.umass.edu",
-    year = 2002,
-}
+\bibliographystyle{plain}
+\bibliography{references}
 
-\end{thebibliography}
-
-[1] J. Bollen, H. Mao, and X.-J. Zeng. Twitter mood predicts the
-stock market. Journal of Computational Science,
-abs/1010.3003, 2010\\
+%[1] J. Bollen, H. Mao, and X.-J. Zeng. Twitter mood predicts the stock market. Journal of Computational Science, abs/1010.3003, 2010\\
 
 \end{document}
