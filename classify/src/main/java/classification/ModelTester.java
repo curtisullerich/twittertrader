@@ -40,8 +40,8 @@ public class ModelTester {
 
 	public static void main(String[] args) throws IOException {
 
-		int d = 40;
-		int max = 1000;
+		int d = 5;
+		int max = 100;
 
 		ArrayList<String> info = new ArrayList<String>();
 
@@ -66,6 +66,8 @@ public class ModelTester {
 			SetItem<SerialPipes> n = pipesIterator.next();
 			SerialPipes pipe = n.value;
 			String pipeLabel = n.label;
+			
+			System.err.println(count + pipeLabel);
 
 			ArrayList<Trial> trials = new ArrayList<Trial>();
 
