@@ -35,8 +35,28 @@ public class ModelTester {
 	private static final int random_seed = 0xDEADBEEF;
 
 	private static final int folds = 6;
+	
+	private static final int test_size = 200;
 
 	public static void main(String[] args) throws IOException {
+		
+		int d = 40;
+		int max = 1000;
+		
+		ArrayList<String> info = new ArrayList<String>();
+		
+		for(int p=d; p<=max; p+=d) {
+			List<String> r = run(p);
+			for(String s : r)
+				info.add(String.valueOf(p) + " - " + s);
+		}
+		
+		for (String s : info) {
+			System.out.println(s);
+		}
+	}
+
+	private static List<String> run(int count) throws FileNotFoundException {
 
 		Iterator<SetItem<SerialPipes>> pipesIterator = PipeFactory.getPipes();
 
@@ -56,15 +76,26 @@ public class ModelTester {
 			CsvIterator reader = new CsvIterator(new FileReader(file),
 					Constants.CSV_ITERATOR_REGEX, 3, 1, 2);
 			instances.addThruPipe(reader);
+			
+			
+			InstanceList[] testSplit = instances.splitInOrder(new int[] {test_size, instances.size()-test_size});
+			InstanceList testList = testSplit[0];
+			InstanceList trainList = testSplit[1];
+
+			// Filter instances
+			//double proportion = (double)count / trainList.size();
+			InstanceList[] randomInstanceLists = trainList.splitInOrder(new int[] {count, trainList.size()-count});
+//					.split(new Random(random_seed), new double[] { proportion,
+//							1.0 - proportion });
 
 			CrossValidationIterator cvi = new CrossValidationIterator(
-					instances, folds, new Random(random_seed));
+					randomInstanceLists[0], folds, new Random(random_seed));
 
-			String description = "";
-			for (Pipe p : pipe.pipes()) {
-				description += p.getClass().getName() + " ";
-			}
-			info.add(description);
+//			String description = "";
+//			for (Pipe p : pipe.pipes()) {
+//				description += p.getClass().getName() + " ";
+//			}
+//			info.add(description);
 
 			for (ClassifierTrainer<? extends Classifier> trainer : trainers()) {
 				double accuracies = 0;
@@ -75,18 +106,19 @@ public class ModelTester {
 					i++;
 					InstanceList[] instanceLists = cvi.next();
 					InstanceList train = instanceLists[0];
-					InstanceList test = instanceLists[1];
+					//InstanceList test = instanceLists[1];
+					InstanceList test = testList;
 
 					Classifier classifier = trainer.train(train);
 
 //					System.err.println(((NaiveBayes) classifier).getPriors());
-
-	//				((NaiveBayes) classifier).printWords(30);
+//
+//					((NaiveBayes) classifier).printWords(30);
 
 					Trial trial = new Trial(classifier, test);
 
-					System.err.println(trial.getAccuracy());
-					System.err.println(classifier.getLabelAlphabet());
+//					System.err.println(trial.getAccuracy());
+//					System.err.println(classifier.getLabelAlphabet());
 					accuracies += trial.getAccuracy();
 					rankings += trial.getAverageRank();
 					trials.add(trial);
@@ -99,9 +131,10 @@ public class ModelTester {
 
 		}
 
-		for (String s : info) {
-			System.out.println(s);
-		}
+//		for (String s : info) {
+//			System.out.println(s);
+//		}
+		return info;
 	}
 
 	public static void jsonTest() throws FileNotFoundException, IOException,
@@ -160,6 +193,7 @@ public class ModelTester {
 		// trainers.add(new MCMaxEntTrainer());
 		// trainers.add(new NaiveBayesEMTrainer());
 		// trainers.add(new WinnowTrainer());
+		trainers.add(new MaxEntTrainer());
 		return trainers;
 	}
 
