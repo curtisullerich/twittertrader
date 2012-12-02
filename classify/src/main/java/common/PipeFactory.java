@@ -6,6 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import pipe.Stemmer;
+import pipe.Tokenizer;
+import pipe.UnescapeHTML;
+
 import cc.mallet.pipe.CharSequence2TokenSequence;
 import cc.mallet.pipe.CharSequenceLowercase;
 import cc.mallet.pipe.FeatureSequence2FeatureVector;
@@ -16,9 +20,6 @@ import cc.mallet.pipe.Target2Label;
 import cc.mallet.pipe.TokenSequence2FeatureSequence;
 import cc.mallet.pipe.TokenSequenceNGrams;
 import cc.mallet.pipe.TokenSequenceRemoveStopwords;
-import classification.Stemmer;
-import classification.Tokenizer;
-import classification.UnescapeHTML;
 
 import com.google.common.collect.Iterators;
 
