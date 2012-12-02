@@ -45,8 +45,8 @@ public class ModelUpdater {
 	}
 
 	public Classifier createNewCompanyWikipediaModel() throws IOException {
-		 MaxEntTrainer trainer = new MaxEntTrainer();
-		//NaiveBayesTrainer trainer = new NaiveBayesTrainer();
+		MaxEntTrainer trainer = new MaxEntTrainer();
+		// NaiveBayesTrainer trainer = new NaiveBayesTrainer();
 
 		File file = new File("../corpus/wikorpus.txt");
 

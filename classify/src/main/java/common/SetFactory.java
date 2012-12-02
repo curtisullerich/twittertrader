@@ -6,7 +6,7 @@ import java.util.List;
 public abstract class SetFactory<T> {
 
 	private boolean single;
-	
+
 	public SetFactory() {
 		this(false);
 	}

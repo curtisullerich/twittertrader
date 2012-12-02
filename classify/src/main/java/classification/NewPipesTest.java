@@ -18,16 +18,17 @@ import cc.mallet.types.InstanceList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
 import common.Constants;
 import common.FileUtil;
 import common.PipeFactory;
 import common.ServerInteractionsUtil;
 
 public class NewPipesTest {
-	
-	public static void main(String[] args) throws HttpException, IOException, URISyntaxException, ClassNotFoundException {
-		StringBuilder json = FileUtil.getTweetsFromLocal("C://Users//Brandon//Documents//School//ComS572//Project//TweetJSON.txt");
+
+	public static void main(String[] args) throws HttpException, IOException,
+			URISyntaxException, ClassNotFoundException {
+		StringBuilder json = FileUtil
+				.getTweetsFromLocal("C://Users//Brandon//Documents//School//ComS572//Project//TweetJSON.txt");
 
 		TweetJsonIterator tji = new TweetJsonIterator(json.toString(),
 				Mode.CLASSIFY, Type.UNCLASSIFIED);

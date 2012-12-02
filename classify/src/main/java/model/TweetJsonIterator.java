@@ -77,8 +77,8 @@ public class TweetJsonIterator implements Iterator<Instance> {
 				throw new IllegalArgumentException("No target present.");
 			}
 		}
-		 System.out.println("creating new instance: [target]=" + target
-		 + " [data]=" + data);
+		System.out.println("creating new instance: [target]=" + target
+				+ " [data]=" + data);
 		Instance carrier = new Instance(data, target, name, o);
 		return carrier;
 	}

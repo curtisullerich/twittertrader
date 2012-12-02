@@ -41,16 +41,16 @@ public class ServerInteractionsUtil {
 
 	/**
 	 * A method to get tweets from the server
+	 * 
 	 * @param url
-	 * 				The url to find the tweets at
-	 * @return
-	 * 			The Json version of the tweets in a StringBuilder
+	 *            The url to find the tweets at
+	 * @return The Json version of the tweets in a StringBuilder
 	 * @throws URISyntaxException
 	 * @throws HttpException
 	 * @throws IOException
 	 */
-	public static StringBuilder getTweetsFrom(String url) throws URISyntaxException,
-			HttpException, IOException {
+	public static StringBuilder getTweetsFrom(String url)
+			throws URISyntaxException, HttpException, IOException {
 		HttpGet getUrl = new HttpGet(url);
 
 		HttpClient client = new DefaultHttpClient();

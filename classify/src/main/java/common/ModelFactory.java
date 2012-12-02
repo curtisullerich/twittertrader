@@ -16,8 +16,8 @@ public class ModelFactory {
 
 	/**
 	 * A Method to get a newly trained Company Classifier
-	 * @return
-	 * 			The classifier trained on companies
+	 * 
+	 * @return The classifier trained on companies
 	 * @throws FileNotFoundException
 	 */
 	public static Classifier getCompanyClassifier()
@@ -31,17 +31,17 @@ public class ModelFactory {
 		Classifier classifier = trainer.train(instances);
 		return classifier;
 	}
-	
+
 	public static Classifier getBackgroundKnowledgeClassifier() {
 		ClassifierTrainer<NaiveBayes> n = new NaiveBayesWithPriorsTrainer();
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * A Method to get the best available sentiment classifier
-	 * @return
-	 * 			The classifier trained on sentiment
+	 * 
+	 * @return The classifier trained on sentiment
 	 * @throws FileNotFoundException
 	 */
 	public static Classifier getBestSentimentClassifier()
@@ -73,6 +73,5 @@ public class ModelFactory {
 		Classifier classifier = trainer.train(instances);
 		return classifier;
 	}
-	
-	
+
 }

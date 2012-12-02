@@ -85,18 +85,18 @@ public class FileUtil {
 
 	/**
 	 * This method attempts to load the most recently saved classifier from
-	 * 	disk. If the classifier doesn't exist it creates a new one and saves it.
+	 * disk. If the classifier doesn't exist it creates a new one and saves it.
+	 * 
 	 * @param pattern
-	 * 					The type of classifier to create
-	 * @return
-	 * 			The most recently classifier saved or a new one if none have
-	 * 			been saved yet.
+	 *            The type of classifier to create
+	 * @return The most recently classifier saved or a new one if none have been
+	 *         saved yet.
 	 * @throws FileNotFoundException
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
-	public static Classifier loadBestClassifier(String pattern) throws FileNotFoundException,
-			ClassNotFoundException, IOException {
+	public static Classifier loadBestClassifier(String pattern)
+			throws FileNotFoundException, ClassNotFoundException, IOException {
 		// This can also be replaced by
 		// FileUtil.loadMostRecentClassifierFromDisk
 		File largest = FileUtil.getMostRecentFile(pattern);

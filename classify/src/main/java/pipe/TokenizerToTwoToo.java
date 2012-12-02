@@ -105,9 +105,8 @@ public class TokenizerToTwoToo extends Pipe {
 			String split[] = t.split("\\s+");
 			for (int j = 0; j < split.length; j++) {
 				if (split[j].startsWith("http://")) {
-					matches.put(offset+j, split[j]);
-				}
-				else if (split[j].equals(split[j].toUpperCase())) {
+					matches.put(offset + j, split[j]);
+				} else if (split[j].equals(split[j].toUpperCase())) {
 					matches.put(offset + j,
 							split[j].replaceAll("([A-Z])\\1{3,}", "$1$1$1")
 									.replaceAll("\\.{2,}", " ... "));

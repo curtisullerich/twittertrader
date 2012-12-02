@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -15,7 +16,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,9 +35,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
-import java.awt.Color;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 
 public class LabelingFrame extends JFrame implements ActionListener {
 
@@ -46,10 +43,10 @@ public class LabelingFrame extends JFrame implements ActionListener {
 	 */
 	private static final long serialVersionUID = -2225603632488216748L;
 	private JPanel contentPane;
-	
+
 	List<Tweet> tweets;
-	
-	//Fields holding the two types of labels for labeling
+
+	// Fields holding the two types of labels for labeling
 
 	private JTextField firstLabelField;
 	private JTextField secondLabelField;
@@ -70,9 +67,10 @@ public class LabelingFrame extends JFrame implements ActionListener {
 
 	// Dummy tweet for beginning and ending
 	private Tweet defaultTweet;
-	
-	JButton openFile, prev, next, delete, finish, firstLabel, secondLabel, check;
-	
+
+	JButton openFile, prev, next, delete, finish, firstLabel, secondLabel,
+			check;
+
 	private JFileChooser fc;
 
 	private int curTweet, totalTweets;
@@ -140,10 +138,10 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		finish.setForeground(new Color(148, 0, 211));
 		finish.addActionListener(this);
 		buttonPanel.add(finish);
-		
-//		check = new JButton("Check Finished");
-//		check.addActionListener(this);
-//		buttonPanel.add(check);
+
+		// check = new JButton("Check Finished");
+		// check.addActionListener(this);
+		// buttonPanel.add(check);
 
 		JLabel Title = new JLabel("Labler");
 		Title.setForeground(new Color(148, 0, 211));
@@ -336,47 +334,48 @@ public class LabelingFrame extends JFrame implements ActionListener {
 						JOptionPane.ERROR_MESSAGE);
 			}
 		}
-//		else if (e.getSource() == check) {
-//			Set<Tweet> labelled = this.loadLabledFile();
-//			List<Tweet> lk = new LinkedList<Tweet>(labelled);
-//			List<Tweet> toRemove = new ArrayList<Tweet>();
-//			if (labelled != null) {
-//				labelledTweets.removeAll(labelled);
-//				int removed = 0;
-//				while (tweetIterator.hasNext()) {
-//					Tweet cur = tweetIterator.next();
-////					if (labelled.contains(cur)) {
-////						tweetIterator.remove();
-////						++removed;
-////					}
-//					
-//					for (int i = 0; i < lk.size(); ++i) {
-//						if (cur.tweetEquals(lk.get(i))) {
-//							//tweetIterator.remove();
-//							toRemove.add(cur);
-//							++removed;
-//							break;
-//						}
-//					}
-//					//Fast break if we found everything already
-//					if (removed == labelled.size()) {
-//						break;
-//					}
-//				}
-//				
-//				tweets.removeAll(toRemove);
-//				tweetIterator = tweets.listIterator();
-//				if (tweetIterator.hasNext()) {
-//					currentTweet = tweetIterator.next();
-//				}
-//				else {
-//					currentTweet = defaultTweet;
-//				}
-//				JOptionPane.showMessageDialog(this, "Removed: " + removed + 
-//						((removed != 1) ? " Tweets," : " Tweet,") + " already classified", "Info",
-//            			JOptionPane.INFORMATION_MESSAGE);
-//			}
-//		}
+		// else if (e.getSource() == check) {
+		// Set<Tweet> labelled = this.loadLabledFile();
+		// List<Tweet> lk = new LinkedList<Tweet>(labelled);
+		// List<Tweet> toRemove = new ArrayList<Tweet>();
+		// if (labelled != null) {
+		// labelledTweets.removeAll(labelled);
+		// int removed = 0;
+		// while (tweetIterator.hasNext()) {
+		// Tweet cur = tweetIterator.next();
+		// // if (labelled.contains(cur)) {
+		// // tweetIterator.remove();
+		// // ++removed;
+		// // }
+		//
+		// for (int i = 0; i < lk.size(); ++i) {
+		// if (cur.tweetEquals(lk.get(i))) {
+		// //tweetIterator.remove();
+		// toRemove.add(cur);
+		// ++removed;
+		// break;
+		// }
+		// }
+		// //Fast break if we found everything already
+		// if (removed == labelled.size()) {
+		// break;
+		// }
+		// }
+		//
+		// tweets.removeAll(toRemove);
+		// tweetIterator = tweets.listIterator();
+		// if (tweetIterator.hasNext()) {
+		// currentTweet = tweetIterator.next();
+		// }
+		// else {
+		// currentTweet = defaultTweet;
+		// }
+		// JOptionPane.showMessageDialog(this, "Removed: " + removed +
+		// ((removed != 1) ? " Tweets," : " Tweet,") + " already classified",
+		// "Info",
+		// JOptionPane.INFORMATION_MESSAGE);
+		// }
+		// }
 		updateUi(currentTweet);
 	}
 
@@ -408,39 +407,42 @@ public class LabelingFrame extends JFrame implements ActionListener {
 
 	private void updateUi(Tweet newTweet) {
 		tweetArea.setText(newTweet.text);
-		tweetTitlePanel.setText("Tweet number " + curTweet + " of " + totalTweets);
-		String ftext = firstLabelField.getText().equals("<Enter text>") ? "first" : firstLabelField.getText();
-		String stext = secondLabelField.getText().equals("<Enter text>") ? "second" : secondLabelField.getText();
+		tweetTitlePanel.setText("Tweet number " + curTweet + " of "
+				+ totalTweets);
+		String ftext = firstLabelField.getText().equals("<Enter text>") ? "first"
+				: firstLabelField.getText();
+		String stext = secondLabelField.getText().equals("<Enter text>") ? "second"
+				: secondLabelField.getText();
 		firstLabel.setText("Label as: " + (ftext));
 		secondLabel.setText("Label as: " + stext);
 	}
-	
-//	public Set<Tweet> loadLabledFile() {
-//		int returnVal = fc.showOpenDialog(this);
-//		
-//		if (returnVal == JFileChooser.APPROVE_OPTION) {
-//			File file = fc.getSelectedFile();
-//			String line = "";
-//			try {
-//				BufferedReader br = new BufferedReader(new FileReader(file));
-//				Set<Tweet> tweets = new HashSet<Tweet>();
-//				while ((line = br.readLine()) != null) {
-//					Tweet n = makeLabelledTweet(line);
-//					//Tweet n = makeTweet(line);
-//					if (n != null) {
-//						tweets.add(n);
-//					}
-//				}
-//				br.close();
-//				return tweets;
-//					
-//			} catch (IOException e) {
-//				JOptionPane.showMessageDialog(this, "Unable to open file", "IO Error",
-//            			JOptionPane.ERROR_MESSAGE);
-//			}
-//		}
-//		return null;
-//	}
+
+	// public Set<Tweet> loadLabledFile() {
+	// int returnVal = fc.showOpenDialog(this);
+	//
+	// if (returnVal == JFileChooser.APPROVE_OPTION) {
+	// File file = fc.getSelectedFile();
+	// String line = "";
+	// try {
+	// BufferedReader br = new BufferedReader(new FileReader(file));
+	// Set<Tweet> tweets = new HashSet<Tweet>();
+	// while ((line = br.readLine()) != null) {
+	// Tweet n = makeLabelledTweet(line);
+	// //Tweet n = makeTweet(line);
+	// if (n != null) {
+	// tweets.add(n);
+	// }
+	// }
+	// br.close();
+	// return tweets;
+	//
+	// } catch (IOException e) {
+	// JOptionPane.showMessageDialog(this, "Unable to open file", "IO Error",
+	// JOptionPane.ERROR_MESSAGE);
+	// }
+	// }
+	// return null;
+	// }
 
 	public void loadUnLabeledFile() {
 		int returnVal = fc.showOpenDialog(this);
@@ -491,13 +493,14 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		}
 
 	}
-	
-//	private Tweet makeLabelledTweet(String tweetText) {
-//		int firstSpace = tweetText.indexOf(" ");
-//		String label = tweetText.substring(0, firstSpace);
-//		Tweet t = makeTweet(tweetText.substring(firstSpace + 1, tweetText.length()));
-//		return t;
-//	}
+
+	// private Tweet makeLabelledTweet(String tweetText) {
+	// int firstSpace = tweetText.indexOf(" ");
+	// String label = tweetText.substring(0, firstSpace);
+	// Tweet t = makeTweet(tweetText.substring(firstSpace + 1,
+	// tweetText.length()));
+	// return t;
+	// }
 
 	private class Tweet {
 		public long id;
@@ -533,13 +536,13 @@ public class LabelingFrame extends JFrame implements ActionListener {
 		public int hashCode() {
 			long hash = 7;
 			hash = hash * 31 + id;
-			//hash = hash * 31 + text.hashCode();
-			for (String s: text.split(" ")) {
+			// hash = hash * 31 + text.hashCode();
+			for (String s : text.split(" ")) {
 				hash = hash * 31 + s.hashCode();
 			}
 			return (int) hash;
 		}
-		
+
 		public boolean tweetEquals(Tweet other) {
 			if (this.id == other.id) {
 				StringTokenizer me = new StringTokenizer(text);
@@ -550,8 +553,7 @@ public class LabelingFrame extends JFrame implements ActionListener {
 					}
 				}
 				return true;
-			}
-			else {
+			} else {
 				return false;
 			}
 		}

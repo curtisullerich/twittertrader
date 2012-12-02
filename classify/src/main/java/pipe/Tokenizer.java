@@ -64,7 +64,7 @@ public class Tokenizer extends Pipe {
 	private boolean removeRT;
 	private boolean normalizeLengths;
 	private boolean removePunct;// removes any non-word characters from edges of
-															// space-delimited tokens
+								// space-delimited tokens
 	private boolean print;
 	private Case casing;
 
@@ -191,12 +191,14 @@ public class Tokenizer extends Pipe {
 			String replacement) {
 		if (is1) {
 			for (String s : remaining1) {
-				remaining2.addAll(match(regex, ts, s, toLowercase, replacement));
+				remaining2
+						.addAll(match(regex, ts, s, toLowercase, replacement));
 			}
 			remaining1.clear();
 		} else {
 			for (String s : remaining2) {
-				remaining1.addAll(match(regex, ts, s, toLowercase, replacement));
+				remaining1
+						.addAll(match(regex, ts, s, toLowercase, replacement));
 
 			}
 			remaining2.clear();

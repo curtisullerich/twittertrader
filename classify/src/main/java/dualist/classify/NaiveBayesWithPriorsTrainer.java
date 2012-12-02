@@ -5,9 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
 import cc.mallet.classify.Boostable;
 import cc.mallet.classify.Classifier;
 import cc.mallet.classify.ClassifierTrainer;
@@ -22,6 +19,9 @@ import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.Labeling;
 import cc.mallet.types.Multinomial;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * Class used to generate a NaiveBayes classifier from a training data AND
@@ -380,10 +380,10 @@ public class NaiveBayesWithPriorsTrainer extends ClassifierTrainer<NaiveBayes>
 	}
 
 	/**
-		 * Create a NaiveBayes classifier from a set of training data and the
-		 * previous state of the trainer. Subsequent calls to incrementalTrain() add
-		 * to the state of the trainer. An incremental training session should
-		 * consist only of calls to incrementalTrain() and have no calls to train();
+	 * Create a NaiveBayes classifier from a set of training data and the
+	 * previous state of the trainer. Subsequent calls to incrementalTrain() add
+	 * to the state of the trainer. An incremental training session should
+	 * consist only of calls to incrementalTrain() and have no calls to train();
 	 * *
 	 * 
 	 * @param trainingList
