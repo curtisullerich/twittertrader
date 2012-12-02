@@ -30,6 +30,47 @@ public class Tokenizer extends Pipe {
 	// 5. maintain capitalization of "apple"
 	// 6. remove commas, colons, semicolons, hyphens?
 	// possible remove RT and -
+	public Tokenizer() {
+		this(true, true, true, true, true, true, true, true, true, Case.apple);
+	}
+
+	public Tokenizer(boolean print) {
+		this(true, true, true, true, true, true, true, true, print, Case.apple);
+
+	}
+
+	public Tokenizer(boolean doEmoticons, boolean doUsernames,
+			boolean doHashtags, boolean doLinks, boolean doSpecialCases,
+			boolean removeRT, boolean normalizeLengths, boolean removePunct,
+			boolean print, Case casing) {
+		this.doEmoticons = doEmoticons;
+		this.doUsernames = doUsernames;
+		this.doHashtags = doHashtags;
+		this.doLinks = doLinks;
+		this.doSpecialCases = doSpecialCases;
+		this.removeRT = removeRT;
+		this.normalizeLengths = normalizeLengths;
+		this.removePunct = removePunct;
+		this.casing = casing;
+		this.print = print;
+
+	}
+
+	private boolean doEmoticons;
+	private boolean doUsernames;
+	private boolean doHashtags;
+	private boolean doLinks;
+	private boolean doSpecialCases;
+	private boolean removeRT;
+	private boolean normalizeLengths;
+	private boolean removePunct;// removes any non-word characters from edges of
+															// space-delimited tokens
+	private boolean print;
+	private Case casing;
+
+	public enum Case {
+		lower, nochange, apple;
+	}
 
 	private List<String> match(String regex, TokenSequence ts, String str,
 			boolean toLowercase, String replacement) {
@@ -42,7 +83,9 @@ public class Tokenizer extends Pipe {
 			if (toLowercase) {
 				s = s.toLowerCase();
 			}
-			System.out.println(s);
+			if (print) {
+				System.out.println(s);
+			}
 			ts.add(replacement == null ? s : replacement);
 			if (m.start() >= prevEnd) {
 				ret.add(str.substring(prevEnd, m.start()));
@@ -64,57 +107,101 @@ public class Tokenizer extends Pipe {
 
 	public Instance pipe(Instance carrier) {
 		TokenSequence ts = new TokenSequence();
-		
+
 		String str = (String) carrier.getData();
-		System.out.println(str);
-		str = str.replaceAll("( RT )(^RT)( RT:)", "");
-		str = str.replaceAll("\\.{2,}", " ... ");
-		List<String> supersuperA = match(specialcases, ts, str, false, null);
-		List<String> superA = new ArrayList<String>();
-		for (String s : supersuperA) {
-			superA.addAll(match(links, ts, s, false, null));
+		if (print) {
+			System.out.println(str);
+		}
+		if (removeRT) {
+			str = str.replaceAll("( RT )(^RT)( RT:)", "");
+		}
+		if (normalizeLengths) {
+			str = str.replaceAll("\\.{2,}", " ... ");
+		}
+		List<String> strings1 = new ArrayList<String>();
+		List<String> strings2 = new ArrayList<String>();
+		boolean use1 = true;
+		strings1.add(str);
+
+		if (doSpecialCases) {
+			use1 = next(strings1, strings2, use1, specialcases, ts, false, null);
 		}
 
-		List<String> a = new ArrayList<String>();
-		for (String s : superA) {
-			a.addAll(match(emoticons, ts, s, false, null));
+		if (doLinks) {
+			use1 = next(strings1, strings2, use1, links, ts, false, null);
+		}
+		if (doEmoticons) {
+			use1 = next(strings1, strings2, use1, emoticons, ts, false, null);
 		}
 
-		List<String> b = new ArrayList<String>();
-		for (String s : a) {
-			b.addAll(match(usernames, ts, s, true, null));
+		if (doUsernames) {
+			use1 = next(strings1, strings2, use1, usernames, ts, true, null);
 		}
-		List<String> c = new ArrayList<String>();
-		for (String s : b) {
-			c.addAll(match(hashtags, ts, s, true, null));
+		if (doHashtags) {
+			use1 = next(strings1, strings2, use1, hashtags, ts, true, null);
 		}
 
-		for (String s : c) {
+		for (String s : use1 ? strings1 : strings2) {
 			String spl[] = s.split("\\s+");
 			for (String ss : spl) {
-				if (!ss.toLowerCase().contains("apple")) { // !ss.equals(ss.toUpperCase()))
-															// {
+
+				switch (casing) {
+				case apple:
+					if (!ss.toLowerCase().contains("apple")) { // !ss.equals(ss.toUpperCase()))
+						// {
+						ss = ss.toLowerCase();
+					}
+					break;
+				case lower:
 					ss = ss.toLowerCase();
-				} else {
-					// do it anyway!
-					// ss = ss.toLowerCase();
+					break;
+				case nochange:
+				default:
+					break;
+				}
+				if (normalizeLengths) {
+
+					ss = ss.replaceAll("([A-Za-z])\\1{3,}", "$1$1$1");
+				}
+				if (removePunct) {
+					ss = ss.replaceAll("^[^\\w$]+", "");
+					ss = ss.replaceAll("[^\\w%]+$", "");
 				}
 
-				ss = ss.replaceAll("([A-Za-z])\\1{3,}", "$1$1$1");
-				ss = ss.replaceAll("^[^\\w$]+", "");
-				ss = ss.replaceAll("[^\\w%]+$", "");
 				if (ss.length() > 0) {
 					ts.add(ss);
-					System.out.println(ss);
+					if (print) {
+						System.out.println(ss);
+					}
 				} else {
 					// System.out.println("!!!!!!!!!!!!!!!Didn't add supposedly empty string3: "
 					// + ss);
 				}
 			}
-
 		}
-		System.out.println("---------------------------------------------");
+		if (print) {
+			System.out.println("---------------------------------------------");
+		}
 		carrier.setData(ts);
 		return carrier;
 	}
+
+	private boolean next(List<String> remaining1, List<String> remaining2,
+			boolean is1, String regex, TokenSequence ts, boolean toLowercase,
+			String replacement) {
+		if (is1) {
+			for (String s : remaining1) {
+				remaining2.addAll(match(regex, ts, s, toLowercase, replacement));
+			}
+			remaining1.clear();
+		} else {
+			for (String s : remaining2) {
+				remaining1.addAll(match(regex, ts, s, toLowercase, replacement));
+
+			}
+			remaining2.clear();
+		}
+		return !is1;
+	}
+
 }

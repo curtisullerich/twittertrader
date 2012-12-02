@@ -1,15 +1,14 @@
 package common;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import pipe.Stemmer;
 import pipe.Tokenizer;
+import pipe.Tokenizer.Case;
 import pipe.UnescapeHTML;
-
 import cc.mallet.pipe.CharSequence2TokenSequence;
 import cc.mallet.pipe.CharSequenceLowercase;
 import cc.mallet.pipe.FeatureSequence2FeatureVector;
@@ -21,16 +20,13 @@ import cc.mallet.pipe.TokenSequence2FeatureSequence;
 import cc.mallet.pipe.TokenSequenceNGrams;
 import cc.mallet.pipe.TokenSequenceRemoveStopwords;
 
-import com.google.common.collect.Iterators;
-
 public class PipeFactory {
 
 	public static Iterator<SetItem<SerialPipes>> getPipes() {
 		return new SetCombiner<SerialPipes, Pipe>() {
 
 			@Override
-			public SetItem<SerialPipes> combine(List<Pipe> pipes,
-					List<String> labels) {
+			public SetItem<SerialPipes> combine(List<Pipe> pipes, List<String> labels) {
 
 				return new SetItem<SerialPipes>(new SerialPipes(pipes),
 						labels.toString());
@@ -47,25 +43,28 @@ public class PipeFactory {
 			@Override
 			protected void build() {
 				this.add(
-						new CharSequence2TokenSequence(Pattern
-								.compile("[\\p{L}\\p{N}_]+")), "numdig tokenizer");
-				this.add(
-						new CharSequence2TokenSequence(Pattern
-								.compile("[^\\s]+")), "whitespace tokenizer");
-				this.add(new Tokenizer(), "twitter tokenizer");
+						new CharSequence2TokenSequence(Pattern.compile("[\\p{L}\\p{N}_]+")),
+						"numdig tokenizer");
+				this.add(new CharSequence2TokenSequence(Pattern.compile("[^\\s]+")),
+						"whitespace tokenizer");
+				this.add(new Tokenizer(false, false, false, false, false, false, false, false, false, Case.lower), "simplistic twitter tokenizer");
+				this.add(new Tokenizer(true, true, true, true, true, false, true, true, false, Case.lower), "twitter tokenizer with no RT,appleCase, and noPunct removed");
+				this.add(new Tokenizer(false), "default twitter tokenizer");
 			}
 
 		}).add(new SetFactory<Pipe>() {
 			@Override
 			protected void build() {
-				this.add(new TokenSequenceRemoveStopwords(), "TokenSequenceRemoveStopwords");
+				this.add(new TokenSequenceRemoveStopwords(),
+						"TokenSequenceRemoveStopwords");
 				this.add(new Stemmer(), "Stemmed");
 			}
 
 		}).add(new SetFactory<Pipe>(true) {
 			@Override
 			protected void build() {
-				this.add(new TokenSequence2FeatureSequence(), "TokenSequence2FeatureSequence");
+				this.add(new TokenSequence2FeatureSequence(),
+						"TokenSequence2FeatureSequence");
 			}
 		}).add(new SetFactory<Pipe>(true) {
 			@Override
@@ -76,7 +75,8 @@ public class PipeFactory {
 		}).add(new SetFactory<Pipe>(true) {
 			@Override
 			protected void build() {
-				this.add(new FeatureSequence2FeatureVector(), "FeatureSequence2FeatureVector");
+				this.add(new FeatureSequence2FeatureVector(),
+						"FeatureSequence2FeatureVector");
 			}
 
 		}).iterator();
@@ -90,7 +90,8 @@ public class PipeFactory {
 
 		Pattern tokenPattern = Pattern.compile("[^\\s]+");
 		// pipe.add(new CharSequence2TokenSequence(tokenPattern));
-		pipe.add(new Tokenizer());
+		pipe.add(new Tokenizer(false, false, false, false, false, false, false,
+				false, false, Case.nochange));
 		pipe.add(new TokenSequenceRemoveStopwords());
 		pipe.add(new Stemmer());
 		int[] sizes = { 1, 2 };
