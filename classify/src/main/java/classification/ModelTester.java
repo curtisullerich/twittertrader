@@ -34,14 +34,14 @@ public class ModelTester {
 
 	private static final int random_seed = 0xDEADBEEF;
 
-	private static final int folds = 10;
+	private static final int folds = 1;
 
-	private static final int test_size = 200;
+	private static final int test_size = 500;
 
 	public static void main(String[] args) throws IOException {
 
-		int d = 5;
-		int max = 100;
+		int d = 100;
+		int max = 1500;
 
 		ArrayList<String> info = new ArrayList<String>();
 
