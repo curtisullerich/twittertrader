@@ -4,11 +4,11 @@
   <head>
     <meta charset='utf-8' />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Twitter Trader : Making bank off of your tweets since 2012." />
+    <meta name="description" content="Tweet Classification : Disambiguating your tweets since 2012." />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>Twitter Trader</title>
+    <title>Tweet Classification</title>
   </head>
 
   <body>
@@ -18,8 +18,8 @@
         <header class="inner">
           <a id="forkme_banner" href="https://github.com/curtisullerich/twittertrader">View on GitHub</a>
 
-          <h1 id="project_title">Twitter Trader</h1>
-          <h2 id="project_tagline">Making bank off of your tweets since 2012.</h2>
+          <h1 id="project_title">Tweet Classification</h1>
+          <h2 id="project_tagline">Disambiguating your tweets since 2012.</h2>
 
             <section id="downloads">
               <a class="zip_download_link" href="https://github.com/curtisullerich/twittertrader/zipball/master">Download this project as a .zip file</a>
@@ -35,17 +35,16 @@
 
 <h4>Term Project, Fall 2012, Iowa State University</h4>
 
-<p>This page details our approach of using machine learning for sentiment analysis of Twitter to make buy-sell-hold decisions in the stock market.</p>
+<p>This page details our approach of using machine learning for classification of tweets about companies.</p>
+
+<h3>Paper</h3>
+
+<p>View a draft of our paper <a href="https://dl.dropbox.com/u/3942841/aipaper.pdf">here</a>.</p>
 
 <p>To check out the code with git:</p>
 
 <pre><code>$ git clone git@github.com:curtisullerich/twittertrader.git
 </code></pre>
-
-<h3>Project Proposal</h3>
-
-<p><strong>Stock market trading using Twitter sentiment as heuristic</strong><br>
-Twitter is a popular source for data mining due to its massive scale and inclusivity of current trends. Similar studies into the correlation of overall Twitter sentiment (with respect to positivity) to the Dow Jones Industrial Average have been conducted before<a href="http://www.cs.ucr.edu/%7Evagelis/publications/wsdm2012-microblog-financial.pdf">[1]</a>. We propose using real-time Twitter sentiment ratings of specific companies to determine buy-sell-hold actions of small, short-term investments. We will develop a system to collect the most recent set of tweets related to one company at any point in time and provide an aggregate binary classification of the set with a confidence rating. The classification and confidence value will provide a heuristic for potential investments. We may augment this heuristic by incorporating recent trends in stock prices and/or Twitter sentiment.</p>
 
 <h3>Students</h3>
 
@@ -56,47 +55,21 @@ Twitter is a popular source for data mining due to its massive scale and inclusi
 </li>
 <li>Curtis Ullerich, Senior, Computer Engineering (<a href="https://github.com/curtisullerich" class="user-mention">@curtisullerich</a>)<br>
 </li>
-</ul><h3>Summary of Goals</h3>
+</ul><h3>Project Abstract</h3>
 
-<ol>
-<li>Accurately classify the topicality of a tweet with respect to a particular company</li>
-<li>Accurately classify the sentiment of a tweet in the categories of positive, negative, neutral, and irrelevant</li>
-<li>Discover whether a correlation exists between sentiment of tweets about a particular company and the stock price of that company in the near future</li>
-<li>Make lucrative buy-sell-hold decisions using these correlations, if they exist</li>
-</ol><h3>Basic Approach</h3>
+<p>Twitter is a popular source for data mining due to its massive scale and inclusivity of current trends. As businesses seek to discover public opinion about their business or products, Twitter is one source for mining this information. Tweets present interesting classification challenges due to their irregular formatting and relatively small number of features. Tweet selection by keyword filtering often suffers from an high accuracy and low recall, or low accuracy and high recall. Using machine learning for text classification can improve this. We aim to survey a variety of text processing steps, focusing on the effects of tokenization, to increase accuracy of classification using a Naive Bayes classifier. We use a broad set of keywords with the goal of collecting a superset of the Tweets about a particular company (Apple, in this case) and train a binary classifier to filter out false positives.</p>
 
-<p><strong>1) Develop classifiers for both sentiment and company-topicality</strong><br>
-We do all machine learning with the Mallet<a href="http://mallet.cs.umass.edu">[2]</a> library developed by the University of Massachusetts. We are using an existing corpus from Sanders Analytics<a href="http://www.sananalytics.com/lab/twitter-sentiment/">[3]</a> to bootstrap our sentiment classifier. We created a very small corpus (500 total instances) of company-topical tweets by scraping the Twitter live stream based on keywords and verifying topicality by manual analysis. We trained a Mallet Classifier for each domain, specialized to accept Twitter's native JSON tweet format for classifying new instances. We have been collecting (hundreds of thousands of) tweets in a database to use as our corpus. We developed a basic web interface to efficiently human-verify the correct classification a large number of tweets as classified by our bootstrapped model. As we add more human-verified instances to the corpora, the accuracy of our models will improve over time.   </p>
+<h3>Contributions</h3>
 
-<p><strong>2) Develop web interface for tracking sentiment and volume of tweets</strong><br>
-We plan to filter the Twitter live stream for all tweets about the following companies:   </p>
-
-<p><em>Amazon  Boeing  Cerner  Coke  Costco  Dollar Tree  eBay  Ford  Garmin  Google  HyVee  Microsoft  Monsanto Netflix  Starbucks  Travel Zoo  Verizon  Walmart  Xerox</em>  </p>
-
-<p>"About" here is as classified by our models. We will classify each tweet's sentiment and store the statistics for 6-hour intervals. We will provide an interface for viewing this sentiment data graphically over time, as compared to stock market prices and the volume of tweets about each company.</p>
-
-<p><strong>3) Develop decision-making system for buy-sell-hold'ing stocks</strong><br>
-Based on the aggregated data, we will determine the buy-sell-hold decision that maximizes the likelihood of profiting.  </p>
-
-<h3>Anticipated Results</h3>
-
-<p>Based on prior research by Ruiz and Hristidis<a href="http://www.cs.ucr.edu/%7Evagelis/publications/wsdm2012-microblog-financial.pdf">[1]</a>, we expect to find a small but exploitable correlation between the volume and positivity of tweets about a company, and its stock price one to three days in the future. This is based on a close examination Table 8 from Ruiz and Hristidis which shows not only a significant correlation of 0.12 between activity and stock price the same day for the DEG.-STD, but smaller correlations of 0.10 and 0.07 for one day and two days in the future respectively. At three days the correlation is -0.04 and is no longer significant.  </p>
-
-<p>We do not expect these correlations to exist for all companies. Given the tendency of Twitter users to be tech-friendly and young, the companies about which they tweet and their attitudes toward them will be varied. Additionally, the sheer volume of tweets about popular companies like Google and Microsoft have the potential to overshadow the number of tweets about Garmin (for instance) and other companies in our dataset. We do expect to find useful correlations for some profile of companies. The profitability of our decision process is easily verified using past data, though it will take time to accumulate enough data for this to be a solid recommendation. If the discovered correlation is not strong enough to predict future stock price, we will change our analysis to find correlation between Twitter activity and traded volume for the company stocks, a relationship that Ruiz and Hristidis<a href="http://www.cs.ucr.edu/%7Evagelis/publications/wsdm2012-microblog-financial.pdf">[1]</a> found to have a significantly higher correlation in their dataset than activity and stock price.  </p>
-
-<h3>Bibliography</h3>
-
-<p>[1] <a href="http://www.cs.ucr.edu/%7Evagelis/publications/wsdm2012-microblog-financial.pdf">Ruiz and Hristidis, 2012</a><br>
-[2] <a href="http://mallet.cs.umass.edu">Mallett, University of Massachussetts Department of Computer Science</a><br>
-[3] <a href="http://www.sananalytics.com/lab/twitter-sentiment/">Sanders Analytics</a><br>
-[4] <a href="http://www.mendeley.com/research/genetic-based-stock-selection-model-using-investor-sentiment-indicators">Huang, Chien-Feng et al., 2011</a>  </p>
+<p>We have built several reusable Java components that extend the Mallet API for processing of data from Twitter. We created a TweetJsonIterator that accepts a file of Twitter's JSON-formatted tweets and creates training Instances containing their values for easy processing during model training. We have implemented several Pipes that can be reused or easily modified to suit a similar Twitter processing purpose. These include FixEmoticons, Link2Title, Stemmer, SpellCheck, and Tokenize, which serves as a more extensible tokenizer than Mallet's default. To use these components, download an archive of our code using the link above, or clone our git repo.
+We also provide a <a href="https://dl.dropbox.com/u/3942841/100000appleTweets.txt">corpus of 115,000 tweets</a> selected by Apple-related keyword and our <a href="https://dl.dropbox.com/u/3942841/appleBinaryFiltered.txt">labeled data set of 2000 tweets</a>. The <a href="https://dl.dropbox.com/u/3942841/filters.sh">bash scripts used to filter the data</a> for near-duplicates and spam are also available for download.</p>
       </section>
     </div>
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">Twitter Trader maintained by <a href="https://github.com/curtisullerich">curtisullerich</a></p>
+        <p class="copyright">Tweet Classification maintained by <a href="https://github.com/curtisullerich">curtisullerich</a></p>
         <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
