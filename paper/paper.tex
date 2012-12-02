@@ -61,16 +61,16 @@ Data sets and scripts used for processing text data are available on the project
 We do all machine learning with the Mallet\cite{McCallumMALLET} library developed by the University of Massachusetts. Mallet includes abstractions for a data processing pipeline, during which we use both existing and custom processing "Pipes" to transform the data, beginning in our case with raw tweets text and ending in Mallet's internal FeatureVector format. We built several Pipes to analyze the effect of different filters and processes on the accuracy of classification. Not every Pipe proved to increase accuracy--some decreased it. We present the descriptions of and motivations for these Pipes here.
 
 \subsubsection{Feature-space Enrichment}
-Stopword removal: 
-N-grams: 
-Fix emoticons: 
+Stopword removal: In order to improve accuracy of classification we decided to run each tweet through a pipe that would remove stopwords. Stopwords are generally known as adverbs, conjunctions, pronouns, and prepositions commonly found in English sentences, By removing these words, we hoped that the classifiers would be able to focus more on the relevant text and less on meaningless parts of the tweets. Since this is a common task for natural language processing we were able to make use of one of Mallet's stopwords pipes, using a default list of stopwords.
+N-grams:
+Fix emoticons:
 HTML corrections: 
-URL replacement: 
-Spell checking: 
+URL replacement:
+Spell checking: Since twitter is an informal form of communication, we found that a fair number of tweets were being classified that had misspelled words. We decided that performing a spell check on the tweet might help the classifier work, since then it would only have to process proper English. In order to perform the spell check, we made use of an api that would return suggestions for misspelled words. Along with the suggested correct spellings of words, we were also given a "confidence" level for each suggestion. By using this value we were able to choose the best suggestion, and also filter out any suggestions that were too far from the original word.
 
 \subsubsection{Disambiguation}
 Lowercasing:
-Stemming:
+Stemming: Stemming is the process of reducing words to their "stem." While this stem does not necessarily have to be the root of the word, it should satisfy the property that related words have the same stem. Therefore the stem of the related words "argue," "argued," and "arguing" all have the stem of "argu," even though argu is not a real word. We believed that by reducing each word in the tweet to a its stem, we would be able to improve the classifying algorithm's ability to classify. In order to add stemming we made use of an api that used a Porter stemming algorithm to find the stem of each word.
 
 \subsubsection{Tokenization}
 Twitter data, and user-generated web content in general, provides unique challenges to an automatic tokenization system due to the high level of noise in the feature set [citation and more details]. Tweets are limited to 140 characters, which limits the total number of features possible. Some of the many natural language processing dilemmas present in tweets include excessive and irregular punctuation, frequent misspellings, emoticons, URLs, and hashtags, to name a few.
