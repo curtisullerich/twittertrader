@@ -31,18 +31,19 @@ public class Tokenizer extends Pipe {
 	// 6. remove commas, colons, semicolons, hyphens?
 	// possible remove RT and -
 	public Tokenizer() {
-		this(true, true, true, true, true, true, true, true, true, Case.apple);
+		this(true, true, true, true, true, true, true, true, true, true, Case.apple);
 	}
 
 	public Tokenizer(boolean print) {
-		this(true, true, true, true, true, true, true, true, print, Case.apple);
+		this(true, true, true, true, true, true, true, true, true, print,
+				Case.apple);
 
 	}
 
 	public Tokenizer(boolean doEmoticons, boolean doUsernames,
 			boolean doHashtags, boolean doLinks, boolean doSpecialCases,
 			boolean removeRT, boolean normalizeLengths, boolean removePunct,
-			boolean print, Case casing) {
+			boolean ngram, boolean print, Case casing) {
 		this.doEmoticons = doEmoticons;
 		this.doUsernames = doUsernames;
 		this.doHashtags = doHashtags;
@@ -51,6 +52,7 @@ public class Tokenizer extends Pipe {
 		this.removeRT = removeRT;
 		this.normalizeLengths = normalizeLengths;
 		this.removePunct = removePunct;
+		this.ngram = ngram;
 		this.casing = casing;
 		this.print = print;
 
@@ -64,7 +66,8 @@ public class Tokenizer extends Pipe {
 	private boolean removeRT;
 	private boolean normalizeLengths;
 	private boolean removePunct;// removes any non-word characters from edges of
-								// space-delimited tokens
+	// space-delimited tokens
+	private boolean ngram;
 	private boolean print;
 	private Case casing;
 
@@ -140,6 +143,7 @@ public class Tokenizer extends Pipe {
 		if (doHashtags) {
 			use1 = next(strings1, strings2, use1, hashtags, ts, true, null);
 		}
+		String prev = "";
 
 		for (String s : use1 ? strings1 : strings2) {
 			String spl[] = s.split("\\s+");
@@ -170,6 +174,13 @@ public class Tokenizer extends Pipe {
 
 				if (ss.length() > 0) {
 					ts.add(ss);
+					if (ngram) {
+						if (prev != "") {
+							ts.add(prev + "_" + ss);
+						}
+						prev = ss;
+					}
+
 					if (print) {
 						System.out.println(ss);
 					}
@@ -191,14 +202,12 @@ public class Tokenizer extends Pipe {
 			String replacement) {
 		if (is1) {
 			for (String s : remaining1) {
-				remaining2
-						.addAll(match(regex, ts, s, toLowercase, replacement));
+				remaining2.addAll(match(regex, ts, s, toLowercase, replacement));
 			}
 			remaining1.clear();
 		} else {
 			for (String s : remaining2) {
-				remaining1
-						.addAll(match(regex, ts, s, toLowercase, replacement));
+				remaining1.addAll(match(regex, ts, s, toLowercase, replacement));
 
 			}
 			remaining2.clear();

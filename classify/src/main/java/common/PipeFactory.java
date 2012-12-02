@@ -26,8 +26,7 @@ public class PipeFactory {
 		return new SetCombiner<SerialPipes, Pipe>() {
 
 			@Override
-			public SetItem<SerialPipes> combine(List<Pipe> pipes,
-					List<String> labels) {
+			public SetItem<SerialPipes> combine(List<Pipe> pipes, List<String> labels) {
 
 				return new SetItem<SerialPipes>(new SerialPipes(pipes),
 						labels.toString());
@@ -44,18 +43,18 @@ public class PipeFactory {
 			@Override
 			protected void build() {
 				this.add(
-						new CharSequence2TokenSequence(Pattern
-								.compile("[\\p{L}\\p{N}_]+")),
+						new CharSequence2TokenSequence(Pattern.compile("[\\p{L}\\p{N}_]+")),
 						"numdig tokenizer");
-				this.add(
-						new CharSequence2TokenSequence(Pattern
-								.compile("[^\\s]+")), "whitespace tokenizer");
-				this.add(new Tokenizer(false, false, false, false, false,
-						false, false, false, false, Case.lower),
-						"simplistic twitter tokenizer");
-				this.add(new Tokenizer(true, true, true, true, true, false,
-						true, true, false, Case.lower),
-						"twitter tokenizer with no RT,appleCase, and noPunct removed");
+				this.add(new CharSequence2TokenSequence(Pattern.compile("[^\\s]+")),
+						"whitespace tokenizer");
+				this.add(new Tokenizer(false, false, false, false, false, false, false,
+						false, false, false, Case.lower), "simplistic twitter tokenizer");
+				this.add(new Tokenizer(true, true, true, true, true, false, true, true,
+						false, false, Case.lower),
+						"twitter tokenizer with no RT--appleCase--no ngramming--and noPunct removed");
+				this.add(new Tokenizer(true, true, true, true, true, true, true, true,
+						false, false, Case.apple),
+						"twitter tokenizer with everything but ngramming");
 				this.add(new Tokenizer(false), "default twitter tokenizer");
 			}
 
@@ -98,7 +97,7 @@ public class PipeFactory {
 		Pattern tokenPattern = Pattern.compile("[^\\s]+");
 		// pipe.add(new CharSequence2TokenSequence(tokenPattern));
 		pipe.add(new Tokenizer(false, false, false, false, false, false, false,
-				false, false, Case.nochange));
+				false, false, false, Case.nochange));
 		pipe.add(new TokenSequenceRemoveStopwords());
 		pipe.add(new Stemmer());
 		int[] sizes = { 1, 2 };
