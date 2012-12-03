@@ -25,12 +25,21 @@ Ames, Iowa, USA\\
 \maketitle
 \begin{abstract}
 \begin{quote}
-Twitter is a popular source for data mining due to its massive scale and inclusivity of current trends. As businesses seek to discover public opinion about their business or products, Twitter is one source for mining this information. Tweets present interesting classification challenges due to their irregular formatting and relatively small number of features. Tweet selection by keyword filtering often suffers from an high accuracy and low recall, or low accuracy and high recall. Using machine learning for text classification can improve this. We aim to survey a variety of text processing steps, focusing on the effects of tokenization, to increase accuracy of classification using a Naive Bayes classifier. We use a broad set of keywords with the goal of collecting a superset of the Tweets about a particular company (Apple, in this case) and train a binary classifier to filter out false positives.
+Twitter is a popular source for data mining due to its massive scale and inclusivity of current trends.
+It is also a veritable goldmine of useful data for businesses seeking to discover public opinion about themselves or their products.
+Using machine learning techniques, we analyze the accuracy of classifying whether tweets are part of the public opinion about a particular company or mearly contain keywords related to the company.
+%Tweets present interesting classification challenges due to their irregular formatting and relatively small number of features.
+%Classification purely by keyword filtering often suffers from a
+%high accuracy and low recall, or low accuracy and high recall. % Q: Daniel - What does recall mean in this context? Also, list low accuracy first I think.
+We aim to survey a variety of text processing steps combined with a Naive Bayes classifier, focusing on the effects of different tokenizations.
+Our dataset consists of approximately 2,000 tweets of which 64\% are related to public opinion about the company Apple, Inc. The other 36\% are not, but still contain keywords related to the company.
+Peliminary results have shown significant increases in accuracy % TODO insert actual numbers
+by using domain-specific tokenizers, while suprisingly showing decreases in classification accurracy for other standard preproccessing methods such as n-grams.
 \end{quote}
 \end{abstract}
 
 \section{Introduction}
-Tweets are used as a source of data mining for applications ranging from predicting future stock price changes based on sentiment% \cite{Ruiz:2012:CFT:2124295.2124358}, ... [ADD MORE]
+Tweets are used as a source of data mining for applications ranging from predicting future stock price changes based on sentiment \citeauthor{Ruiz}, ... [ADD MORE]
 In many cases, the problem of determining which tweets are relevant for a particular application is prerequisite to meaningful results. In some domains, filtering tweets based solely on keywords may be appropriate, but disambiguation remains an interest natural language processing problem in many cases. We present a system to disambiguate tweets about the company Apple.
 
 \section{Related Work}
@@ -82,7 +91,7 @@ We do all machine learning with the Mallet%\cite{McCallumMALLET} library develop
 \subsubsection{Feature-space Enrichment} ~\\
 \textit{Stopword removal}: We wrote a Pipe to remove any tokens that appeared in a list of the 50 most common words in the English language.\\
 ~\\
-\textit{N-grams}: Using n-grams is a common method of increasing the number of features present in short text [FIND CITATION]\cite{article_label,book_label}. Often, this is enough to increase accuracy significantly. During our testing, this was not the case. Rather, including bigrams and trigrams actually reduced accuracy slightly.\\
+\textit{N-grams}: Using n-grams is a common method of increasing the number of features present in short text [FIND CITATION]. Often, this is enough to increase accuracy significantly. During our testing, this was not the case. Rather, including bigrams and trigrams actually reduced accuracy slightly.\\
 ~\\
 \textit{HTML corrections}: When accessing tweets through Twitter's public API, the native JSON format includes HTML-encoded entities that can add confusing features to the tweets if not un-escaped. For instance, angle brackets are replaced with \&lt; and \&gt; (less-than and greater-than), causing emoticons, for instance, to no longer be parseable. The emoticon \">.<", for instance, would be "\&gt;.\&lt;". This Pipe un-escapes all such entities, making them easier to parse.\\
 ~\\
@@ -157,27 +166,7 @@ Thank you to Dr. Jin Tian and our TA Ru He for their guidance during this resear
 
 
 \bibliographystyle{plain}
-
-\begin{thebibliography}{2}
-\providecommand{\natexlab}[1]{#1}
-\providecommand{\url}[1]{\texttt{#1}}
-\expandafter\ifx\csname urlstyle\endcsname\relax
-\providecommand{\doi}[1]{doi: #1}\else
-\providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
-
-\bibitem[{Surname}(2007{\natexlab{a}})]{article_label}
-Firstname~I. {Surname}.
-\newblock Title of article.
-\newblock \emph{Journal of Publication}, 1:\penalty0 1--2, May
-2007{\natexlab{a}}.
-
-\bibitem[{Surname2}(2007{\natexlab{b}})]{book_label}
-Firstname~I. {Surname}.
-\newblock \emph{Title of Book}.
-\newblock Publishing House, Address of Publishing House, 1 edition,
-2007{\natexlab{b}}.
-
-\end{thebibliography}
+\bibliography{paper}
 
 %[1] J. Bollen, H. Mao, and X.-J. Zeng. Twitter mood predicts the stock market. Journal of Computational Science, abs/1010.3003, 2010\\
 
