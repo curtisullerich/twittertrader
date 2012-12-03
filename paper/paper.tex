@@ -42,19 +42,34 @@ Part of the Sentiment Analysis Symposium focuses on tokenization of tweets for s
 By accessing the Twitter "Firehose" stream through their public API, we harvested 115,000 tweets using broad keyword filters with the goal of collecting a superset of relevant tweets. This provides us a smaller set of features in the overall corpus. The keywords used for the company of choice during this round of testing, Apple, were collected manually from information on the company's website and the Wikipedia page about Apple:\\
 ...\\
 
-This set of keywords clearly allows a large number of false positives:\\
-\begin{quote}
-nice fish and chip.. good pie apple :-) http://t.co/KVDN5r5l \\
-20 chicken nuggets, chips, big mac, and a vanilla milkshake LIFE IS GOOD \\
-1 more day whoop plus safari ride yay \\
-Ashley staples an apple.  "AHHHH!!!!  Apple juice in my eye!" \\
-I ain't seen uncle Mac in a while \\
-\end{quote}
+This set of keywords clearly allows a large number of false positives:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|}
+	\hline
+	nice fish and chip.. good pie apple :-) \\ http://t.co/KVDN5r5l \\ \hline
+	20 chicken nuggets, chips, big mac, and a \\ vanilla milkshake LIFE IS GOOD \\ \hline
+	1 more day whoop plus safari ride yay \\ \hline
+	Ashley staples an apple.  "AHHHH!!!! \\ Apple juice in my eye!" \\ \hline
+	I ain't seen uncle Mac in a while \\
+	\hline
+\end{tabular}
+\caption{Examples of false positive tweets}
+\label{tab:myfirsttable}
+\end{table}
+
 
 We define a tweet to be "about" Apple if the tweet mentions the company (via direct reference or stock symbol), one of its products, or a service it offers. We make the assumption that spam will be filtered from the testing set. This could be done via an existing Naive Bayes classifier, but we simply did not include instances of spam in our corpus during the manual labeling process. We collected our tweets over the course of twelve hours. On Twitter, a single message posted is often reposted, or "re-tweeted," many more times in a very short timespan. Because of the small timespan of our data collection, a large number of retweets (effectively duplicates) appeared in the dataset. We filtered these duplicates out of the dataset as well to prevent over-fitting in our model. After filtering, our original set of 115,000 tweets was reduced to 65,000. A representative sample of non-spam, non-duplicate tweets has composition of 60\% topical instances and 40\% false positives [need to analyze this for sure].
+
+A computer-posted spam tweet:
 \begin{quote}
-A computer-posted spam tweet: I've collected 10,650 gold coins! http://t.co/H0V0O6yP \#ipad, \#ipadgames, \#gameinsight\\
-A retweet, signified by "RT": RT @PHILerNotebook: Trying to fix my Mac. This gray loading bar takes 10 minutes to start up. Grr. Shall take it to an \_Apple\_ \_store\_ soon! \\
+I've collected 10,650 gold coins! http://t.co/H0V0O6yP \#ipad, \#ipadgames, \#gameinsight\\
+\end{quote}
+
+A retweet, signified by "RT":
+\begin{quote}
+RT @PHILerNotebook: Trying to fix my Mac. This gray loading bar takes 10 minutes to start up. Grr. Shall take it to an \_Apple\_ \_store\_ soon! \\
 \end{quote}
 
 We hand labeled 2000 tweets for use in training and testing, including only English-language tweets in our training set. \\
@@ -64,13 +79,12 @@ Data sets and scripts used for processing text data are available on the project
 
 We do all machine learning with the Mallet%\cite{McCallumMALLET} library developed by the University of Massachusetts. Mallet includes abstractions for a data processing pipeline, during which we use both existing and custom processing "Pipes" to transform the data, beginning in our case with raw tweets text and ending in Mallet's internal FeatureVector format. We built several Pipes to analyze the effect of different filters and processes on the accuracy of classification. Not every Pipe proved to increase accuracy--some decreased it. We present the descriptions of and motivations for these Pipes here.
 
-\subsubsection{Feature-space Enrichment}
-~\\
+\subsubsection{Feature-space Enrichment} ~\\
 \textit{Stopword removal}: We wrote a Pipe to remove any tokens that appeared in a list of the 50 most common words in the English language.\\
 ~\\
-\textit{N-grams}: Using n-grams is a common method of increasing the number of features present in short text [FIND CITATION]. Often, this is enough to increase accuracy significantly. During our testing, this was not the case. Rather, including bigrams and trigrams actually reduced accuracy slightly.\\
+\textit{N-grams}: Using n-grams is a common method of increasing the number of features present in short text [FIND CITATION]\cite{article_label,book_label}. Often, this is enough to increase accuracy significantly. During our testing, this was not the case. Rather, including bigrams and trigrams actually reduced accuracy slightly.\\
 ~\\
-\textit{HTML corrections}: When accessing tweets through Twitter's public API, the native JSON format includes HTML-encoded entities that can add confusing features to the tweets if not un-escaped. For instance, angle brackets are replaced with \&lt; and \&gt; (less-than and greater-than), causing emoticons, for instance, to no longer be parseable. The emoticon ">.<", for instance, would be "\&gt;.\&lt;". This Pipe un-escapes all such entities, making them easier to parse.\\
+\textit{HTML corrections}: When accessing tweets through Twitter's public API, the native JSON format includes HTML-encoded entities that can add confusing features to the tweets if not un-escaped. For instance, angle brackets are replaced with \&lt; and \&gt; (less-than and greater-than), causing emoticons, for instance, to no longer be parseable. The emoticon \">.<", for instance, would be "\&gt;.\&lt;". This Pipe un-escapes all such entities, making them easier to parse.\\
 ~\\
 \textit{URL replacement}: 
 ~\\
@@ -141,9 +155,29 @@ We have built several reusable Java components that extend the Mallet API for pr
 \section{ Acknowledgments}
 Thank you to Dr. Jin Tian and our TA Ru He for their guidance during this research project. We also extend our thanks to our friends for their help in manual labeling of tweets.
 
-\section{References}
+
 \bibliographystyle{plain}
-\bibliography{references}
+
+\begin{thebibliography}{2}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+\providecommand{\doi}[1]{doi: #1}\else
+\providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[{Surname}(2007{\natexlab{a}})]{article_label}
+Firstname~I. {Surname}.
+\newblock Title of article.
+\newblock \emph{Journal of Publication}, 1:\penalty0 1--2, May
+2007{\natexlab{a}}.
+
+\bibitem[{Surname2}(2007{\natexlab{b}})]{book_label}
+Firstname~I. {Surname}.
+\newblock \emph{Title of Book}.
+\newblock Publishing House, Address of Publishing House, 1 edition,
+2007{\natexlab{b}}.
+
+\end{thebibliography}
 
 %[1] J. Bollen, H. Mao, and X.-J. Zeng. Twitter mood predicts the stock market. Journal of Computational Science, abs/1010.3003, 2010\\
 
