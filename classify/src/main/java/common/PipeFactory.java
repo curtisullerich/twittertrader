@@ -13,6 +13,7 @@ import cc.mallet.pipe.CharSequence2TokenSequence;
 import cc.mallet.pipe.CharSequenceLowercase;
 import cc.mallet.pipe.FeatureSequence2FeatureVector;
 import cc.mallet.pipe.Input2CharSequence;
+import cc.mallet.pipe.Noop;
 import cc.mallet.pipe.Pipe;
 import cc.mallet.pipe.SerialPipes;
 import cc.mallet.pipe.Target2Label;
@@ -32,7 +33,7 @@ public class PipeFactory {
 						labels.toString());
 			}
 
-		}.add(new SetFactory<Pipe>() {
+		}.add(new SetFactory<Pipe>(true) {
 			@Override
 			protected void build() {
 				this.add(new Input2CharSequence("UTF-8"), "Input2CharSequence");
@@ -64,6 +65,13 @@ public class PipeFactory {
 				this.add(new TokenSequenceRemoveStopwords(),
 						"TokenSequenceRemoveStopwords");
 				this.add(new Stemmer(), "Stemmed");
+			}
+
+		}).add(new SetFactory<Pipe>(true) {
+			@Override
+			protected void build() {
+				this.add(new Noop(), "NGRAM1");
+				this.add(new TokenSequenceNGrams(new int[] {1, 2}), "NGRAM2");
 			}
 
 		}).add(new SetFactory<Pipe>(true) {
