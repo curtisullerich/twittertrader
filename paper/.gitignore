@@ -3,3 +3,6 @@ paper.out
 paper.log
 paper.aux
 paper.fdb_latexmk
+.bbl
+.blg
+.dvi
