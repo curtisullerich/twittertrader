@@ -29,29 +29,62 @@ Ames, Iowa, USA\\
 \begin{quote}
 Twitter is a popular source for data mining due to its massive scale and inclusivity of current trends.
 It is also a veritable goldmine of useful data for businesses seeking to discover public opinion about themselves or their products.
-Using machine learning techniques, we analyze the accuracy of classifying whether tweets are part of the public opinion about a particular company or mearly contain keywords related to the company.
+Using machine learning techniques, we analyze the accuracy of classifying whether tweets are part of the public opinion about a particular company or merely contain keywords related to the company.
 %Tweets present interesting classification challenges due to their irregular formatting and relatively small number of features.
 %Classification purely by keyword filtering often suffers from a
 %high accuracy and low recall, or low accuracy and high recall. % Q: Daniel - What does recall mean in this context? Also, list low accuracy first I think.
 We aim to survey a variety of text processing steps combined with a Naive Bayes classifier, focusing on the effects of different tokenizations.
 Our dataset consists of approximately 2,000 tweets of which 64\% are related to public opinion about the company Apple, Inc. The other 36\% are not, but still contain keywords related to the company.
-Peliminary results have shown significant increases in accuracy % TODO insert actual numbers
-by using domain-specific tokenizers, while suprisingly showing decreases in classification accurracy for other standard preproccessing methods such as n-grams.
+Preliminary results have shown significant increases in accuracy % TODO insert actual numbers
+by using domain-specific tokenizers, while surprisingly showing decreases in classification accuracy for other standard preprocessing methods such as n-grams.%maybe?
 \end{quote}
 \end{abstract}
 
 \section{Introduction}
-Tweets are used as a source of data mining for applications ranging from predicting future stock price changes based on sentiment \citeauthor{Ruiz}, ... [ADD MORE]
-In many cases, the problem of determining which tweets are relevant for a particular application is prerequisite to meaningful results. In some domains, filtering tweets based solely on keywords may be appropriate, but disambiguation remains an interest natural language processing problem in many cases. We present a system to disambiguate tweets about the company Apple.
+Tweets are used as a source of data mining for applications ranging from predicting future stock price changes based on user sentiment (\citeauthor{Ruiz}) and identifying characteristics of Twitter users (\citeauthor{conf/icwsm/PennacchiottiP11}) to tracking political protests and uncovering scams (\citeauthor{ICWSM101540}).
+In many cases, the problem of determining which tweets are relevant for a particular application is prerequisite to meaningful results. Use of hashtags and username references on Twitter through syntax conventions (prepending with \# and @, respectively) can be used to select a subset of the tweets about a particular topic. 
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|}
+	\hline
+\textbf{@Apple} please make a squid \textbf{\#emoji} so I can put \\
+one next to \textbf{@squidneyy22}'s name\\ \hline
+Maybe \textbf{\#Apple} will release \textbf{\#iTunes11} \\
+tomorrow. Maybe? \\ \hline
+\end{tabular}
+\caption{Hashtags and username references (note that Apple Inc. does not own the handle @Apple, though it is commonly used this way)}
+\label{tab:myfirsttable}
+\end{table}
+
+In some domains, filtering tweets based solely on keywords may be appropriate, but disambiguation remains an interest natural language processing problem in many cases, particularly when the topic in question is a commonplace (and thus ambiguous) word, such as "apple," "blackberry," "android," or "adobe" (\citeauthor{journals/ijcsa/YervaMA12}). 
+
+Additionally, tweets contain a high rate of errors in grammar, spelling, and punctuation. These features are present alongside myriad augmentations of the English language due to internet trends and culture, as well as the desire of packing more information into Twitter's 140-character message limit (\citeauthor{Laboreiro:2010:TMM:1871840.1871853}). Preprocessing is necessary to avoid discarding or misinterpreting these features as noise or part of other tokens during tokenization.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|}
+	\hline
+\textbf{Nvm} i'll buy you an ipad \textbf{\^-\^} \\ \hline
+\#Apple fires "maps" project manager \textbf{loooool} big \\
+ news story here in San Francisco! Go figure. \textbf{:-)} \\ \hline
+Think I might have a \textbf{gf}! \textbf{O\_o} oh \\
+lord\textbf{..} Lets see how this goes. \\ \hline
+\end{tabular}
+\caption{Examples of emoticons and common abbreviations found on Twitter}
+\label{tab:myfirsttable}
+\end{table}
+
+We present a system to disambiguate tweets about the company Apple using a Naive Bayes model, increasing its baseline accuracy by 8\% through use of specialized, Twitter-aware tokenization.
 
 \section{Related Work}
-DUALIST is a system that extends Mallet by user-interactive feedback during training[Settles]. Included in their implementation was a TwitterPipe that performed some simple feature extraction. 
-Part of the Sentiment Analysis Symposium focuses on tokenization of tweets for sentiment analysis, demonstrating that it provides consistent improvement over whitespace-based tokenizing \cite{potts2011}. A good deal of research has been done into sentiment classification of tweets, which requires very similar text processing and tokenization \cite{Pak10}. 
+DUALIST is a system that extends Mallet, our machine learning API of choice, by user-interactive feedback during training (\citeauthor{Settles:2011:CLF:2145432.2145588}). Included in his implementation was a preprocessing step that performed some simple Twitter-specific feature extraction and tokenization. Part of the Sentiment Analysis Symposium focuses on Twitter-aware tokenization of tweets for sentiment analysis, demonstrating that it provides consistent improvement over whitespace- and Treebank-based tokenization \cite{potts2011}. A good deal of research has been done into sentiment classification of tweets, which requires very similar text processing and tokenization \cite{Pak10}. Laboreiro et al focus on the problem of tokenizing, using support vector machines (SVM) to improve upon the accuracy of rule-based tokenization, succeeded in improving from 85\% to 96\% token accuracy (\citeauthor{Laboreiro:2010:TMM:1871840.1871853}). Yerva et al construct classifiers to disambiguate tweets containing company-related keywords, primarily using profiles containing company background knowledge (\citeauthor{journals/ijcsa/YervaMA12}). 
 
 \section{Method}
 \subsection{Corpus creation}
-By accessing the Twitter \"Firehose\" stream through their public API, we harvested 115,000 tweets using broad keyword filters with the goal of collecting a superset of relevant tweets. This provides us a smaller set of features in the overall corpus. The keywords used for the company of choice during this round of testing, Apple, were collected manually from information on the company's website and the Wikipedia page about Apple:\\
-...\\
+By accessing the Twitter "Firehose" stream through their public API, we harvested 100,000 tweets using broad keyword filters with the goal of collecting a superset of relevant tweets. This provides us a smaller set of features in the overall corpus, with a much higher prior confidence that each individual tweet is of interest. The keywords used for the company of choice during this round of testing, Apple, were collected manually from information on the company's website and the Wikipedia page about Apple:\\
+
+[INSERT LIST OF KEYWORDS]...\\
 
 This set of keywords clearly allows a large number of false positives:
 
@@ -71,9 +104,9 @@ This set of keywords clearly allows a large number of false positives:
 \end{table}
 
 
-We define a tweet to be "about" Apple if the tweet mentions the company (via direct reference or stock symbol), one of its products, or a service it offers. We make the assumption that spam will be filtered from the testing set. This could be done via an existing Naive Bayes classifier, but we simply did not include instances of spam in our corpus during the manual labeling process. We collected our tweets over the course of twelve hours. On Twitter, a single message posted is often reposted, or "re-tweeted," many more times in a very short timespan. Because of the small timespan of our data collection, a large number of retweets (effectively duplicates) appeared in the dataset. We filtered these duplicates out of the dataset as well to prevent over-fitting in our model. After filtering, our original set of 115,000 tweets was reduced to 65,000. A representative sample of non-spam, non-duplicate tweets has composition of 60\% topical instances and 40\% false positives [need to analyze this for sure].
+We define a tweet to be "about" Apple if the tweet mentions the company (via direct reference or stock symbol), one of its products, or a service it offers. We make the assumption that spam will be filtered from the testing set. This could be done via an existing Naive Bayes classifier %[INSERT REFERENCE FOR TWEET SPAM FILTERING]
+, but we simply did not include instances of spam in our corpus during the manual labeling process. We collected our tweets over the course of twelve hours. On Twitter, a single message posted is often reposted, or "re-tweeted," many more times in a very short timespan. Because of the small timespan of our data collection, a large number of retweets (effectively duplicates) appeared in the dataset. We filtered these duplicates out of the dataset as well to prevent over-fitting in our model. After filtering, our original set of 100,000 tweets was reduced to 50,000. A representative sample of non-spam, non-duplicate tweets has a composition of 64\% topical instances and 36\% false positives.
 
-A computer-posted spam tweet:
 \begin{table}[h]
 \centering
 \begin{tabular}{|l|}
@@ -81,10 +114,9 @@ A computer-posted spam tweet:
 	I've collected 10,650 gold coins! \\ http://t.co/H0V0O6yP \#ipad, \#ipadgames, \#gameinsight\\
 	\hline
 \end{tabular}
+\caption{A computer-posted spam tweet}
 \end{table}
 
-
-A retweet, signified by "RT":
 \begin{table}[h]
 \centering
 \begin{tabular}{|l|}
@@ -92,6 +124,7 @@ A retweet, signified by "RT":
 	RT @PHILerNotebook: Trying to fix my Mac. \\ This gray loading bar takes 10 minutes to start up. \\ Grr. Shall take it to an \_Apple\_ \_store\_ soon! \\
 	\hline
 \end{tabular}
+\caption{A retweet, signified by "RT"}
 \end{table}
 
 We hand labeled 2000 tweets for use in training and testing, including only English-language tweets in our training set. \\
@@ -99,22 +132,26 @@ Data sets and scripts used for processing text data are available on the project
 
 \subsection{Preprocessing Pipeline}
 
-We do all machine learning with the Mallet library developed by the University of Massachusetts \cite{McCallumMALLET}. Mallet includes abstractions for a data processing pipeline, during which we use both existing and custom processing "Pipes" to transform the data, beginning in our case with raw tweets text and ending in Mallet's internal FeatureVector format. We built several Pipes to analyze the effect of different filters and processes on the accuracy of classification. Not every Pipe proved to increase accuracy--some decreased it. We present the descriptions of and motivations for these Pipes here.
+We do all machine learning with the Mallet library developed by the University of Massachusetts \cite{McCallumMALLET}. Mallet includes abstractions for a data processing pipeline, during which we use both existing and custom processing "Pipes" to transform the data, beginning in our case with raw tweet text and ending in Mallet's internal FeatureVector format. We built and tested several Pipes to analyze the effect of different filters and processes on the accuracy of classification. Not every Pipe proved to increase accuracy--some decreased it, as presented in the results. We present the descriptions of and motivations for these Pipes here.
 
 \subsubsection{Feature-space Enrichment} ~\\
-\textit{Stopword removal}: We wrote a Pipe to remove any tokens that appeared in a list of the 50 most common words in the English language.\\
+\textit{Stopword removal}: We used Mallet's TokenSequenceRemoveStopwords Pipe to remove 500 of the most common words in the English language from each tweet. We remove these words because of the high likelihood of many tweets containing these words, without contributing significant discriminatory features to the tweets. %TODO [REFERENCE NLP PAPER ABOUT STOPWORD REMOVAL]
+\\
 ~\\
-\textit{N-grams}: Using n-grams is a common method of increasing the number of features present in short text [FIND CITATION]. Often, this is enough to increase accuracy significantly. During our testing, this was not the case. Rather, including bigrams and trigrams actually reduced accuracy slightly.\\
+\textit{Bigrams}: Using n-grams is a common method of increasing the number of features present in short text %[FIND CITATION]
+. Often, this is enough to increase accuracy significantly%CITATION
+. As discussed in the tokenization section below, we used selective bigramming, which yielded increases in accuracy in almost all test cases.\\
 ~\\
-\textit{HTML corrections}: When accessing tweets through Twitter's public API, the native JSON format includes HTML-encoded entities that can add confusing features to the tweets if not un-escaped. For instance, angle brackets are replaced with \&lt; and \&gt; (less-than and greater-than), causing emoticons, for instance, to no longer be parseable. The emoticon \">.<", for instance, would be "\&gt;.\&lt;". This Pipe un-escapes all such entities, making them easier to parse.\\
+\textit{HTML corrections}: When accessing tweets through Twitter's public API, the native JSON format includes HTML-encoded entities that can add confusing features to the tweets if not un-escaped. For instance, angle brackets are replaced with \&lt; and \&gt; (less-than and greater-than), causing emoticons, for instance, to no longer be parseable. The emoticon ">.<", for instance, would be "\&gt;.\&lt;". Necessarily, this Pipe un-escapes all such entities, making them easier to parse.\\
 ~\\
-\textit{URL replacement}: 
-~\\
-\textit{Spell checking}: Twitter's user-generated content contains a large volume of misspelled words. Using a spell-checking library, we wrote a Pipe to replace unrecognized words (misspelled words) with their corrections if the confidence for correction was above a certain threshold. \\
+\textit{URL replacement}: In our dataset, 60\% of the 100,000 tweets we collected contained a link. As the vast majority of these are unique, and shortened using a URL shortener, often Twitter's own t.co. Links, then, lose any features that may have been parsed from the URL, which often contains a domain name or title that may be useful in discriminating especially ambiguous links. Consider, for instance, the tweet "hmmm http://t.co/39D8I3qM" which leaves a parser completely unaware of the true content of the tweet. Following this URL leads to 'http://www.redmondpie.com/iphone-5-vs-iphone-4s-should-you-upgrade/', which is clearly related to Apple. This pipe replaces the link itself in the tweet with the title of the destination web page: "iPhone 5 vs iPhone 4S: Should You Upgrade? | Redmond Pie." In cases where the title is empty, we instead replace the shortened link with the resolved URL, which is 'http://www.redmondpie.com/iphone-5-vs-iphone-4s-should-you-upgrade' in this case. In many cases like this, there is not other way to distinguish the content of a tweet. From our dataset of 100,000 tweets, 102 tweets contained \textit{only} a link, while 608 tweets contained only a link and fewer than 20 other characters. While this is a fairly small portion of the overall dataset for training purposes, it can be crucial in making decision on novel test instances.
+\textit{Spell checking}: Twitter's user-generated content contains a large volume of misspelled words (\citeauthor{Laboreiro:2010:TMM:1871840.1871853}). Using a spell-checking library, we wrote a Pipe to replace unrecognized words (misspelled words) with their corrections if the confidence for correction was above a certain threshold. Our intention was to reduce the noise in the feature set by eliminating common misspellings. This did not provide any statistically significant change in our results. \\
 ~\\
 \subsubsection{Disambiguation}
 ~\\
-\textit{Stemming}: Stemming is the process of reducing words to their "stem." While this stem does not necessarily have to be the root of the word, it should satisfy the property that related words have the same stem. Therefore the stem of the related words "argue," "argued," and "arguing" all have the stem of "argu," even though argu is not the true linguistic stem. We used the standard Porter stemmer to implement this[CITATION].\\
+\textit{Stemming}: Stemming is the process of reducing words to their "stem," in order to group different forms of the same word into a single feature. While this stem does not necessarily have to be the root of the word, it should satisfy the property that related words have the same stem. For instance, the stem of the related words "argue," "argued," and "arguing" all have the stem of "argu," even though argu is not the true linguistic stem, or a real word. We used the standard Porter stemmer to implement this%[CITATION].
+In some cases, stemming proved to increase our accuracy.
+\\
 
 \begin{figure*}[t!]
 \centering
@@ -125,15 +162,16 @@ We do all machine learning with the Mallet library developed by the University o
 
 \subsubsection{Tokenization}
 ~\\
-Twitter data, and user-generated web content in general, provides unique challenges to an automatic tokenization system due to the high level of noise in the feature set [citation and more details]. Tweets are limited to 140 characters, which limits the total number of features possible. Some of the many natural language processing dilemmas present in tweets include excessive and irregular punctuation, frequent misspellings, emoticons, URLs, and hashtags, to name a few.\\
+Twitter data, and user-generated web content in general, provides unique challenges to an automatic tokenization system due to the high level of noise in the feature set. Tweets are limited to 140 characters, which limits the total number of features possible. Some of the many natural language processing dilemmas present in tweets include excessive and irregular punctuation, frequent misspellings, emoticons, URLs, and hashtags, as discussed in the introduction.\\
 
 \begin{table}[h]
 \centering
 \begin{tabular}{|l|}
 	\hline
-	Cool ranch , 4 berry sundae , apple juice \#yessuh \\ \#latenight \#snack http://t.co/ttc3vujp \\ \hline
-	I just poured apple juice on my cereal.. Gah. \#SoTired \\ \hline
-	I hate Siri.. -\_\_\_- \\
+	Cool ranch , 4 berry sundae , apple juice \textbf{\#yessuh} \\ 
+	\textbf{\#latenight \#snack} http://t.co/ttc3vujp \\ \hline
+	I just poured apple juice on my cereal\textbf{..} Gah. \textbf{\#SoTired} \\ \hline
+	I hate Siri\textbf{.. -\_\_\_-} \\
 	\hline
 \end{tabular}
 \caption{Examples of difficult tokenizations}
@@ -142,35 +180,29 @@ Twitter data, and user-generated web content in general, provides unique challen
 
 We approach this problem using a layered token extraction system. Using regular expressions, we begin by searching for tokens that may include other, more general tokens. A prime example of this is an emoticon appearing in a URL.
 
-Searching for emoticons in this tweet will extract :/ as an emoticon, effectively breaking up the URL.
+Searching for emoticons in the tweet "Now on my iphone ?? http://t.co/Rqr1RL2R" will extract ":/" as an emoticon, effectively breaking up the URL. Additionally, users often include emoticons or links after text with no delimiting whitespace, such as "I listen to my iPod every day and it's just broke \textbf{omg:(!!}." Extracting tokens using our layered approach eliminates many of these problems.\\
+
+After tokenizing these special features in order (URLs, emoticons, usernames, and hashtags) we are left with a fragmented tweet containing myriad punctuation, capitalization, and creative spellings. As done by \citet{potts2011} we normalize the length of all letter sequences greater than two, as in English these are invariably due to user-added emphasis, and condensing the larger set of tokens focuses the feature set. In the following tweet, for instance, "loooool" is normalized to "loool".
 \begin{quote}
-\textit{Now on my iphone ?? http://t.co/Rqr1RL2R}
-\end{quote}
-
-Additionally, users often include emoticons or links after text with no delimiting whitespace. 
-
-\begin{quote}
-\textit{I listen to my iPod every day and it's just broke omg:(!!}
-\end{quote}
-
-Extracting tokens using this layered approach eliminates many of these problems.
-
-After tokenizing these special features in order (URLs, emoticons, usernames, and hashtags) we are left with a fragmented tweet containing myriad punctuation, capitalization, and creative spellings. As done by \citet{potts2011} we normalize the length of all letter sequences greater than two, as in English, these are invariably due to user-added emphasis, and condensing the larger set of tokens focuses the feature set. In the following tweet, "loooool" is normalized to "loool".
-\begin{quote}
-\#news can't wait for my signed \#OoRITE2OutNow it's emotional here right now loooool \#OoRITE2OutNow https://t.co/r4n4cn6C 
+\#news can't wait for my signed \#OoRITE2OutNow it's emotional here right now \textbf{loooool} \#OoRITE2OutNow https://t.co/r4n4cn6C 
 \end{quote}
 
 Note that such repetitions are often valid in URLs and some emoticons. Normalizing them prior to this step would make URLs invalid if using our link replacement Pipe.
 
-As presented in our results, because of irregular capitalization, two tokens likely to be semantically identical with respect to company classification may be represented in multiple cases: {Nooo, NOOO, nooo, NoOo} is a prime example. To alleviate this, we attempt three different approaches. In the first, we simply lowercase all remaining tokens (note that many URLs become invalid after modifying case). In the second, we lowercase any text that is not in all caps. This serves to retain acronyms. In the third, we change all remaining tokens to lowercase, leaving the case of all strings containing "apple" (case insensitive) alone. We made this decision based on the semantic difference between the capitalization of Apple the company and apple the fruit. While correct capitalization is naturally not always present for this token, this is one case where capitalization serves to disambiguate. This same principle can be generalized to a larger set of keywords and applied to other companies in a similar fashion. 
+As presented in our results, because of irregular capitalization, two tokens likely to be semantically identical with respect to company classification may be represented in multiple cases. {Nooo, NOOO, nooo, NoOo} is a prime example. To alleviate this, we attempt three different approaches. In the first, we simply lowercase all remaining tokens (note that many URLs become invalid after modifying case). In the second, we lowercase any text that is not in all caps. This serves to retain acronyms and any text specifically place in all caps, while combining words capitalized because of sentence boundaries with their lowercase appearances, for instance. In the third approach, we change all remaining tokens to lowercase, except for leaving the case of all strings containing "apple" (case insensitive) alone. We made this decision based on the semantic difference between the capitalization of Apple the company and apple the fruit, which is a very significant feature in our dataset. While correct capitalization is naturally not always present for this token, this is one case where capitalization serves to disambiguate. In our dataset, "Apple" appeared 11784 times in 10500 tweets, "apple" appeared 4765 times in 4508 tweets, and other case-variations appeared 292 times in 237 tweets (all but one of which was "APPLE"). This same principle can be generalized to a larger set of keywords and applied to other companies in a similar fashion. \\
+
+Optionally, our tokenizer will remove the token "RT" from all tweets. 3986 tweets in our dataset contain this token, signifying a retweet. Not knowing whether this feature added discriminatory power to our classifier, we toggled its inclusion during testing and found that removing it did lead to a slight increase in accuracy on our tests.\\
+
+Any tokens remaining at this point during tokenization are very likely to words in phrases. In order to focus the feature set, we split by whitespace and remove any non-word characters other than percent and dollar signs, stripping punctuation, quotation marks, parentheses, etc. \\
+
+We chose to apply bigramming to only the tokens parsed in this final step. Bigramming led to a statistically significant increase in our results over the same tokenization without bigramming, and even moreso over whitespace-split tokenization with or without bigramming applied.
+
+We constructed this tokenizer such that any step in tokenizing can be toggled upon instantiation in order to test the impact of each feature.\\
 
 \section{Experimental Setup}
 ...constant-size test set with sliced training
 ...comparison to n-fold validation
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vulputate ultricies lorem, quis consectetur erat tristique id. Nulla eget nunc in urna vestibulum ornare ac sed purus. Curabitur consequat gravida turpis in rutrum. Nulla vehicula condimentum luctus. Nam venenatis facilisis orci sed ullamcorper. In felis leo, rutrum nec vestibulum vitae, lacinia at ipsum. Praesent orci nibh, pellentesque vitae placerat eget, tempus eget libero. Duis eleifend, orci nec pretium condimentum, quam erat euismod quam, sed accumsan erat lacus in felis. Aliquam vitae leo sem. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam consequat ante eu turpis molestie vel gravida felis varius. Vestibulum tincidunt, velit quis convallis imperdiet, est nisi aliquet mauris, eget tempus metus eros eget erat. Aenean sit amet dui vel urna pretium dictum nec sed elit. Vivamus feugiat dictum neque imperdiet ultrices. Nullam commodo rhoncus elit id adipiscing. Nam nec turpis ut nisi pulvinar blandit at tincidunt dolor.
-
-Integer dictum tristique felis vitae lobortis. Quisque hendrerit, mi vel vestibulum sagittis, nulla leo rhoncus nisl, ac lobortis nisi lorem quis nisl. Nullam vehicula magna convallis odio semper vestibulum. Ut lobortis, purus eu sodales congue, sapien dolor consectetur turpis, vitae luctus nibh elit et eros. Nam tempor felis eget dui laoreet vehicula. Praesent imperdiet hendrerit elit sed tempus. Phasellus feugiat pretium metus id scelerisque. Morbi ligula lectus, blandit in vestibulum id, fermentum sit amet augue. Donec pharetra molestie euismod. Nulla porttitor feugiat purus, in egestas lorem venenatis sed. Phasellus quis interdum diam. Ut congue, magna at malesuada luctus, augue urna dignissim nulla, congue lacinia metus felis eget odio. Vestibulum et nisl sodales quam commodo laoreet. Ut a tortor tortor.
 
 \section{Results}
 
@@ -180,35 +212,21 @@ Integer dictum tristique felis vitae lobortis. Quisque hendrerit, mi vel vestibu
   graphs of both validation types
   most useful features for classification
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vulputate ultricies lorem, quis consectetur erat tristique id. Nulla eget nunc in urna vestibulum ornare ac sed purus. Curabitur consequat gravida turpis in rutrum. Nulla vehicula condimentum luctus. Nam venenatis facilisis orci sed ullamcorper. In felis leo, rutrum nec vestibulum vitae, lacinia at ipsum. Praesent orci nibh, pellentesque vitae placerat eget, tempus eget libero. Duis eleifend, orci nec pretium condimentum, quam erat euismod quam, sed accumsan erat lacus in felis. Aliquam vitae leo sem. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam consequat ante eu turpis molestie vel gravida felis varius. Vestibulum tincidunt, velit quis convallis imperdiet, est nisi aliquet mauris, eget tempus metus eros eget erat. Aenean sit amet dui vel urna pretium dictum nec sed elit. Vivamus feugiat dictum neque imperdiet ultrices. Nullam commodo rhoncus elit id adipiscing. Nam nec turpis ut nisi pulvinar blandit at tincidunt dolor.
-
-Integer dictum tristique felis vitae lobortis. Quisque hendrerit, mi vel vestibulum sagittis, nulla leo rhoncus nisl, ac lobortis nisi lorem quis nisl. Nullam vehicula magna convallis odio semper vestibulum. Ut lobortis, purus eu sodales congue, sapien dolor consectetur turpis, vitae luctus nibh elit et eros. Nam tempor felis eget dui laoreet vehicula. Praesent imperdiet hendrerit elit sed tempus. Phasellus feugiat pretium metus id scelerisque. Morbi ligula lectus, blandit in vestibulum id, fermentum sit amet augue. Donec pharetra molestie euismod. Nulla porttitor feugiat purus, in egestas lorem venenatis sed. Phasellus quis interdum diam. Ut congue, magna at malesuada luctus, augue urna dignissim nulla, congue lacinia metus felis eget odio. Vestibulum et nisl sodales quam commodo laoreet. Ut a tortor tortor.
-
-Phasellus et mi eu est fermentum cursus id sodales nisi. Maecenas sodales ornare mauris, nec cursus mi commodo non. In pulvinar odio id est pharetra cursus. Fusce blandit scelerisque bibendum. Aliquam erat volutpat. Aliquam tellus lorem, pharetra a vehicula nec, tincidunt sit amet felis. Nullam nec sapien quis leo facilisis commodo at vel enim. Suspendisse ultricies massa at nisl iaculis scelerisque. Phasellus sed sodales augue. Pellentesque a nisl enim.
-
-Mauris at eros velit, non venenatis augue. Fusce vel ornare purus. Praesent condimentum lectus sit amet sem ullamcorper eget euismod tellus dapibus. Aenean fringilla urna vel nisl accumsan imperdiet. Duis cursus mattis molestie. Phasellus est lorem, condimentum quis congue eget, condimentum scelerisque arcu. Phasellus odio lacus, imperdiet at convallis et, vehicula a nisi. Mauris consequat urna vitae ipsum vulputate ullamcorper. Fusce ullamcorper mauris dolor. Quisque gravida hendrerit tristique. Fusce magna urna, vestibulum eget condimentum eu, semper sit amet felis. Ut placerat hendrerit neque id vestibulum. Phasellus convallis, nulla at fermentum bibendum, massa risus tempus eros, et malesuada diam enim sed purus. Praesent tincidunt dapibus lobortis. Curabitur sodales dignissim est quis tempus.
-
-Aenean vel enim eu mauris scelerisque pulvinar in quis odio. Suspendisse eu sapien vitae eros ultrices congue volutpat quis elit. Aliquam nisl nibh, hendrerit ut feugiat eget, gravida eget urna. In nisl felis, elementum ut sollicitudin non, fringilla in neque. Aliquam quis luctus lacus. Cras et mauris sem, vel imperdiet sapien. Suspendisse in ligula id turpis adipiscing sodales vitae ut lectus. Vestibulum neque nulla, commodo vitae venenatis id, accumsan vitae odio. Quisque velit purus, tempor non porta laoreet, elementum vel sem. Nullam mollis euismod dolor, eget pulvinar elit cursus eget. Nunc quis pharetra odio. Donec lacus leo, pulvinar quis vestibulum eget, porta id nibh.
 
 
 \section{Conclusion and Future Work}
 
-We could test the robustness of this system by applying this process to other companies for a similar-length time slice of training data. We could also test this model against tweets from a different time span to determine whether the data is subject to temporal overfitting, and to what degree.
+We could test the robustness of this system by applying this process to other companies for a similar-length time slice of training data. We could also test this model against tweets from a different time span to determine whether the data is subject to temporal overfitting, and to what degree.\\
 
-[These guys] demonstrate a system of using background knowledge and relatedness, in which current information in the Twitter stream is used to more accurately estimate the priors for a Naive Bayes classification.
+Yerva et al demonstrate a system of using background knowledge and relatedness, in which current information in the Twitter stream is used to more accurately estimate the priors for a Naive Bayes classification (\citeauthor{journals/ijcsa/YervaMA12}).\\
 
-Inclusion of background knowledge.
+Wang et al have shown improvements over the bag-of-words approach to text classification using Wikipedia as a thesaurus for term disambiguation. We could use this to enrich the feature set found in tweets and relate similar or co-occurring words in tweets (\citeauthor{Wang:2008:UWC:1510528.1511383}, \citeauthor{Wang:2009:UWK:1554488.1554492}).\\
 
-Use of Wikipedia for disambiguation.
-
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vulputate ultricies lorem, quis consectetur erat tristique id. Nulla eget nunc in urna vestibulum ornare ac sed purus. Curabitur consequat gravida turpis in rutrum. Nulla vehicula condimentum luctus. Nam venenatis facilisis orci sed ullamcorper. In felis leo, rutrum nec vestibulum vitae, lacinia at ipsum. Praesent orci nibh, pellentesque vitae placerat eget, tempus eget libero. Duis eleifend, orci nec pretium condimentum, quam erat euismod quam, sed accumsan erat lacus in felis. Aliquam vitae leo sem. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam consequat ante eu turpis molestie vel gravida felis varius. Vestibulum tincidunt, velit quis convallis imperdiet, est nisi aliquet mauris, eget tempus metus eros eget erat. Aenean sit amet dui vel urna pretium dictum nec sed elit. Vivamus feugiat dictum neque imperdiet ultrices. Nullam commodo rhoncus elit id adipiscing. Nam nec turpis ut nisi pulvinar blandit at tincidunt dolor.
-
-Integer dictum tristique felis vitae lobortis. Quisque hendrerit, mi vel vestibulum sagittis, nulla leo rhoncus nisl, ac lobortis nisi lorem quis nisl. Nullam vehicula magna convallis odio semper vestibulum. Ut lobortis, purus eu sodales congue, sapien dolor consectetur turpis, vitae luctus nibh elit et eros. Nam tempor felis eget dui laoreet vehicula. Praesent imperdiet hendrerit elit sed tempus. Phasellus feugiat pretium metus id scelerisque. Morbi ligula lectus, blandit in vestibulum id, fermentum sit amet augue. Donec pharetra molestie euismod. Nulla porttitor feugiat purus, in egestas lorem venenatis sed. Phasellus quis interdum diam. Ut congue, magna at malesuada luctus, augue urna dignissim nulla, congue lacinia metus felis eget odio. Vestibulum et nisl sodales quam commodo laoreet. Ut a tortor tortor.
+Our tokenization process makes several simplifying assumptions that we could address. We assume certain classes of emoticons are not used often enough to be significant, and leave punctuation out of our feature set. We could measure the presence of these (and more) features on Twitter data and adjust our tokenization process to reflect that.\\
 
 
 \section{Contributions}
-We have built several reusable Java components that extend the Mallet API for processing of data from Twitter. We created a TweetJsonIterator that accepts a file of Twitter's JSON-formatted tweets and creates training Instances containing their values for easy processing during model training. We have implemented several Pipes that can be reused or easily modified to suit a similar Twitter processing purpose. These include Link2Title, Stemmer, SpellCheck, and Tokenize, the latter of which serves as a more extensible tokenizer than Mallet's default. All code is available through our project website. We also provide a corpus of 115,000 tweets selected by Apple-related keyword and our labeled data set of 2000 tweets. The bash scripts used to filter the data for near-duplicates and spam are also available for download.
+We have built several reusable Java components that extend the Mallet API for processing of data from Twitter. We created a TweetJsonIterator that accepts a file of Twitter's JSON-formatted tweets and creates training Instances containing their values for easy processing during model training. We have implemented several Pipes that can be reused or easily modified to suit a similar Twitter processing purpose. These include Link2Title, Stemmer, SpellCheck, and Tokenize, the latter of which serves as a more extensible tokenizer than Mallet's default. All code is available through our project website. We also provide a corpus of 100,000 tweets selected by Apple-related keyword and our labeled data set of 2000 tweets. The bash scripts used to filter the data for near-duplicates and spam are also available for download.\\
 
 \section{ Acknowledgments}
 Thank you to Dr. Jin Tian and our class teaching assistant, Ru He, for their helpful guidance during this research project. We also extend our thanks to our friends for their help in manual labeling of tweets.
