@@ -29,7 +29,7 @@ Ames, Iowa, USA\\
 \begin{quote}
 Twitter is a popular source for data mining due to its massive scale and inclusivity of current trends.
 It is also a veritable goldmine of useful data for businesses seeking to discover public opinion about themselves or their products.
-Using machine learning techniques, we analyze the accuracy of classifying whether tweets are part of the public opinion about a particular company or merely contain keywords related to the company.
+Using machine learning techniques, we analyze the accuracy of classifying whether tweets directly mention a particular company or mearly contain keywords related to the company.
 %Tweets present interesting classification challenges due to their irregular formatting and relatively small number of features.
 %Classification purely by keyword filtering often suffers from a
 %high accuracy and low recall, or low accuracy and high recall. % Q: Daniel - What does recall mean in this context? Also, list low accuracy first I think.
@@ -156,7 +156,7 @@ In some cases, stemming proved to increase our accuracy.
 \begin{figure*}[t!]
 \centering
 \includegraphics[height=7cm]{chart}
-\caption{Accuracy Chart}
+\caption{Accuracy vs. Training Corpus Size for All Text Processing Combinations}
 \label{fig:chart}
 \end{figure*}
 
@@ -212,6 +212,19 @@ We constructed this tokenizer such that any step in tokenizing can be toggled up
   graphs of both validation types
   most useful features for classification
 
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\linewidth]{chart_twitterVSwhitespace}
+\caption{Accuracy With Stemming and Stopword Removal}
+\label{fig:chart_twitterwhitespace}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\linewidth]{chart_twitterVSwhitespace_detailed}
+\caption{Accuracy For Twitter and Whitespace Tokenizers}
+\label{fig:chart_twitterwhitespace_detailed}
+\end{figure}
 
 
 \section{Conclusion and Future Work}
