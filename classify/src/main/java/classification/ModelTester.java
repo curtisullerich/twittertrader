@@ -66,7 +66,7 @@ public class ModelTester {
 			SetItem<SerialPipes> n = pipesIterator.next();
 			SerialPipes pipe = n.value;
 			String pipeLabel = n.label;
-			
+
 			System.err.println(count + pipeLabel);
 
 			ArrayList<Trial> trials = new ArrayList<Trial>();
@@ -77,27 +77,34 @@ public class ModelTester {
 					Constants.CSV_ITERATOR_REGEX, 3, 1, 2);
 			instances.addThruPipe(reader);
 
-			InstanceList[] testSplit = instances.splitInOrder(new int[] {
-					test_size, instances.size() - test_size });
+			InstanceList[] testSplit = instances.splitInOrder(new int[] { test_size,
+					instances.size() - test_size });
 			InstanceList testList = testSplit[0];
 			InstanceList trainList = testSplit[1];
 
 			// Filter instances
 			// double proportion = (double)count / trainList.size();
-			InstanceList[] randomInstanceLists = trainList
-					.splitInOrder(new int[] { count, trainList.size() - count });
+			InstanceList[] randomInstanceLists = trainList.splitInOrder(new int[] {
+					count, trainList.size() - count });
 			// .split(new Random(random_seed), new double[] { proportion,
 			// 1.0 - proportion });
 
 			for (ClassifierTrainer<? extends Classifier> trainer : trainers()) {
 				double accuracySum = 0;
 				double stdDevSum = 0;
+				double applePrecision = 0;
+				double nonePrecision = 0;
+				double appleRecall = 0;
+				double noneRecall = 0;
+				double appleF1 = 0;
+				double noneF1 = 0;
 				double rankings = 0;
 
 				CrossValidationIterator cvi = new CrossValidationIterator(
 						randomInstanceLists[0], folds, new Random(random_seed));
 
 				int i = 0;
+
 				while (cvi.hasNext()) {
 					i++;
 					InstanceList[] instanceLists = cvi.next();
@@ -120,12 +127,26 @@ public class ModelTester {
 					}
 					stdDevSum = ds.getStandardDeviation();
 
+					applePrecision += trial.getPrecision("apple");
+					nonePrecision += trial.getPrecision("none");
+					appleRecall += trial.getRecall("apple");
+					noneRecall += trial.getRecall("none");
+					appleF1 += trial.getF1("apple");
+					noneF1 += trial.getF1("none");
+
 					accuracySum += trial.getAccuracy();
 					rankings += trial.getAverageRank();
 					trials.add(trial);
 				}
-				info.add(pipeLabel + "\t" + accuracySum / i + "\t" + stdDevSum
-						/ i);
+				/*
+				
+				Headers: title accuracy stddev applePrecision nonePrecision appleRecall noneRecall appleF1 noneF1
+				
+				*/
+				info.add(pipeLabel + "\t" + accuracySum / i + "\t" + stdDevSum / i
+						+ "\t" + applePrecision / i + "\t" + nonePrecision / i + "\t"
+						+ appleRecall / i + "\t" + noneRecall / i + "\t" + appleF1 / i
+						+ "\t" + noneF1 / i);
 			}
 
 		}
@@ -163,8 +184,7 @@ public class ModelTester {
 		return classifier;
 	}
 
-	public static Classifier getCompanyClassifier()
-			throws FileNotFoundException {
+	public static Classifier getCompanyClassifier() throws FileNotFoundException {
 		InstanceList instances = new InstanceList(PipeFactory.getDefault());
 		File file = new File("../corpus/companyset.txt");
 		CsvIterator reader = new CsvIterator(new FileReader(file),
@@ -232,8 +252,7 @@ public class ModelTester {
 	public static File convert2() throws IOException {
 		Scanner s = new Scanner(new File(
 				"/home/curtis/git/twittertrader/corpus/sentiment.csv"));
-		File file = new File(
-				"/home/curtis/git/twittertrader/corpus/sentiment.txt");
+		File file = new File("/home/curtis/git/twittertrader/corpus/sentiment.txt");
 		FileWriter f = new FileWriter(file);
 		while (s.hasNextLine()) {
 			String line = s.nextLine();

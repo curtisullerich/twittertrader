@@ -36,9 +36,9 @@ public class PipeFactory {
 		}.add(new SetFactory<Pipe>(true) {
 			@Override
 			protected void build() {
-				this.add(new Input2CharSequence("UTF-8"), "Input2CharSequence");
+//				this.add(new Input2CharSequence("UTF-8"), "Input2CharSequence");
 				this.add(new UnescapeHTML(), "UnescapeHTML");
-				this.add(new CharSequenceLowercase(), "CharSequenceLowercase");
+//				this.add(new CharSequenceLowercase(), "CharSequenceLowercase");
 			}
 		}).add(new SetFactory<Pipe>(true) {
 			@Override
