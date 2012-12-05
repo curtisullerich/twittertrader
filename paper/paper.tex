@@ -205,12 +205,13 @@ We constructed this tokenizer such that any step in tokenizing can be toggled up
 
 
 \section{Results}
+Using whitespace-based tokenization with a Naive Bayes classifier, we achieve a baseline accuracy of 76\% %correct this exactly!
+compared to the prior probability of tweet about Apple of 64\%. For simplicity of analysis, we compared the results of every permutation of our pipeline steps, training on 100 through 1800 tweets in increments of 100, in order to find the combinations that exceed or violate our expectations. We found that our Twitter-aware tokenizer outperformed whitespace tokenization by [THIS AMOUNT]. Applying stemming and stop word removal to both pipelines increased the accuracy for almost every case, though widening the gap. 
 
-...baseline using priors
-  baseline using whitespace splitting in naive bayes.
   select interesting improvements.
+  Need to mention the performance of each pipe!
   graphs of both validation types
-  most useful features for classification
+  Include most useful features for classification
 
 \begin{figure}[ht]
 \centering
