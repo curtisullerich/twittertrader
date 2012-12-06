@@ -1,6 +1,8 @@
 package pipe;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +15,8 @@ import cc.mallet.types.Instance;
 import common.Constants;
 
 public class Link2Title extends Pipe {
+
+	private static Map<String, String> titleCache = new HashMap<String, String>();
 
 	/**
 	 * 
@@ -48,24 +52,35 @@ public class Link2Title extends Pipe {
 			// We found a link so look it up
 			if (s.matches(Constants.HTTP_REGEX) && m.find()) {
 				String url = m.group();
-				Document doc = null;
-				try {
-					doc = Jsoup.connect(url).get();
-					if (doc.title() != null && !doc.title().equals("")) {
-						// Flawless victory!
-						sb.append(doc.title());
-						System.out.println("replaced " + url + " with "
-								+ doc.title());
-					} else {
-						// try to resolve the url
-						sb.append(doc.baseUri());
-						System.out.println("replaced " + url + " with "
-								+ doc.baseUri());
+
+				if (titleCache.containsKey(url)) {
+					sb.append(titleCache.get(url));
+					System.out.println("replaced " + url + " with "
+							+ titleCache.get(url));
+				} else {
+
+					Document doc = null;
+					try {
+						doc = Jsoup.connect(url).get();
+						if (doc.title() != null && !doc.title().equals("")) {
+							// Flawless victory!
+							sb.append(doc.title());
+							titleCache.put(url, doc.title());
+							System.out.println("replaced " + url + " with "
+									+ doc.title());
+						} else {
+							// try to resolve the url
+							sb.append(doc.baseUri());
+							titleCache.put(url, doc.baseUri());
+							System.out.println("replaced " + url + " with "
+									+ doc.baseUri());
+						}
+					} catch (IOException e) {
+						// Ignore it and put the url back into the string
+						sb.append(url);
+						System.out.println("did not replace url " + url);
 					}
-				} catch (IOException e) {
-					// Ignore it and put the url back into the string
-					sb.append(url);
-					System.out.println("did not replace url " + url);
+
 				}
 			}
 			// Regular word so just throw it into the result
