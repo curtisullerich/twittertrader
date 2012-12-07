@@ -225,6 +225,23 @@ compared to the prior probability of tweet about Apple of 64\%. For simplicity o
 \end{figure}
 
 
+\begin{table}[h]
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+        Apple  & i     & Apple     & apple        \\
+        iphone & apple & iphone    & Apple        \\ 
+        i      & the   & ...       & ...          \\ 
+        the    & Apple & ipad      & mac          \\ 
+        to     & and   & ipod      & juice        \\ 
+        my     & to    & rt        & rt           \\ 
+        a      & a     & \#apple    & post        \\ 
+        ...    & ...   & 5         & new\_post    \\ 
+        on     & for   & iphone\_5  & iphone      \\ 
+        for    & new   & my\_iphone & apple\_juice\\
+      \hline
+    \end{tabular}
+\end{table}
+
 \section{Contributions and Future Work}
 We have presented a pipeline for processing tweets that increases accuracy and precision of the resulting models. We introduce a layered approach to tokenization that sees improvements over other rule-based methods. We have built several reusable Java components that extend the Mallet API for processing of data from Twitter. We created a TweetJsonIterator that accepts a file of Twitter's JSON-formatted tweets and creates training Instances containing their values for easy processing during model training. We have implemented several Pipes that can be reused or easily modified to suit a similar Twitter processing purpose. These include Link2Title, Stemmer, SpellCheck, and Tokenize, the latter of which serves as a more extensible tokenizer than Mallet's default. We release our testing utility as a new way of comparing multiple similar pipelines. All code is available through our project website. We also provide a corpus of 100,000 tweets selected by Apple-related keyword and our labeled data set of 2000 tweets. The bash scripts used to filter the data for near-duplicates and spam are also available for download.\\
 
