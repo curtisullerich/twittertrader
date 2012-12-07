@@ -33,14 +33,22 @@ public class PipeFactory {
 						labels.toString());
 			}
 
-		}.add(new SetFactory<Pipe>(true) {
+		}.appendSingle(new SetFactory<Pipe>() {
 			@Override
 			protected void build() {
-//				this.add(new Input2CharSequence("UTF-8"), "Input2CharSequence");
-				this.add(new UnescapeHTML(), "UnescapeHTML");
-//				this.add(new CharSequenceLowercase(), "CharSequenceLowercase");
+				this.add(new Input2CharSequence("UTF-8"), "Input2CharSequence");
 			}
-		}).add(new SetFactory<Pipe>(true) {
+		}).appendSingle(new SetFactory<Pipe>() {
+			@Override
+			protected void build() {
+				this.add(new UnescapeHTML(), "UnescapeHTML");
+			}
+		}).appendAny(new SetFactory<Pipe>() {
+			@Override
+			protected void build() {
+				this.add(new CharSequenceLowercase(), "CharSequenceLowercase");
+			}
+		}).appendSingle(new SetFactory<Pipe>() {
 			@Override
 			protected void build() {
 				this.add(
@@ -59,7 +67,7 @@ public class PipeFactory {
 				this.add(new Tokenizer(false), "default twitter tokenizer");
 			}
 
-		}).add(new SetFactory<Pipe>() {
+		}).appendAny(new SetFactory<Pipe>() {
 			@Override
 			protected void build() {
 				this.add(new TokenSequenceRemoveStopwords(),
@@ -67,26 +75,26 @@ public class PipeFactory {
 				this.add(new Stemmer(), "Stemmed");
 			}
 
-		}).add(new SetFactory<Pipe>(true) {
+		}).appendSingle(new SetFactory<Pipe>() {
 			@Override
 			protected void build() {
 				this.add(new Noop(), "NGRAM1");
 				this.add(new TokenSequenceNGrams(new int[] {1, 2}), "NGRAM2");
 			}
 
-		}).add(new SetFactory<Pipe>(true) {
+		}).appendSingle(new SetFactory<Pipe>() {
 			@Override
 			protected void build() {
 				this.add(new TokenSequence2FeatureSequence(),
 						"TokenSequence2FeatureSequence");
 			}
-		}).add(new SetFactory<Pipe>(true) {
+		}).appendSingle(new SetFactory<Pipe>() {
 			@Override
 			protected void build() {
 				this.add(new Target2Label(), "Target2Label");
 			}
 
-		}).add(new SetFactory<Pipe>(true) {
+		}).appendSingle(new SetFactory<Pipe>() {
 			@Override
 			protected void build() {
 				this.add(new FeatureSequence2FeatureVector(),
