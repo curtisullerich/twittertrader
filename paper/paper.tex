@@ -273,26 +273,31 @@ compared to the prior probability of tweet about Apple of 64\%. For simplicity o
 \end{figure}
 
 
-\begin{table}[h]
-\begin{tabular}{|l|l|l|l|}
+\begin{table*}[ht]
+\centering
+%\small
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|}
 \hline
-\multicolumn{4}{|c|}{\textbf{Twitter-aware tokenizer}}\\
+\multicolumn{4}{|c|}{\textbf{Twitter-aware tokenizer}} & \multicolumn{4}{|c|}{\textbf{alphanumeric\_ tokenizer}} & \multicolumn{4}{|c|}{\textbf{whitespace tokenizer}} \\
 \hline
-\multicolumn{2}{|c|}{\textbf{no stopword removal}} & \multicolumn{2}{|c|}{\textbf{stopword removal}}\\
+\multicolumn{2}{|c|}{\textbf{no removal}} & \multicolumn{2}{|c|}{\textbf{stopword removal}} &\multicolumn{2}{|c|}{\textbf{no removal}} & \multicolumn{2}{|c|}{\textbf{stopword removal}} &\multicolumn{2}{|c|}{\textbf{no removal}} & \multicolumn{2}{|c|}{\textbf{stopword removal}}\\
 \hline
-\textbf{apple} & \textbf{none}  & \textbf{apple}     & \textbf{none}        \\ \hline
-        Apple  & i     & Apple      & apple        \\
-        iphone & apple & iphone     & Apple        \\ 
-        i      & the   & ...        & ...          \\ 
-        the    & Apple & ipad       & mac          \\ 
-        to     & and   & ipod       & juice        \\ 
-        my     & to    & rt         & rt           \\ 
-        a      & a     & \#apple    & post         \\ 
-        ...    & ...   & 5          & new\_post    \\ 
-        on     & for   & iphone\_5  & iphone       \\ 
-        for    & new   & my\_iphone & apple\_juice \\ \hline
+\textbf{apple} & \textbf{none} & \textbf{apple} & \textbf{none} & \textbf{apple} & \textbf{none} & \textbf{apple} & \textbf{none} & \textbf{apple} & \textbf{none} & \textbf{apple} & \textbf{none} \\ \hline
+  Apple  & i     & Apple      & apple        & t        & t     & Apple  & http   & Apple  & apple & Apple   & apple  \\
+  iphone & apple & iphone     & Apple        & co       & co    & http   & apple  & to     & I     & iPhone  & Apple  \\
+  i      & the   & ...        & ...          & Apple    & http  & iPhone & Apple  & I      & the   & -       & -      \\
+  the    & Apple & ipad       & mac          & http     & I     & iPad   & Mac    & the    & Apple & RT      & Mac    \\
+  to     & and   & ipod       & juice        & I        & apple & RT     & ED     & my     & to    & iPad    & RT     \\ 
+  my     & to    & rt         & rt           & to       & Apple & apple  & juice  & a      & and   & iPod    & juice  \\
+  a      & a     & \#apple    & post         & the      & the   & iPod   & RT     & iPhone & a     & 5       & \&     \\
+  ...    & ...   & 5          & new\_post    & iPhone   & to    & 5      & iPhone & for    & for   & iphone  & iPhone \\
+  on     & for   & iphone\_5  & iphone       & my       & and   & iphone & post   & on     & -     & apple   & post:  \\
+  for    & new   & my\_iphone & apple\_juice & a        & a     & ED     & A0     & and    & my    & \#apple & I'm    \\ \hline
 \end{tabular}
-\end{table}
+\caption{Ten most common features for various pipelines.}
+\end{table*}
+
+This table of most common features for various pipelines shows the large effect that preprocessing steps like stopword removal, capitalization normalization, bigramming, and tokenization have on the feature distribution. It is interesting that `...' appears as a very common feature using our Twitter-aware tokenizer.
 
 \section{Contributions and Future Work}
 We have presented a pipeline for processing tweets that increases accuracy and precision of the resulting models. We introduce a layered approach to tokenization that sees improvements over other rule-based methods. We have built several reusable Java components that extend the Mallet API for processing of data from Twitter. We created a TweetJsonIterator that accepts a file of Twitter's JSON-formatted tweets and creates training Instances containing their values for easy processing during model training. We have implemented several Pipes that can be reused or easily modified to suit a similar Twitter processing purpose. These include Link2Title, Stemmer, SpellCheck, and Tokenize, the latter of which serves as a more extensible tokenizer than Mallet's default. We release our testing utility as a new way of comparing multiple similar pipelines. All code is available through our project website. We also provide a corpus of 100,000 tweets selected by Apple-related keyword and our labeled data set of 2000 tweets. The bash scripts used to filter the data for near-duplicates and spam are also available for download.\\
