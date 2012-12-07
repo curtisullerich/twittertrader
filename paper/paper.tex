@@ -275,16 +275,21 @@ compared to the prior probability of tweet about Apple of 64\%. For simplicity o
 
 \begin{table}[h]
 \begin{tabular}{|l|l|l|l|}
-    \hline
-        Apple  & i     & Apple     & apple        \\
-        iphone & apple & iphone    & Apple        \\ 
-        i      & the   & ...       & ...          \\ 
-        the    & Apple & ipad      & mac          \\ 
-        to     & and   & ipod      & juice        \\ 
-        my     & to    & rt        & rt           \\ 
-        a      & a     & \#apple    & post        \\ 
-        ...    & ...   & 5         & new\_post    \\ 
-        on     & for   & iphone\_5  & iphone      \\ 
+\hline
+\multicolumn{4}{|c|}{\textbf{Twitter-aware tokenizer}}\\
+\hline
+\multicolumn{2}{|c|}{\textbf{no stopword removal}} & \multicolumn{2}{|c|}{\textbf{stopword removal}}\\
+\hline
+\textbf{apple} & \textbf{none}  & \textbf{apple}     & \textbf{none}        \\ \hline
+        Apple  & i     & Apple      & apple        \\
+        iphone & apple & iphone     & Apple        \\ 
+        i      & the   & ...        & ...          \\ 
+        the    & Apple & ipad       & mac          \\ 
+        to     & and   & ipod       & juice        \\ 
+        my     & to    & rt         & rt           \\ 
+        a      & a     & \#apple    & post         \\ 
+        ...    & ...   & 5          & new\_post    \\ 
+        on     & for   & iphone\_5  & iphone       \\ 
         for    & new   & my\_iphone & apple\_juice \\ \hline
 \end{tabular}
 \end{table}
