@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,10 +41,13 @@ public class ModelTester {
 
 	public static void main(String[] args) throws IOException {
 
-		int d = 100;
+		int d = 50;
 		int max = 1500;
 
 		ArrayList<String> info = new ArrayList<String>();
+		
+		File f = new File("output.tsv");
+		PrintStream ps = new PrintStream(f);
 
 		for (int p = d; p <= max; p += d) {
 			List<String> r = run(p);
@@ -52,7 +56,7 @@ public class ModelTester {
 		}
 
 		for (String s : info) {
-			System.out.println(s);
+			ps.println(s);
 		}
 	}
 
@@ -98,7 +102,7 @@ public class ModelTester {
 				double noneRecall = 0;
 				double appleF1 = 0;
 				double noneF1 = 0;
-				double rankings = 0;
+				//double rankings = 0;
 
 				CrossValidationIterator cvi = new CrossValidationIterator(
 						randomInstanceLists[0], folds, new Random(random_seed));
@@ -109,6 +113,9 @@ public class ModelTester {
 					i++;
 					InstanceList[] instanceLists = cvi.next();
 					InstanceList train = instanceLists[0];
+
+//					System.err.println(train.size());
+//					System.err.println(testList.size());
 					// InstanceList test = instanceLists[1];
 					InstanceList test = testList;
 
@@ -135,7 +142,7 @@ public class ModelTester {
 					noneF1 += trial.getF1("none");
 
 					accuracySum += trial.getAccuracy();
-					rankings += trial.getAverageRank();
+					//rankings += trial.getAverageRank();
 					trials.add(trial);
 				}
 				/*
@@ -214,17 +221,6 @@ public class ModelTester {
 		// trainers.add(new WinnowTrainer());
 		// trainers.add(new MaxEntTrainer());
 		return trainers;
-	}
-
-	private static InstanceList getAllButIndex(InstanceList[] lists, int i) {
-		InstanceList copy = lists[0].cloneEmpty();// create a new one
-		for (int j = 0; i < lists.length; i++) {
-			if (j != i) {
-				// add all but one (9 of the 10) to the new list
-				copy.addAll(lists[i]);
-			}
-		}
-		return copy;
 	}
 
 	public static File convert() throws IOException {
