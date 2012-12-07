@@ -38,7 +38,7 @@ We aim to survey a variety of text processing steps combined with a Naive Bayes 
 Tweets are used as a source of data mining for applications ranging from predicting future stock price changes based on user sentiment (\citeauthor{Ruiz}) and identifying characteristics of Twitter users (\citeauthor{conf/icwsm/PennacchiottiP11}) to tracking political protests and uncovering scams (\citeauthor{ICWSM101540}).
 In many cases, the problem of determining which tweets are relevant for a particular application is prerequisite to obtaining meaningful results. Use of hashtags and username references on Twitter through syntax conventions (prepending with \# and @, respectively) can be used to select a subset of the tweets about a particular topic. 
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \begin{tabular}{|l|}
 	\hline
@@ -55,7 +55,7 @@ In some domains, filtering tweets based solely on keywords may be appropriate, b
 
 Additionally, tweets contain a high rate of errors in grammar, spelling, and punctuation. These features are present alongside myriad augmentations of the English language due to internet trends and culture, as well as the desire of packing more information into Twitter's 140-character message limit (\citeauthor{Laboreiro:2010:TMM:1871840.1871853}). Preprocessing is necessary to avoid discarding or misinterpreting these features as noise or part of other tokens during tokenization.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \begin{tabular}{|l|}
 	\hline
@@ -93,7 +93,7 @@ quicktime&logic pro&think different
 
 This set of keywords clearly allows a large number of false positives:
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \begin{tabular}{|l|}
 	\hline
@@ -179,10 +179,17 @@ Tokens are atomic symbols in text that we use as features in training a classifi
 
 Searching for emoticons in the tweet `Now on my iphone ?? http://t.co/Rqr1RL2R' will extract `:/' as an emoticon, effectively breaking up the URL token. Additionally, users often include emoticons or links after text with no delimiting whitespace, such as `I listen to my iPod every day and it's just broke \textbf{omg:(!!}.' We approach this problem using a layered token extraction system. Our goal is that any token pattern which may contain false positives of other tokens (e.g. emoticons inside URLS) is extracted before any potential interior false positive tokens. Extracting tokens using our layered approach eliminates many problems introduced by Twitter's unique feature space. Note that compiling an exhaustive list of all emoticon combinations is difficult, if not impossible, because the landscape of emoticons is very diverse and changes over time (\citeauthor{Laboreiro:2010:TMM:1871840.1871853}). Instead, we focus on capturing a `large enough' set of emoticons by extracting a large number of the most common ones. \\
 
-After tokenizing these special features in order (URLs, emoticons, usernames, and hashtags) we are left with a fragmented tweet containing myriad punctuation, capitalization, and creative spellings. As done by \citet{potts2011} we normalize the length of all letter sequences greater than two, as in English these are invariably due to user-added emphasis, and condensing the larger set of tokens focuses the feature set. In the following tweet, for instance, `loooool' is normalized to `loool'.
-\begin{quote}
-\#news can't wait for my signed \#OoRITE2OutNow it's emotional here right now \textbf{loooool} \#OoRITE2OutNow https://t.co/r4n4cn6C 
-\end{quote}
+After tokenizing these special features in order (URLs, emoticons, usernames, and hashtags) we are left with a fragmented tweet containing myriad punctuation, capitalization, and creative spellings. As done by \citet{potts2011} we normalize the length of all letter sequences greater than two, as in English these are invariably due to user-added emphasis, and condensing the larger set of tokens focuses the feature set. In the following tweet, for instance, `loooool' would be normalized to `loool'.
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|}
+	\hline
+	\#news can't wait for my signed \#OoRITE2OutNow it's \\ emotional here right now \textbf{loooool} \\ \#OoRITE2OutNow https://t.co/r4n4cn6C \\
+	\hline
+\end{tabular}
+\caption{Example of normalizing repeated characters}
+\label{tab:normalize_characters_example}
+\end{table}
 
 Note that such repetitions are often valid in URLs and some emoticons. Normalizing them prior to this step would make URLs invalid if using our link replacement Pipe.
 
@@ -210,9 +217,9 @@ To evaluate this large set of results, we chose three relevant evaluation metric
 
 \section{Experimental Findings}
 
-Our desired result was a high precision classifier that could be useful for gathering a large number of tweets mentioning a company or its products. Looking at an overview of the results in Figure~\ref{fig:chart_all}, we can see all pipeline combinations had over 70\% of ``apple'' labelings correct with only 50 training tweet instances. However, given that a baseline strategy of labeling every tweet as ``apple'' would be correct 64\% of the time, this is only an improvement of approximately 9\% in the worst case. The more relevant and interesting result is the 43\% improvement in precision from the baseline seen with our custom Twitter-aware tokenizer and all other Pipes like lowercasing, Stemming and Bigrams trained on the maximum of 1500 instances. This relatively large improvement indicates not only if the tokenization strategy used important, but also that we were relatively successful in creating an effective tokenizer that can be further augmented by standard natural language processing techniques like stemming, removing stop words, applying n-grams, or simply lowercasing the text. We can see in Table \ref{tab:top_pipelines} below that all of top five pipeline combinations include our Twitter-aware tokenizer. In fact, one must go down to the 24th and 33rd ranked combinations to find ones that include the Number-Digit and Whitespace based tokenizers, respectively.
+Our desired result was a high precision classifier that could be useful for gathering a large number of tweets mentioning a company or its products. Looking at an overview of the results in Figure~\ref{fig:chart_all}, we can see all pipeline combinations had over 70\% of ``apple'' labelings correct with only 50 training tweet instances. However, given that a simple strategy of labeling every tweet as ``apple'' would be correct 64\% of the time, this is only an improvement in precision of approximately 9\%. The more relevant and interesting result is the 43\% improvement in precision from the simple strategy seen with our custom Twitter-aware tokenizer and all other Pipes like lowercasing, Stemming and Bigrams trained on the maximum of 1500 instances. Futhermore, we observed 12\% and 13\% increases in precision versus plain Whitespace and Alphanumeric based tokenizers respectively. This relatively large improvement indicates not only if the tokenization strategy used important, but also that we were relatively successful in creating an effective tokenizer that can be further augmented by standard natural language processing techniques like stemming, removing stop words, applying n-grams, or simply lowercasing the text. We can see in Table \ref{tab:top_pipelines} below that all of top five pipeline combinations include our Twitter-aware tokenizer. In fact, one must go down to the 24th and 33rd ranked combinations to find ones that utilize the Alphanumeric and Whitespace based tokenizers, respectively.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \small
 \begin{tabular}{|c|l|r|}
@@ -234,29 +241,29 @@ Our desired result was a high precision classifier that could be useful for gath
 \end{table}
 
 
-\subsection{Pipe Effectiveness}
+% \subsection{Pipe Effectiveness}
 
-\textit{Stemming}: \\
-~\\
-\textit{Stopword removal}: \\
-~\\
-\textit{Bigrams}: \\
-~\\
-\textit{URL Replacement}: \\
-~\\
-\textit{Spell checking}: Correcting misspelled words provided no statistically significant change in our results. \\
+% \textit{Stemming}: \\
+% ~\\
+% \textit{Stopword removal}: \\
+% ~\\
+% \textit{Bigrams}: \\
+% ~\\
+% \textit{URL Replacement}: \\
+% ~\\
+% \textit{Spell checking}: Correcting misspelled words provided no statistically significant change in our results. \\
 
 
 \subsection{Tokenizers}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[]{img/tokenizers}
 \caption{Precision of main tokenizers}
 \label{fig:tokenizer_precision}
 \end{figure}
 
-We found that our Twitter-aware tokenizer outperformed whitespace tokenization by [THIS AMOUNT] on average across the . Applying stemming and stop word removal to both pipelines increased the accuracy for almost every case, though widening the gap. \\
+We found that our Twitter-aware tokenizer with the full suite of stemming, stopword removal and bigramming outperformed the whitespace tokenization with comparable stemming, stopword removal and bigramming by 5.2\% in the precision metric when trained on 1500 instances. A similar comparison applies to the alphanumeric tokenizer, our Twitter-aware tokenizer was 4.5\% more percise labeling tweets as mentioning Apple. Applying stemming and stop word removal to both pipelines increased each metric slightly, giving rise to the well distributed set of results seen in Figure \ref{fig:chart_all}. Bigramming and other pipes had some effect, but compared to the multiple percentage point increases from changing the tokenization method, they had relatively minor effects individually.
 
 % \begin{figure}[ht]
 % \centering
