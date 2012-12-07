@@ -9,10 +9,15 @@ import org.apache.commons.lang.NotImplementedException;
 
 public abstract class SetCombiner<O, I> implements Iterable<SetItem<O>> {
 
-	LinkedList<SetFactory<I>> factories = new LinkedList<SetFactory<I>>();
+	LinkedList<SetFactoryWrapper> factories = new LinkedList<SetFactoryWrapper>();
 
-	public SetCombiner<O, I> add(SetFactory<I> setFactory) {
-		factories.add(setFactory);
+	public SetCombiner<O, I> appendSingle(SetFactory<I> setFactory) {
+		factories.add(new SetFactoryWrapper(setFactory, true));
+		return this;
+	}
+
+	public SetCombiner<O, I> appendAny(SetFactory<I> setFactory) {
+		factories.add(new SetFactoryWrapper(setFactory, false));
 		return this;
 	}
 
@@ -33,27 +38,39 @@ public abstract class SetCombiner<O, I> implements Iterable<SetItem<O>> {
 	}
 
 	public Iterator<SetItem<O>> iterator() {
-		return new InternalIterator(
-				new ArrayList<SetFactory<I>>(this.factories));
+		return new InternalIterator(new ArrayList<SetFactoryWrapper>(
+				this.factories));
+	}
+
+	private class SetFactoryWrapper {
+
+		SetFactory<I> factory;
+		boolean isSingle;
+
+		public SetFactoryWrapper(SetFactory<I> factory, boolean single) {
+			this.factory = factory;
+			this.isSingle = single;
+		}
+
 	}
 
 	private class InternalIterator implements Iterator<SetItem<O>> {
 
-		ArrayList<SetFactory<I>> factories;
+		ArrayList<SetFactoryWrapper> factories;
 		int[] counts;
 		int[] i;
 
-		public InternalIterator(ArrayList<SetFactory<I>> a) {
+		public InternalIterator(ArrayList<SetFactoryWrapper> a) {
 			counts = new int[a.size()];
 			i = new int[a.size()];
 
 			factories = a;
 			for (int j = 0; j < counts.length; j++) {
-				if (factories.get(j).isSingle())
-					counts[j] = factories.get(j).produce().size();
+				if (factories.get(j).isSingle)
+					counts[j] = factories.get(j).factory.produce().size();
 				else
-					counts[j] = (int) Math.pow(2, factories.get(j).produce()
-							.size());
+					counts[j] = (int) Math.pow(2, factories.get(j).factory
+							.produce().size());
 
 			}
 		}
@@ -78,10 +95,10 @@ public abstract class SetCombiner<O, I> implements Iterable<SetItem<O>> {
 
 			for (int j = 0; j < counts.length; j++) {
 
-				if (factories.get(j).isSingle()) {
-					ret.add(factories.get(j).produce().get(i[j]));
+				if (factories.get(j).isSingle) {
+					ret.add(factories.get(j).factory.produce().get(i[j]));
 				} else {
-					List<SetItem<I>> items = factories.get(j).produce();
+					List<SetItem<I>> items = factories.get(j).factory.produce();
 
 					for (int k = 0; k < items.size(); k++) {
 						if (((i[j] >> k) & 1) == 1)

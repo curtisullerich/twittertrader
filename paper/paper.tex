@@ -54,7 +54,7 @@ Maybe \textbf{\#Apple} will release \textbf{\#iTunes11} \\
 tomorrow. Maybe? \\ \hline
 \end{tabular}
 \caption{Hashtags and username references (note that Apple Inc. does not own the handle @Apple, though it is commonly used this way)}
-\label{tab:myfirsttable}
+\label{tab:hashtag_username}
 \end{table}
 
 In some domains, filtering tweets based solely on keywords may be appropriate, but disambiguation remains an interest natural language processing problem in many cases, particularly when the topic in question is a commonplace (and thus ambiguous) word, such as `apple,' `blackberry,' `android,' or `adobe' (\citeauthor{journals/ijcsa/YervaMA12}). 
@@ -72,7 +72,7 @@ Think I might have a \textbf{gf}! \textbf{O\_o} oh \\
 lord\textbf{..} Lets see how this goes. \\ \hline
 \end{tabular}
 \caption{Examples of emoticons and common abbreviations found on Twitter}
-\label{tab:myfirsttable}
+\label{tab:emoticons}
 \end{table}
 
 We present a system to disambiguate tweets about the company Apple using a Naive Bayes model, increasing its baseline accuracy by 8\% through use of specialized, Twitter-aware tokenization.
@@ -85,6 +85,7 @@ DUALIST is a system that extends Mallet, our machine learning API of choice, by 
 By accessing the Twitter `Firehose' stream through their public API, we harvested 100,000 tweets using broad keyword filters with the goal of collecting a superset of relevant tweets. This provides us a smaller set of features in the overall corpus, with a much higher prior confidence that each individual tweet is of interest. The keywords used for the company of choice during this round of testing, Apple, were collected manually from information on the company's website and the Wikipedia page about Apple:\\
 
 [INSERT LIST OF KEYWORDS]...\\
+"apple", "itunes", "ipad", "ipod", "mac", "ios", "iphone", "AAPL", "cupertino", "safari", "ilife", "iwork", "garageband", "ibook", "powerbook", "itouch", "app store", "macworld", "facetime", "icloud", "mobileme", "siri", "imovie", "iphoto", "quicktime", "logic pro", "think different" \\
 
 This set of keywords clearly allows a large number of false positives:
 
@@ -144,9 +145,9 @@ We do all machine learning with the Mallet library developed by the University o
 ~\\
 \textit{HTML corrections}: When accessing tweets through Twitter's public API, the native JSON format includes HTML-encoded entities that can add confusing features to the tweets if not un-escaped. For instance, angle brackets are replaced with \&lt; and \&gt; (less-than and greater-than), causing emoticons, for instance, to no longer be parseable. The emoticon `\textgreater.\textless', for instance, would be `\&gt;.\&lt;'. Necessarily, this Pipe un-escapes all such entities, making them easier to parse.\\
 ~\\
-\textit{URL replacement}: In our dataset, 60\% of the 100,000 tweets we collected contained a link. As the vast majority of these are unique, and shortened using a URL shortener, often Twitter's own t.co. Links, then, lose any features that may have been parsed from the URL, which often contains a domain name or title that may be useful in discriminating especially ambiguous links. Consider, for instance, the tweet `hmmm http://t.co/39D8I3qM' which leaves a parser completely unaware of the true content of the tweet. Following this URL leads to `http://www.redmondpie.com/iphone-5-vs-iphone-4s-should-you-upgrade/', which is clearly related to Apple. This pipe replaces the link itself in the tweet with the title of the destination web page: `iPhone 5 vs iPhone 4S: Should You Upgrade? | Redmond Pie.' In cases where the title is empty, we instead replace the shortened link with the resolved URL, which is `http://www.redmondpie.com/iphone-5-vs-iphone-4s-should-you-upgrade' in this case. In many cases like this, there is not other way to distinguish the content of a tweet. From our dataset of 100,000 tweets, 102 tweets contained \textit{only} a link, while 608 tweets contained only a link and fewer than 20 other characters. While this is a fairly small portion of the overall dataset for training purposes, it can be crucial in making decision on novel test instances. Pak and Paroubek also noted the need to handle URLs in tweets, however, rather than adding any new text, they chose to remove the link entirely  (\citeauthor{PAK10.385}).
+\textit{URL replacement}: In our dataset, 60\% of the 100,000 tweets we collected contained a link. As the vast majority of these are unique, and shortened using a URL shortener, often Twitter's own t.co. Links, then, lose any features that may have been parsed from the URL, which often contains a domain name or title that may be useful in discriminating especially ambiguous links. Consider, for instance, the tweet `hmmm http://t.co/39D8I3qM' which leaves a parser completely unaware of the true content of the tweet. Following this URL leads to `http://www.redmondpie.com/iphone-5-vs-iphone-4s-should-you-upgrade/', which is clearly related to Apple. This pipe replaces the link itself in the tweet with the title of the destination web page: `iPhone 5 vs iPhone 4S: Should You Upgrade? | Redmond Pie.' In cases where the title is empty, we instead replace the shortened link with the resolved URL, which is `http://www.redmondpie.com/iphone-5-vs-iphone-4s-should-you-upgrade' in this case. In many cases like this, there is not other way to distinguish the content of a tweet. From our dataset of 100,000 tweets, 102 tweets contained \textit{only} a link, while 608 tweets contained only a link and fewer than 20 other characters. While this is a fairly small portion of the overall dataset for training purposes, it can be crucial in making decision on novel test instances. Pak and Paroubek also noted the need to handle URLs in tweets, however, rather than adding any new text, they chose to remove the link entirely  (\citeauthor{PAK10.385}). \\
 ~\\
-\textit{Spell checking}: Twitter's user-generated content contains a large volume of misspelled words (\citeauthor{Laboreiro:2010:TMM:1871840.1871853}). Using a spell-checking library, we wrote a Pipe to replace unrecognized words (misspelled words) with their corrections if the confidence for correction was above a certain threshold. Our intention was to reduce the noise in the feature set by eliminating common misspellings. This did not provide any statistically significant change in our results. \\
+\textit{Spell checking}: Twitter's user-generated content contains a large volume of misspelled words (\citeauthor{Laboreiro:2010:TMM:1871840.1871853}). Using a spell-checking library, we wrote a Pipe to replace unrecognized words (misspelled words) with their corrections if the confidence for correction was above a certain threshold. Our intention was to reduce the noise in the feature set by eliminating common misspellings.
 ~\\
 \subsubsection{Disambiguation}
 ~\\
@@ -156,9 +157,9 @@ In some cases, stemming proved to increase our accuracy.
 
 \begin{figure*}[t!]
 \centering
-\includegraphics[height=7cm]{chart}
-\caption{Accuracy vs. Training Corpus Size for All Text Processing Combinations}
-\label{fig:chart}
+\includegraphics[width=\textwidth]{img/all-with-headings}
+\caption{Metrics for all Pipeline combinations, training set sizes 50 through 1500 instances}
+\label{fig:chart_all}
 \end{figure*}
 
 \subsubsection{Tokenization}
@@ -199,9 +200,41 @@ We chose to apply bigramming to only the tokens parsed in this final step. Bigra
 We constructed this tokenizer such that any step in tokenizing can be toggled upon instantiation in order to test the impact of each feature.\\
 
 \section{Experimental Setup}
-In order to determine which combination of preprocessing steps would result in the highest performance, we built a custom evaluation utility that iterates through all possible valid combinations of pipes and evaluates their performance. This led to nearly one hundred combinations, as each of six tokenizer variations was run with and without bigramming, with and without stemming, etc. For consistency, the disjoint training and test sets used to evaluate each combination were identical for each iteration. To best observe the effects of training set size, training sizes of 50 to 1500 were tested in increments of 50, where each set is a superset of the previous set with 50 new randomly chosen instances, as opposed to using n-fold cross validation, which would not display this characteristic evenly across varied training and testing sizes. To evaluate this large set of results, we have chosen three relevant evaluation metrics. The first is precision, or the ratio of correctly labeled tweet instances to the number of instances assigned a particular label (`apple' or `none' in our case). Higher values for this metric mean fewer false positives for the desired company, which is the overall goal in this classification task. The second metric was recall, or the ratio of correctly classified instances out of the full set of instances which should have the label in question. This metric is less relevant to our purpose, but still interesting. The sheer scale of Twitter means missing even half of the tweets mentioning a company and mislabeling them as about `none' is of little consequence. Finally we use the F1 metric, a standard combination of precision and recall that is useful in determining overall if some pipeline combination is better than another in both precision and recall.
+In order to determine which combination of preprocessing steps would result in the highest performance, we built a custom evaluation utility that iterates through all possible valid combinations of pipes and evaluates their performance. This led to nearly one hundred combinations, as each of six tokenizer variations was run with and without bigramming, with and without stemming, etc. For consistency, the disjoint training and test sets used to evaluate each combination were identical for each iteration. To best observe the effects of training set size, training sizes of 50 to 1500 were tested in increments of 50, where each set is a superset of the previous set with 50 new randomly chosen instances, as opposed to using n-fold cross validation, which would not display this characteristic evenly across varied training and testing sizes. \\
 
-\section{Results}
+To evaluate this large set of results, we have chosen three relevant evaluation metrics. The first is precision, or the ratio of correctly labeled tweet instances to the number of instances assigned a particular label (`apple' or `none' in our case). Higher values for this metric mean fewer false positives for the desired company, which is the overall goal in this classification task. The second metric was recall, or the ratio of correctly classified instances out of the full set of instances which should have the label in question. This metric is less relevant to our purpose, but still interesting. The sheer scale of Twitter means missing even half of the tweets mentioning a company and mislabeling them as about `none' is of little consequence. Finally we use the F1 metric, a standard combination of precision and recall that is useful in determining overall if some pipeline combination is better than another in both precision and recall.
+
+
+
+\section{Experimental Findings}
+
+Our desired result was a high precision classifier that could be useful gathering a large number of tweets mentioning a company or its products. Looking at an overview of the results in Figure~\ref{fig:chart_all}, we can see all Pipeline combinations had over 70\% of ``apple'' labelings correct with only 50 training tweet instances. However, given that a baseline strategy of labeling every tweet as ``apple'' would be correct 64\% of the time, this is only an improvement of approximately 9\% in the worst case. The more relevant and interesting result is the 43\% improvement from the baseline seen with our custom Twitter Tokenizer and all other Pipes like Lowsercasing, Stemming and Bigrams trained on the maximum of 1500 instances. This relatively large improvement indicates not only is the tokenization strategy used important, but also that we were relatively successful in creating an effective tokenizer that can be further augmented by standard natural language processing techniques like stemming, removing stop words, applying n-grams, or simply lowercasing the text. See in Table \ref{tab:top_pipelines} below that all of top five Pipeline combinations include our twitter tokenizer. In fact, one must go down to the 24th and 33rd ranked combinations to find ones that include the Number-Digit and Whitespace based tokenizers respectively.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|c|l|r|}
+	\hline
+	\textit{Rank} & \textit{Pipeline Description} & \textit{Precision} \\
+	& & \textit{for Apple} \\ \hline
+	1 & Twitter Tokenizer, Lowercased, & \\ & Stemmed, Stopwords Removed, Bigrams & 92.2\% \\ \hline
+	% TODO FIIIIIIIX
+	2 & Twitter Tokenizer, Lowercased, & \\ & Stopwords Removed, Bigrams & 91.6\% \\ \hline
+	3 & Twitter Tokenizer, Stopwords Removed, & \\ & Stemmed, Bigrams & 91.6\% \\ \hline
+	4 & Twitter Tokenizer, Stemmed, Bigrams & 91.4\% \\ \hline
+	5 & Twitter Tokenizer, Stopwords Removed, & \\ & Bigrams & 91.3\% \\ \hline
+	\hline
+	24 & Number-Digit Tokenizer, & \\ & Remove Stopwords, Bigrams & 88.2\% \\ \hline
+	\hline
+	33 & Whitespace Tokenizer, Stemmed, & \\ & Remove Stopwords, Bigrams & 87.7\% \\ \hline
+
+\end{tabular}
+\caption{Top performing Pipeline combinations for 1500 training instances}
+\label{tab:top_pipelines}
+\end{table}
+
+Intro
+
 Using whitespace-based tokenization with a Naive Bayes classifier, we achieve a baseline accuracy of 76\% %correct this exactly!
 compared to the prior probability of tweet about Apple of 64\%. For simplicity of analysis, we compared the results of every permutation of our pipeline steps, training on 100 through 1800 tweets in increments of 100, in order to find the combinations that exceed or violate our expectations. We found that our Twitter-aware tokenizer outperformed whitespace tokenization by [THIS AMOUNT]. Applying stemming and stop word removal to both pipelines increased the accuracy for almost every case, though widening the gap. 
 
@@ -209,6 +242,21 @@ compared to the prior probability of tweet about Apple of 64\%. For simplicity o
   Need to mention the performance of each pipe!
   graphs of both validation types
   Include most useful features for classification
+
+
+\subsection{Pipe Effectiveness Breakdown}
+
+\textit{Stopword removal}: \\
+~\\
+\textit{Bigrams}: \\
+~\\
+\textit{URL Replacement}: \\
+~\\
+\textit{Spell checking}: Correcting misspelled words provided no statistically significant change in our results. \\
+
+
+\subsection{}
+
 
 \begin{figure}[ht]
 \centering
@@ -224,6 +272,32 @@ compared to the prior probability of tweet about Apple of 64\%. For simplicity o
 \label{fig:chart_twitterwhitespace_detailed}
 \end{figure}
 
+
+\begin{table*}[ht]
+\centering
+%\small
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+\multicolumn{4}{|c|}{\textbf{Twitter-aware tokenizer}} & \multicolumn{4}{|c|}{\textbf{alphanumeric\_ tokenizer}} & \multicolumn{4}{|c|}{\textbf{whitespace tokenizer}} \\
+\hline
+\multicolumn{2}{|c|}{\textbf{no removal}} & \multicolumn{2}{|c|}{\textbf{stopword removal}} &\multicolumn{2}{|c|}{\textbf{no removal}} & \multicolumn{2}{|c|}{\textbf{stopword removal}} &\multicolumn{2}{|c|}{\textbf{no removal}} & \multicolumn{2}{|c|}{\textbf{stopword removal}}\\
+\hline
+\textbf{apple} & \textbf{none} & \textbf{apple} & \textbf{none} & \textbf{apple} & \textbf{none} & \textbf{apple} & \textbf{none} & \textbf{apple} & \textbf{none} & \textbf{apple} & \textbf{none} \\ \hline
+  Apple  & i     & Apple      & apple        & t        & t     & Apple  & http   & Apple  & apple & Apple   & apple  \\
+  iphone & apple & iphone     & Apple        & co       & co    & http   & apple  & to     & I     & iPhone  & Apple  \\
+  i      & the   & ...        & ...          & Apple    & http  & iPhone & Apple  & I      & the   & -       & -      \\
+  the    & Apple & ipad       & mac          & http     & I     & iPad   & Mac    & the    & Apple & RT      & Mac    \\
+  to     & and   & ipod       & juice        & I        & apple & RT     & ED     & my     & to    & iPad    & RT     \\ 
+  my     & to    & rt         & rt           & to       & Apple & apple  & juice  & a      & and   & iPod    & juice  \\
+  a      & a     & \#apple    & post         & the      & the   & iPod   & RT     & iPhone & a     & 5       & \&     \\
+  ...    & ...   & 5          & new\_post    & iPhone   & to    & 5      & iPhone & for    & for   & iphone  & iPhone \\
+  on     & for   & iphone\_5  & iphone       & my       & and   & iphone & post   & on     & -     & apple   & post:  \\
+  for    & new   & my\_iphone & apple\_juice & a        & a     & ED     & A0     & and    & my    & \#apple & I'm    \\ \hline
+\end{tabular}
+\caption{Ten most common features for various pipelines.}
+\end{table*}
+
+This table of most common features for various pipelines shows the large effect that preprocessing steps like stopword removal, capitalization normalization, bigramming, and tokenization have on the feature distribution. It is interesting that `...' appears as a very common feature using our Twitter-aware tokenizer.
 
 \section{Contributions and Future Work}
 We have presented a pipeline for processing tweets that increases accuracy and precision of the resulting models. We introduce a layered approach to tokenization that sees improvements over other rule-based methods. We have built several reusable Java components that extend the Mallet API for processing of data from Twitter. We created a TweetJsonIterator that accepts a file of Twitter's JSON-formatted tweets and creates training Instances containing their values for easy processing during model training. We have implemented several Pipes that can be reused or easily modified to suit a similar Twitter processing purpose. These include Link2Title, Stemmer, SpellCheck, and Tokenize, the latter of which serves as a more extensible tokenizer than Mallet's default. We release our testing utility as a new way of comparing multiple similar pipelines. All code is available through our project website. We also provide a corpus of 100,000 tweets selected by Apple-related keyword and our labeled data set of 2000 tweets. The bash scripts used to filter the data for near-duplicates and spam are also available for download.\\
