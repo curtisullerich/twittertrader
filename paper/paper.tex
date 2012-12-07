@@ -84,8 +84,18 @@ DUALIST is a system that extends Mallet, our machine learning API of choice, by 
 \subsection{Corpus creation}
 By accessing the Twitter `Firehose' stream through their public API, we harvested 100,000 tweets using broad keyword filters with the goal of collecting a superset of relevant tweets. This provides us a smaller set of features in the overall corpus, with a much higher prior confidence that each individual tweet is of interest. The keywords used for the company of choice during this round of testing, Apple, were collected manually from information on the company's website and the Wikipedia page about Apple:\\
 
-[INSERT LIST OF KEYWORDS]...\\
-"apple", "itunes", "ipad", "ipod", "mac", "ios", "iphone", "AAPL", "cupertino", "safari", "ilife", "iwork", "garageband", "ibook", "powerbook", "itouch", "app store", "macworld", "facetime", "icloud", "mobileme", "siri", "imovie", "iphoto", "quicktime", "logic pro", "think different" \\
+\begin{tabular}{l l l}
+apple & itunes & ipad \\
+ipod & mac & ios \\
+iphone & AAPL & cupertino \\
+safari&ilife&iwork \\
+garageband&ibook&powerbook \\
+itouch&app store&macworld \\
+facetime&icloud&mobileme \\
+siri&imovie&iphoto \\
+quicktime&logic pro&think different
+\end{tabular} \\
+~\\
 
 This set of keywords clearly allows a large number of false positives:
 
@@ -155,13 +165,6 @@ We do all machine learning with the Mallet library developed by the University o
 In some cases, stemming proved to increase our accuracy.
 \\
 
-\begin{figure*}[t!]
-\centering
-\includegraphics[width=\textwidth]{img/all-with-headings}
-\caption{Metrics for all Pipeline combinations, training set sizes 50 through 1500 instances}
-\label{fig:chart_all}
-\end{figure*}
-
 \subsubsection{Tokenization}
 ~\\
 Tokens are atomic symbols in text that we use as features in training a classifier (\citeauthor{Laboreiro:2010:TMM:1871840.1871853}). Twitter data, and user-generated web content in general, provides unique challenges to an automatic tokenization system due to the high level of noise in the feature set. Tweets are limited to 140 characters, which limits the total number of features possible. Some of the many natural language processing dilemmas present in tweets include excessive and irregular punctuation, frequent misspellings, emoticons, URLs, and hashtags, as discussed in the introduction.\\
@@ -202,13 +205,18 @@ We constructed this tokenizer such that any step in tokenizing can be toggled up
 \section{Experimental Setup}
 In order to determine which combination of preprocessing steps would result in the highest performance, we built a custom evaluation utility that iterates through all possible valid combinations of pipes and evaluates their performance. This led to nearly one hundred combinations, as each of six tokenizer variations was run with and without bigramming, with and without stemming, etc. For consistency, the disjoint training and test sets used to evaluate each combination were identical for each iteration. To best observe the effects of training set size, training sizes of 50 to 1500 were tested in increments of 50, where each set is a superset of the previous set with 50 new randomly chosen instances, as opposed to using n-fold cross validation, which would not display this characteristic evenly across varied training and testing sizes. \\
 
-To evaluate this large set of results, we have chosen three relevant evaluation metrics. The first is precision, or the ratio of correctly labeled tweet instances to the number of instances assigned a particular label (`apple' or `none' in our case). Higher values for this metric mean fewer false positives for the desired company, which is the overall goal in this classification task. The second metric was recall, or the ratio of correctly classified instances out of the full set of instances which should have the label in question. This metric is less relevant to our purpose, but still interesting. The sheer scale of Twitter means missing even half of the tweets mentioning a company and mislabeling them as about `none' is of little consequence. Finally we use the F1 metric, a standard combination of precision and recall that is useful in determining overall if some pipeline combination is better than another in both precision and recall.
+To evaluate this large set of results, we have chosen three relevant evaluation metrics. The first is precision, or the ratio of correctly labeled tweet instances to the number of instances assigned a particular label (``apple'' or ``none'' in our case). Higher values for this metric mean fewer false positives for the desired company, which is the overall goal in this classification task. The second metric was recall, or the ratio of correctly classified instances out of the full set of instances which should have the label in question. This metric is less relevant to our purpose, but still interesting. The sheer scale of Twitter means missing even half of the tweets mentioning a company and mislabeling them as about `none' is of little consequence. Finally we use the F1 metric, a standard combination of precision and recall that is useful in determining overall if some pipeline combination is better than another in both precision and recall.
 
-
+\begin{figure*}[t!]
+\centering
+\includegraphics[width=\textwidth]{img/all-with-headings}
+\caption{Metrics for all Pipeline combinations, training set sizes 50 through 1500 instances}
+\label{fig:chart_all}
+\end{figure*}
 
 \section{Experimental Findings}
 
-Our desired result was a high precision classifier that could be useful gathering a large number of tweets mentioning a company or its products. Looking at an overview of the results in Figure~\ref{fig:chart_all}, we can see all Pipeline combinations had over 70\% of ``apple'' labelings correct with only 50 training tweet instances. However, given that a baseline strategy of labeling every tweet as ``apple'' would be correct 64\% of the time, this is only an improvement of approximately 9\% in the worst case. The more relevant and interesting result is the 43\% improvement from the baseline seen with our custom Twitter Tokenizer and all other Pipes like Lowsercasing, Stemming and Bigrams trained on the maximum of 1500 instances. This relatively large improvement indicates not only is the tokenization strategy used important, but also that we were relatively successful in creating an effective tokenizer that can be further augmented by standard natural language processing techniques like stemming, removing stop words, applying n-grams, or simply lowercasing the text. See in Table \ref{tab:top_pipelines} below that all of top five Pipeline combinations include our twitter tokenizer. In fact, one must go down to the 24th and 33rd ranked combinations to find ones that include the Number-Digit and Whitespace based tokenizers respectively.
+Our desired result was a high precision classifier that could be useful gathering a large number of tweets mentioning a company or its products. Looking at an overview of the results in Figure~\ref{fig:chart_all}, we can see all Pipeline combinations had over 70\% of ``apple'' labelings correct with only 50 training tweet instances. However, given that a baseline strategy of labeling every tweet as ``apple'' would be correct 64\% of the time, this is only an improvement of approximately 9\% in the worst case. The more relevant and interesting result is the 43\% improvement from the baseline seen with our custom Twitter Tokenizer and all other Pipes like Lowsercasing, Stemming and Bigrams trained on the maximum of 1500 instances. This relatively large improvement indicates not only is the tokenization strategy used important, but also that we were relatively successful in creating an effective tokenizer that can be further augmented by standard natural language processing techniques like stemming, removing stop words, applying n-grams, or simply lowercasing the text. We can see in Table \ref{tab:top_pipelines} below that all of top five Pipeline combinations include our twitter tokenizer. In fact, one must go down to the 24th and 33rd ranked combinations to find ones that include the Number-Digit and Whitespace based tokenizers respectively.
 
 \begin{table}[h]
 \centering
@@ -218,25 +226,18 @@ Our desired result was a high precision classifier that could be useful gatherin
 	\textit{Rank} & \textit{Pipeline Description} & \textit{Precision} \\
 	& & \textit{for Apple} \\ \hline
 	1 & Twitter Tokenizer, Lowercased, & \\ & Stemmed, Stopwords Removed, Bigrams & 92.2\% \\ \hline
-	% TODO FIIIIIIIX
 	2 & Twitter Tokenizer, Lowercased, & \\ & Stopwords Removed, Bigrams & 91.6\% \\ \hline
 	3 & Twitter Tokenizer, Stopwords Removed, & \\ & Stemmed, Bigrams & 91.6\% \\ \hline
 	4 & Twitter Tokenizer, Stemmed, Bigrams & 91.4\% \\ \hline
 	5 & Twitter Tokenizer, Stopwords Removed, & \\ & Bigrams & 91.3\% \\ \hline
 	\hline
-	24 & Number-Digit Tokenizer, & \\ & Remove Stopwords, Bigrams & 88.2\% \\ \hline
+	24 & Alphanumeric Tokenizer, & \\ & Remove Stopwords, Bigrams & 88.2\% \\ \hline
 	\hline
 	33 & Whitespace Tokenizer, Stemmed, & \\ & Remove Stopwords, Bigrams & 87.7\% \\ \hline
-
 \end{tabular}
 \caption{Top performing Pipeline combinations for 1500 training instances}
 \label{tab:top_pipelines}
 \end{table}
-
-Intro
-
-Using whitespace-based tokenization with a Naive Bayes classifier, we achieve a baseline accuracy of 76\% %correct this exactly!
-compared to the prior probability of tweet about Apple of 64\%. For simplicity of analysis, we compared the results of every permutation of our pipeline steps, training on 100 through 1800 tweets in increments of 100, in order to find the combinations that exceed or violate our expectations. We found that our Twitter-aware tokenizer outperformed whitespace tokenization by [THIS AMOUNT]. Applying stemming and stop word removal to both pipelines increased the accuracy for almost every case, though widening the gap. 
 
   select interesting improvements.
   Need to mention the performance of each pipe!
@@ -244,8 +245,10 @@ compared to the prior probability of tweet about Apple of 64\%. For simplicity o
   Include most useful features for classification
 
 
-\subsection{Pipe Effectiveness Breakdown}
+\subsection{Pipe Effectiveness}
 
+\textit{Stemming}: \\
+~\\
 \textit{Stopword removal}: \\
 ~\\
 \textit{Bigrams}: \\
@@ -255,23 +258,23 @@ compared to the prior probability of tweet about Apple of 64\%. For simplicity o
 \textit{Spell checking}: Correcting misspelled words provided no statistically significant change in our results. \\
 
 
-\subsection{}
+\subsection{Tokenizers}
 
-
-\begin{figure}[ht]
+\begin{figure}[h]
 \centering
-\includegraphics[width=\linewidth]{chart_twitterVSwhitespace}
-\caption{Accuracy With Stemming and Stopword Removal}
-\label{fig:chart_twitterwhitespace}
+\includegraphics[]{img/tokenizers}
+\caption{Precision of main tokenizers}
+\label{fig:tokenizer_precision}
 \end{figure}
 
-\begin{figure}[ht]
-\centering
-\includegraphics[width=\linewidth]{chart_twitterVSwhitespace_detailed}
-\caption{Accuracy For Twitter and Whitespace Tokenizers}
-\label{fig:chart_twitterwhitespace_detailed}
-\end{figure}
+We found that our Twitter-aware tokenizer outperformed whitespace tokenization by [THIS AMOUNT] on average across the . Applying stemming and stop word removal to both pipelines increased the accuracy for almost every case, though widening the gap. 
 
+% \begin{figure}[ht]
+% \centering
+% \includegraphics[width=\linewidth]{chart_twitterVSwhitespace}
+% \caption{Accuracy With Stemming and Stopword Removal}
+% \label{fig:chart_twitterwhitespace}
+% \end{figure}
 
 \begin{table*}[ht]
 \centering
@@ -293,6 +296,7 @@ compared to the prior probability of tweet about Apple of 64\%. For simplicity o
   ...    & ...   & 5          & new\_post    & iPhone   & to    & 5      & iPhone & for    & for   & iphone  & iPhone \\
   on     & for   & iphone\_5  & iphone       & my       & and   & iphone & post   & on     & -     & apple   & post:  \\
   for    & new   & my\_iphone & apple\_juice & a        & a     & ED     & A0     & and    & my    & \#apple & I'm    \\ \hline
+
 \end{tabular}
 \caption{Ten most common features for various pipelines.}
 \end{table*}
