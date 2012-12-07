@@ -34,7 +34,7 @@ Using machine learning techniques, we analyze the accuracy of classifying whethe
 %Classification purely by keyword filtering often suffers from a
 %high accuracy and low recall, or low accuracy and high recall. % Q: Daniel - What does recall mean in this context? Also, list low accuracy first I think.
 We aim to survey a variety of text processing steps combined with a Naive Bayes classifier, focusing on the effects of different tokenizations.
-Our dataset consists of approximately 2,000 tweets of which 64\% directly mention the company Apple, Inc or one of its products. The other 36\% are not, but still contain keywords related to the company.
+Our dataset consists of approximately 2,000 tweets of which 64\% directly mention the company Apple, Inc or one of its products. The other 36\% do not, but still contain keywords related to the company.
 Preliminary results have shown significant increases in accuracy % TODO insert actual numbers
 by using domain-specific tokenizers, while surprisingly showing decreases in classification accuracy for other standard preprocessing methods such as n-grams.%maybe?
 \end{quote}
@@ -57,7 +57,7 @@ tomorrow. Maybe? \\ \hline
 \label{tab:myfirsttable}
 \end{table}
 
-In some domains, filtering tweets based solely on keywords may be appropriate, but disambiguation remains an interest natural language processing problem in many cases, particularly when the topic in question is a commonplace (and thus ambiguous) word, such as "apple," "blackberry," "android," or "adobe" (\citeauthor{journals/ijcsa/YervaMA12}). 
+In some domains, filtering tweets based solely on keywords may be appropriate, but disambiguation remains an interesting natural language processing problem in many cases, particularly when the topic in question is a commonplace (and thus ambiguous) word, such as "apple," "blackberry," "android," or "adobe" (\citeauthor{journals/ijcsa/YervaMA12}). 
 
 Additionally, tweets contain a high rate of errors in grammar, spelling, and punctuation. These features are present alongside myriad augmentations of the English language due to internet trends and culture, as well as the desire of packing more information into Twitter's 140-character message limit (\citeauthor{Laboreiro:2010:TMM:1871840.1871853}). Preprocessing is necessary to avoid discarding or misinterpreting these features as noise or part of other tokens during tokenization.
 
