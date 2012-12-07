@@ -17,7 +17,7 @@ public class Constants {
 	public static final String VERIFIED_COUNTS_URL = "http://danielstiner.com:9001/verified/companies";
 
 	// Http regex
-	public static final String HTTP_REGEX = "http\\:\\/\\/([^\\s]+)";
+	public static final String HTTP_REGEX = "\\b(((ht|f)tp(s?)\\:\\/\\/|~\\/|\\/)|www.)(\\w+:\\w+@)?(([-\\w]+\\.)+(com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2}))(:[\\d]{1,5})?(((\\/([-\\w~!$+|.,=]|%[a-f\\d]{2})+)+|\\/)+|\\?|#)?((\\?([-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)(&(?:[-\\w~!$+|.,*:]|%[a-f\\d{2}])+=?([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)*)*(#([-\\w~!$+|.,*:=]|%[a-f\\d]{2})*)?\\b";
 
 	// Classifier constant literals
 	public static final String COMPANY_MODEL = "companyModel";

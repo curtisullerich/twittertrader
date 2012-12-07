@@ -33,7 +33,7 @@ public class Stemmer extends Pipe {
 	public Instance pipe(Instance carrier) {
 		TokenSequence tokenSequence = (TokenSequence) carrier.getData();
 		TokenSequence stemmedTokenSequence = new TokenSequence();
-
+		System.out.println("Stemming:");
 		for (int i = 0; i < tokenSequence.size(); i++) {
 			Token token = tokenSequence.get(i);
 			stemmer.setCurrent(token.getText());
@@ -44,6 +44,8 @@ public class Stemmer extends Pipe {
 			// System.out.println(token.getText() + "   :   " + s);
 			// }
 		}
+		System.out.println(stemmedTokenSequence);
+		
 		carrier.setData(stemmedTokenSequence);
 		return carrier;
 	}
