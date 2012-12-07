@@ -37,20 +37,28 @@
 
 <p>This page details our approach of using machine learning for classification of tweets about companies.  </p>
 
-<h3>Project Abstract</h3>
+<h3>Students</h3>
+
+<ul>
+<li>Daniel Stiner, Senior, Computer Engineering (<a href="https://github.com/danstiner" class="user-mention">@danstiner</a>)<br>
+</li>
+<li>Brandon Maxwell, Junior, Computer Science (<a href="https://github.com/bmaxwell921" class="user-mention">@bmaxwell921</a>)<br>
+</li>
+<li>Curtis Ullerich, Senior, Computer Engineering (<a href="https://github.com/curtisullerich" class="user-mention">@curtisullerich</a>) </li>
+</ul><h3>Project Abstract</h3>
 
 <p>Twitter is a popular source for data mining due to its massive scale and inclusivity of current trends. It is also a veritable goldmine of useful data for businesses seeking to discover public opinion about themselves or their products. Using machine learning techniques, we analyze the accuracy of classifying whether tweets directly mention a particular company or mearly contain keywords related to the company. We aim to survey a variety of text processing steps combined with a NaiveBayes classifier, focusing on the effects of different tokenizations. Our dataset consists of approximately 2,000 tweets of which 64% directly mention the company Apple, Inc or one of its products. The other 36% do not, but still contain keywords related to the company. Preliminary results have shown significant increases in accuracy by using domain-specific tokenizers, while surprisingly showing decreases in classification accuracy for other standard preprocessing methods such as n-grams.</p>
 
 <h3>Method</h3>
 
-<h4>Building Company Corpus</h4>
+<h4>Building the Corpus</h4>
 
 <ul>
 <li>By accessing the Twitter ‘Firehose’ stream through their public API, we harvested 100,000 tweets using broad keyword filters with the goal of collecting a superset of relevant tweets. This provides us a smaller set of features in the overall corpus, with a much higher prior confidence that each individual tweet is of interest.</li>
 <li>We define a tweet to be ‘about’ Apple if the tweet mentions the company (via direct reference or stock symbol), one of its products, or a service it offers.</li>
 <li>We hand labeled 2000 tweets for use in training and testing, including only English-language tweets in our training set.<br>
 </li>
-</ul><h4>Preprocessing the Pipeline</h4>
+</ul><h4>Preprocessing: the Pipeline</h4>
 
 <ul>
 <li>We do all machine learning with the Mallet library developed by the University of Massachusetts McCallum (2002). Mallet includes abstractions for a data processing pipeline, during which we use both existing and custom processing ‘Pipes’ to transform the data.</li>
@@ -62,27 +70,16 @@
 <li>Applying stemming and stop word removal to both pipelines increased the accuracy for almost every case.</li>
 </ul><h3>Contributions</h3>
 
-<p>We have built several reusable Java components that extend the Mallet API for processing of data from Twitter. We created a TweetJsonIterator that accepts a file of Twitter's JSON-formatted tweets and creates training Instances containing their values for easy processing during model training. We have implemented several Pipes that can be reused or easily modified to suit a similar Twitter processing purpose. These include FixEmoticons, Link2Title, Stemmer, SpellCheck, and Tokenize, which serves as a more extensible tokenizer than Mallet's default. To use these components, download an archive of our code using the link above, or clone our git repo.
-We also provide a <a href="https://dl.dropbox.com/u/3942841/100000appleTweets.txt">corpus of 115,000 tweets</a> selected by Apple-related keyword and our <a href="https://dl.dropbox.com/u/3942841/appleBinaryFiltered.txt">labeled data set of 2000 tweets</a>. The <a href="https://dl.dropbox.com/u/3942841/filters.sh">bash scripts used to filter the data</a> for near-duplicates and spam are also available for download.</p>
+<p>We have presented a pipeline for processing tweets that increases accuracy and precision of the resulting models. We introduce a layered approach to tokenization that sees improvements over other rule-based methods. We have built several reusable Java components that extend the Mallet API for processing of data from Twitter. We created a TweetJsonIterator that accepts a file of Twitter's JSON-formatted tweets and creates training Instances containing their values for easy processing during model training. We have implemented several Pipes that can be reused or easily modified to suit a similar Twitter processing purpose. These include Link2Title, Stemmer, SpellCheck, and Tokenize, the latter of which serves as a more extensible tokenizer than Mallet's default. We release our testing utility as a new way of comparing multiple similar pipelines. All code is available through our project website. We also provide a corpus of <a href="https://dl.dropbox.com/u/3942841/100000appleTweets.txt">100,000 tweets</a> selected by Apple-related keyword and our labeled data set of <a href="https://dl.dropbox.com/u/3942841/appleBinaryFiltered.txt">2000 tweets</a>. The <a href="https://dl.dropbox.com/u/3942841/filters.sh">bash scripts</a> used to filter the data for near-duplicates and spam are also available for download.  </p>
 
 <h3>Paper</h3>
 
-<p>View a draft of our paper <a href="https://dl.dropbox.com/u/3942841/aipaper.pdf">here</a>.</p>
+<p>View our paper <a href="https://dl.dropbox.com/u/3942841/aipaper.pdf">here</a>.</p>
 
 <p>To check out the code with git:</p>
 
 <pre><code>$ git clone git@github.com:curtisullerich/twittertrader.git
 </code></pre>
-
-<h3>Students</h3>
-
-<ul>
-<li>Daniel Stiner, Senior, Computer Engineering (<a href="https://github.com/danstiner" class="user-mention">@danstiner</a>)<br>
-</li>
-<li>Brandon Maxwell, Junior, Computer Science (<a href="https://github.com/bmaxwell921" class="user-mention">@bmaxwell921</a>)<br>
-</li>
-<li>Curtis Ullerich, Senior, Computer Engineering (<a href="https://github.com/curtisullerich" class="user-mention">@curtisullerich</a>) </li>
-</ul>
       </section>
     </div>
 
