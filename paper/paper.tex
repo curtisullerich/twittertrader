@@ -78,7 +78,7 @@ lord\textbf{..} Lets see how this goes. \\ \hline
 We present a system to disambiguate tweets about the company Apple using a Naive Bayes model, increasing its baseline accuracy by 8\% through use of specialized, Twitter-aware tokenization.
 
 \section{Related Work}
-DUALIST is a system that extends Mallet, our machine learning API of choice, by user-interactive feedback during training (\citeauthor{Settles:2011:CLF:2145432.2145588}). Included in his implementation was a preprocessing step that performed some simple Twitter-specific feature extraction and tokenization. Part of the Sentiment Analysis Symposium focuses on Twitter-aware tokenization of tweets for sentiment analysis, demonstrating that it provides consistent improvement over whitespace- and Treebank-based tokenization \cite{potts2011}. A good deal of research has been done into sentiment classification of tweets, which requires very similar text processing and tokenization \cite{Pak10}. Laboreiro et al focus on the problem of tokenizing, using support vector machines (SVM) to improve upon the accuracy of rule-based tokenization, succeeded in improving from 85\% to 96\% token accuracy (\citeauthor{Laboreiro:2010:TMM:1871840.1871853}). Yerva et al construct classifiers to disambiguate tweets containing company-related keywords, primarily using profiles containing company background knowledge (\citeauthor{journals/ijcsa/YervaMA12}). 
+DUALIST is a system that extends Mallet, our machine learning API of choice, by user-interactive feedback during training (\citeauthor{Settles:2011:CLF:2145432.2145588}). Included in his implementation was a preprocessing step that performed some simple Twitter-specific feature extraction and tokenization. Part of the Sentiment Analysis Symposium focuses on Twitter-aware tokenization of tweets for sentiment analysis, demonstrating that it provides consistent improvement over whitespace- and Treebank-based tokenization \cite{potts2011}. A good deal of research has been done into sentiment classification of tweets, which requires very similar text processing and tokenization \cite{Pak10}. Laboreiro et al focus on the problem of tokenizing, using support vector machines (SVM) to improve upon the accuracy of rule-based tokenization, succeeded in improving from 85\% to 96\% token accuracy (\citeauthor{Laboreiro:2010:TMM:1871840.1871853}). Yerva et al construct classifiers to disambiguate tweets containing company-related keywords, primarily using profiles containing company background knowledge (\citeauthor{journals/ijcsa/YervaMA12}). Sriram et al presented a system that uses features extracted from the tweet author's profile and the tweet text to classify tweets into the categories of News, Events, Opinions, Deals, and Private Messages (\citeauthor{Sriram:2010:STC:1835449.1835643}).
 
 \section{Method}
 \subsection{Corpus creation}
@@ -162,7 +162,7 @@ In some cases, stemming proved to increase our accuracy.
 
 \subsubsection{Tokenization}
 ~\\
-Twitter data, and user-generated web content in general, provides unique challenges to an automatic tokenization system due to the high level of noise in the feature set. Tweets are limited to 140 characters, which limits the total number of features possible. Some of the many natural language processing dilemmas present in tweets include excessive and irregular punctuation, frequent misspellings, emoticons, URLs, and hashtags, as discussed in the introduction.\\
+Tokens are atomic symbols in text that we use as features in training a classifier (\citeauthor{Laboreiro:2010:TMM:1871840.1871853}). Twitter data, and user-generated web content in general, provides unique challenges to an automatic tokenization system due to the high level of noise in the feature set. Tweets are limited to 140 characters, which limits the total number of features possible. Some of the many natural language processing dilemmas present in tweets include excessive and irregular punctuation, frequent misspellings, emoticons, URLs, and hashtags, as discussed in the introduction.\\
 
 \begin{table}[h]
 \centering
@@ -178,9 +178,7 @@ Twitter data, and user-generated web content in general, provides unique challen
 \label{tab:tokenization_examples}
 \end{table}
 
-We approach this problem using a layered token extraction system. Using regular expressions, we begin by searching for tokens that may include other, more general tokens. A prime example of this is an emoticon appearing in a URL.
-
-Searching for emoticons in the tweet "Now on my iphone ?? http://t.co/Rqr1RL2R" will extract ":/" as an emoticon, effectively breaking up the URL. Additionally, users often include emoticons or links after text with no delimiting whitespace, such as "I listen to my iPod every day and it's just broke \textbf{omg:(!!}." Extracting tokens using our layered approach eliminates many of these problems.\\
+Searching for emoticons in the tweet "Now on my iphone ?? http://t.co/Rqr1RL2R" will extract ":/" as an emoticon, effectively breaking up the URL token. Additionally, users often include emoticons or links after text with no delimiting whitespace, such as "I listen to my iPod every day and it's just broke \textbf{omg:(!!}." We approach this problem using a layered token extraction system. Our goal is that any token pattern which may contain false positives of other tokens (e.g. emoticons inside URLS) is extracted before any potential interior false positive tokens. Extracting tokens using our layered approach eliminates many problems introduced by Twitter's unique feature space. Note that compiling an exhaustive list of all emoticon combinations is difficult, if not impossible, because the landscape of emoticons is very diverse and changes over time (\citeauthor{Laboreiro:2010:TMM:1871840.1871853}). Instead, we focus on capturing a "large enough" set of emoticons by extracting a large number of the most common ones. \\
 
 After tokenizing these special features in order (URLs, emoticons, usernames, and hashtags) we are left with a fragmented tweet containing myriad punctuation, capitalization, and creative spellings. As done by \citet{potts2011} we normalize the length of all letter sequences greater than two, as in English these are invariably due to user-added emphasis, and condensing the larger set of tokens focuses the feature set. In the following tweet, for instance, "loooool" is normalized to "loool".
 \begin{quote}
@@ -193,7 +191,7 @@ As presented in our results, because of irregular capitalization, two tokens lik
 
 Optionally, our tokenizer will remove the token "RT" from all tweets. 3986 tweets in our dataset contain this token, signifying a retweet. Not knowing whether this feature added discriminatory power to our classifier, we toggled its inclusion during testing and found that removing it did lead to a slight increase in accuracy on our tests.\\
 
-Any tokens remaining at this point during tokenization are very likely to words in phrases. In order to focus the feature set, we split by whitespace and remove any non-word characters other than percent and dollar signs, stripping punctuation, quotation marks, parentheses, etc. \\
+Any tokens remaining at this point during tokenization are very likely to be words in phrases. In order to focus the feature set, we split by whitespace and remove any non-word characters other than percent and dollar signs, stripping punctuation, quotation marks, parentheses, etc. \\
 
 We chose to apply bigramming to only the tokens parsed in this final step. Bigramming led to a statistically significant increase in our results over the same tokenization without bigramming, and even moreso over whitespace-split tokenization with or without bigramming applied.
 
@@ -237,6 +235,8 @@ Yerva et al demonstrate a system of using background knowledge and relatedness, 
 Wang et al have shown improvements over the bag-of-words approach to text classification using Wikipedia as a thesaurus for term disambiguation. We could use this to enrich the feature set found in tweets and relate similar or co-occurring words in tweets (\citeauthor{Wang:2008:UWC:1510528.1511383}, \citeauthor{Wang:2009:UWK:1554488.1554492}).\\
 
 Our tokenization process makes several simplifying assumptions that we could address. We assume certain classes of emoticons are not used often enough to be significant, and leave punctuation out of our feature set. We could measure the presence of these (and more) features on Twitter data and adjust our tokenization process to reflect that.\\
+
+Sriram et al found that utilizing author profiles provide a good method for further disambiguation of tweets into categories, as authors tend to tweet messages within a limited set of categories. They also delineate a set of eight features (8F) used for training, instead of using the Bag-of-Words approach as we do. Through further analysis of the most useful features found in our approach, we could also choose a discrete set of binary or n-ary features most relevant to this classification task and explore its accuracy versus BOWc (\citeauthor{Sriram:2010:STC:1835449.1835643}).
 
 
 \section{Contributions}
