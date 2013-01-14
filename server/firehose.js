@@ -1,4 +1,5 @@
 var classs = require('./class');
+var fs = require('fs');
 
 var nconf = require('nconf');
 // First consider commandline arguments and environment variables, respectively.
@@ -7,21 +8,22 @@ nconf.argv().env();
 nconf.file({ file: 'config.json' });
 
 
-var companies = ["none", "apple", "walmart", "Verizon", "DollarTree", "Starbucks", "Costco", "Coke", "eBay", "Google", "Microsoft", "Amazon", "twitter", "Netflix"];
+//var companies = ["none", "apple", "walmart", "Verizon", "DollarTree", "Starbucks", "Costco", "Coke", "eBay", "Google", "Microsoft", "Amazon", "twitter", "Netflix"];
 
 
-
-var db = require("mongojs").connect(nconf.get('database'), [nconf.get('collection')]);
+//var db = require("mongojs").connect(nconf.get('database'), [nconf.get('collection')]);
 
 var nTwitter = require("ntwitter");
 var twitter = new nTwitter(nconf.get('twitter_auth'));
-
 
 var activeTweets = {};
 var activeTweetCount = 0;
 var activeTweetLastCount = 0;
 var dups = 0;
-var classifier = getClassifier();
+//var classifier = getClassifier();
+
+
+var res = fs.createWriteStream('tweets.csv', {flags:'a'});
 
 var i=0;
 twitter.stream(
@@ -39,9 +41,24 @@ twitter.stream(
 			// }
 			// i++;
 
+	if(tweet.user.lang != 'en') return;
 
-			classifier.classify(tweet);
-			activeTweetCount++;
+
+      res.write('"' + tweet.id_str + '",');
+      res.write('"' + tweet.retweet_count + '",');
+      res.write('"' + tweet.created_at + '",');
+      res.write('"' + tweet.user.friends_count + '",');
+      res.write('"' + tweet.user.screen_name + '",');
+      res.write('"' + tweet.user.lang + '",');
+      res.write('"' + tweet.user.verified + '",');
+      res.write('"' + tweet.text.replace(/\n/g, "") + '"');
+      res.write("\n");
+
+
+			
+
+			//classifier.classify(tweet);
+			//activeTweetCount++;
 		});
 	}
 );
@@ -116,4 +133,4 @@ function updateClassifier() {
 }
 
 
-setTimeout(updateClassifier, 5000);
+//setTimeout(updateClassifier, 5000);

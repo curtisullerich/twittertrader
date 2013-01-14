@@ -16,6 +16,7 @@
 		"mongoskin": "*",
 		"stache": "*",
 		"JSONStream": ">=0.4.2",
-		"carrier":"*"
+		"carrier":"*",
+		"ntwitter":"*"
 	}
 }
