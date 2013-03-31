@@ -1,0 +1,12 @@
+\contentsline {section}{Introduction}{1}{section*.2}
+\contentsline {section}{Related Work}{1}{section*.3}
+\contentsline {section}{Method}{2}{section*.4}
+\contentsline {subsection}{Corpus creation}{2}{section*.5}
+\contentsline {subsection}{Preprocessing Pipeline}{2}{section*.6}
+\contentsline {subparagraph}{Feature-space Enrichment}{2}{section*.7}
+\contentsline {subparagraph}{Disambiguation}{3}{section*.8}
+\contentsline {subparagraph}{Tokenization}{3}{section*.9}
+\contentsline {section}{Experimental Setup}{4}{section*.10}
+\contentsline {section}{Experimental Findings}{4}{section*.11}
+\contentsline {subsection}{Tokenizers}{5}{section*.12}
+\contentsline {section}{Contributions and Future Work}{5}{section*.13}

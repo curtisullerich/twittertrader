@@ -1,0 +1,26 @@
+Introduction: Why are doing this? What's the motivation? 
+Research questions!
+
+Related work: How is different from current work that makes it worth exploring?
+
+Method: overview of method, defining any necessary terms.
+  Corpus creation. (decisions for definition of "aboutness") -- timeframe of corpus
+    Initial filtering using keywords. Remove spam and retweets.
+  Model/algorithm. Why this is appropriate for our task.
+  Pipeline.
+    Feature-space enrichment pipes: N-grams, stopping, fix emoticons, htmlunescape, linkToTitle, spellcheck
+    Disambiguation: lowercasing, stemming
+    Tokenization.
+Experimental setup.
+  constant-test set with sliced training
+  comparison to n-fold validation
+Results and analysis
+  baseline using priors.
+  baseline using whitespace splitting in naive bayes.
+  select interesting improvements.
+  graphs of both validation types
+  most useful features for classification
+Conclusion and future work
+Acknowledgements
+  Ru, Tian, classifiers
+
